@@ -91,3 +91,24 @@
 
 ---
 
+## Task 5: Create PROJECT.md template
+
+**Thread**: https://ampcode.com/threads/T-019c1408-6293-750c-a6c2-caef909b0cd5
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `.agents/PROJECT.md.template` - Created template with placeholders for project name, tech stack, commands, conventions
+- `install.sh` - Copies template as PROJECT.md if PROJECT.md doesn't exist
+
+### Commands Run
+
+- Verified template structure ✓
+
+### Next
+
+- Task 6: Add stack detection
+
+---
+

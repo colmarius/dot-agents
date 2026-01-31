@@ -269,6 +269,18 @@ main() {
         process_directory "${extracted_dir}/.agents" "./.agents"
     fi
 
+    # Copy PROJECT.md.template as PROJECT.md if it doesn't exist
+    if [[ -f "${extracted_dir}/.agents/PROJECT.md.template" ]] && [[ ! -f "./.agents/PROJECT.md" ]]; then
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_install "./.agents/PROJECT.md (from template)"
+        else
+            mkdir -p .agents
+            cp "${extracted_dir}/.agents/PROJECT.md.template" "./.agents/PROJECT.md"
+            log_install "./.agents/PROJECT.md (from template)"
+        fi
+        ((installed_count++))
+    fi
+
     write_metadata
 
     log_info ""

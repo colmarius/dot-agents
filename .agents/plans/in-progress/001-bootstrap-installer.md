@@ -83,7 +83,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
     - File is created/updated on each install
   - Notes: Use `date -u +%Y-%m-%dT%H:%M:%SZ` for timestamp
 
-- [ ] **Task 5: Create PROJECT.md template**
+- [x] **Task 5: Create PROJECT.md template**
   - Scope: `.agents/PROJECT.md.template`
   - Depends on: none
   - Acceptance:
