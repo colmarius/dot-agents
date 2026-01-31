@@ -195,3 +195,26 @@
 
 ---
 
+## Task 10: Create "adapt" skill (manual-verify)
+
+**Thread**: https://ampcode.com/threads/T-019c1408-6293-750c-a6c2-caef909b0cd5
+**Status**: completed (requires manual verification)
+**Iteration**: 1
+
+### Changes
+
+- `.agents/skills/adapt/SKILL.md` - Created adapt skill with workflow and checklist
+- `.agents/skills/AGENTS.md` - Added adapt to available skills table
+
+### Manual Verification Required
+
+- Test skill by loading it and running in a fresh project
+- Verify it correctly analyzes project structure
+- Confirm PROJECT.md is properly filled in
+
+### Next
+
+- All tasks complete!
+
+---
+

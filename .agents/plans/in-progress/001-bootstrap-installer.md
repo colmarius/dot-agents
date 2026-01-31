@@ -131,7 +131,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
     - Shows diff preview if `diff` command available
   - Notes: Nice UX but not required for MVP
 
-- [ ] **Task 10: Create "adapt" skill (future enhancement)** (manual-verify)
+- [x] **Task 10: Create "adapt" skill (future enhancement)** (manual-verify)
   - Scope: `.agents/skills/adapt/`
   - Depends on: Task 5, Task 6
   - Acceptance:
