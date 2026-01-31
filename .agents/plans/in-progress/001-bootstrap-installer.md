@@ -122,7 +122,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
     - Prompts for confirmation unless `--yes`
   - Notes: Consider keeping PROJECT.md on uninstall (user data)
 
-- [ ] **Task 9: Add --interactive mode (optional enhancement)**
+- [x] **Task 9: Add --interactive mode (optional enhancement)**
   - Scope: `install.sh`
   - Depends on: Task 1
   - Acceptance:

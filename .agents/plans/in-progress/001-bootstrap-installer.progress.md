@@ -173,3 +173,25 @@
 
 ---
 
+## Task 9: Add --interactive mode
+
+**Thread**: https://ampcode.com/threads/T-019c1408-6293-750c-a6c2-caef909b0cd5
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `install.sh` - Added --interactive flag and prompt_conflict function
+- Shows diff preview when diff command available
+- Options: keep/overwrite/new file/skip all/overwrite all
+
+### Commands Run
+
+- `./install.sh --help` ✓ (shows --interactive flag)
+
+### Next
+
+- Task 10: Create "adapt" skill (manual-verify)
+
+---
+

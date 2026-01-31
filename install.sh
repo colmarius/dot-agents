@@ -36,6 +36,7 @@ Options:
   --ref <ref>       Git ref to install (branch, tag, commit). Default: main
   --yes             Skip confirmation prompts
   --uninstall       Remove dot-agents (keeps PROJECT.md)
+  --interactive     Prompt for each conflict
   --help            Show this help message
 
 Examples:
@@ -82,6 +83,10 @@ parse_args() {
                 ;;
             --uninstall)
                 UNINSTALL=true
+                shift
+                ;;
+            --interactive|-i)
+                INTERACTIVE=true
                 shift
                 ;;
             *)
@@ -237,6 +242,43 @@ log_conflict() { echo -e "${YELLOW}[CONFLICT]${NC} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1" >&2; }
 log_info() { echo -e "$1"; }
 
+INTERACTIVE_SKIP_ALL=false
+INTERACTIVE_OVERWRITE_ALL=false
+
+prompt_conflict() {
+    local src="$1"
+    local dest="$2"
+    
+    if [[ "$INTERACTIVE_SKIP_ALL" == "true" ]]; then
+        echo "skip"
+        return
+    fi
+    if [[ "$INTERACTIVE_OVERWRITE_ALL" == "true" ]]; then
+        echo "overwrite"
+        return
+    fi
+    
+    echo ""
+    echo -e "${YELLOW}CONFLICT:${NC} $dest differs from upstream"
+    if command -v diff >/dev/null 2>&1; then
+        echo "--- $dest (yours)"
+        echo "+++ upstream"
+        diff -u "$dest" "$src" 2>/dev/null | head -20 || true
+        echo ""
+    fi
+    echo -n "[k]eep / [o]verwrite / [n]ew file / [s]kip all / [O]verwrite all? "
+    read -r response
+    
+    case "$response" in
+        k|K) echo "keep" ;;
+        o) echo "overwrite" ;;
+        n|N) echo "new" ;;
+        s|S) INTERACTIVE_SKIP_ALL=true; echo "skip" ;;
+        O) INTERACTIVE_OVERWRITE_ALL=true; echo "overwrite" ;;
+        *) echo "new" ;;
+    esac
+}
+
 files_identical() {
     local file1="$1"
     local file2="$2"
@@ -283,6 +325,26 @@ install_file() {
         fi
         ((installed_count++))
         return 0
+    fi
+
+    # Interactive mode
+    if [[ "$INTERACTIVE" == "true" ]] && [[ "$DRY_RUN" != "true" ]]; then
+        local action
+        action="$(prompt_conflict "$src" "$dest")"
+        case "$action" in
+            keep|skip)
+                log_skip "$dest (kept yours)"
+                ((skipped_count++))
+                return 0
+                ;;
+            overwrite)
+                backup_file "$dest"
+                cp "$src" "$dest"
+                log_install "$dest (overwritten)"
+                ((installed_count++))
+                return 0
+                ;;
+        esac
     fi
 
     local conflict_file
