@@ -122,6 +122,34 @@ backup_file() {
     ((backup_count++))
 }
 
+detect_stack() {
+    local detected=""
+    
+    if [[ -f "package.json" ]]; then
+        detected="${detected}# Detected: Node.js project (package.json)\n"
+        detected="${detected}# npm install | pnpm install | yarn install\n"
+        detected="${detected}# npm run dev | npm run build | npm test\n\n"
+    fi
+    
+    if [[ -f "Cargo.toml" ]]; then
+        detected="${detected}# Detected: Rust project (Cargo.toml)\n"
+        detected="${detected}# cargo build | cargo run | cargo test | cargo clippy\n\n"
+    fi
+    
+    if [[ -f "go.mod" ]]; then
+        detected="${detected}# Detected: Go project (go.mod)\n"
+        detected="${detected}# go build ./... | go run . | go test ./...\n\n"
+    fi
+    
+    if [[ -f "pyproject.toml" ]] || [[ -f "requirements.txt" ]]; then
+        detected="${detected}# Detected: Python project\n"
+        detected="${detected}# pip install -r requirements.txt | pip install -e .\n"
+        detected="${detected}# python main.py | pytest | ruff check . | mypy .\n\n"
+    fi
+    
+    echo -e "$detected"
+}
+
 write_metadata() {
     local metadata_file=".agents/.dot-agents.json"
     local timestamp
@@ -276,6 +304,19 @@ main() {
         else
             mkdir -p .agents
             cp "${extracted_dir}/.agents/PROJECT.md.template" "./.agents/PROJECT.md"
+            
+            # Append detected stack info
+            local stack_info
+            stack_info="$(detect_stack)"
+            if [[ -n "$stack_info" ]]; then
+                {
+                    echo ""
+                    echo "## Detected Stack"
+                    echo ""
+                    echo -e "$stack_info"
+                } >> "./.agents/PROJECT.md"
+            fi
+            
             log_install "./.agents/PROJECT.md (from template)"
         fi
         ((installed_count++))

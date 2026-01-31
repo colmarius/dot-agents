@@ -112,3 +112,25 @@
 
 ---
 
+## Task 6: Add stack detection
+
+**Thread**: https://ampcode.com/threads/T-019c1408-6293-750c-a6c2-caef909b0cd5
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `install.sh` - Added detect_stack function
+- Detects package.json, Cargo.toml, go.mod, pyproject.toml, requirements.txt
+- Appends detected stack info to PROJECT.md when created
+
+### Commands Run
+
+- Tested detect_stack in /tmp/test-node with package.json ✓
+
+### Next
+
+- Task 7: Update README.md with installation instructions
+
+---
+

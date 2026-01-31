@@ -92,7 +92,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
     - Installer copies this as `.agents/PROJECT.md` if it doesn't exist
   - Notes: Keep template minimal, users fill in details
 
-- [ ] **Task 6: Add stack detection (optional enhancement)**
+- [x] **Task 6: Add stack detection (optional enhancement)**
   - Scope: `install.sh`
   - Depends on: Task 5
   - Acceptance:
