@@ -373,6 +373,11 @@ process_directory() {
         local rel_path="${file#$src_dir/}"
         local dest_path="${dest_dir}/${rel_path}"
         
+        # Skip .md files in plans/ directories (user's plan files)
+        if [[ "$rel_path" == plans/*.md || "$rel_path" == plans/**/*.md ]]; then
+            continue
+        fi
+        
         if [[ -f "$file" ]]; then
             install_file "$file" "$dest_path"
         fi
