@@ -91,6 +91,36 @@ parse_args() {
 installed_count=0
 skipped_count=0
 conflict_count=0
+backup_count=0
+BACKUP_DIR=""
+
+create_backup_dir() {
+    if [[ -z "$BACKUP_DIR" ]]; then
+        local timestamp
+        timestamp="$(date -u +%Y-%m-%dT%H%M%SZ)"
+        BACKUP_DIR=".dot-agents-backup/${timestamp}"
+        if [[ "$DRY_RUN" != "true" ]]; then
+            mkdir -p "$BACKUP_DIR"
+        fi
+    fi
+}
+
+backup_file() {
+    local file="$1"
+    create_backup_dir
+    local backup_path="${BACKUP_DIR}/${file}"
+    local backup_dir
+    backup_dir="$(dirname "$backup_path")"
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "  ${BLUE}[BACKUP]${NC} $file → $backup_path"
+    else
+        mkdir -p "$backup_dir"
+        cp "$file" "$backup_path"
+        log_info "  ${BLUE}[BACKUP]${NC} $file"
+    fi
+    ((backup_count++))
+}
 
 log_install() { echo -e "${GREEN}[INSTALL]${NC} $1"; }
 log_skip() { echo -e "${BLUE}[SKIP]${NC} $1"; }
@@ -135,6 +165,7 @@ install_file() {
     fi
 
     if [[ "$FORCE" == "true" ]]; then
+        backup_file "$dest"
         if [[ "$DRY_RUN" == "true" ]]; then
             log_install "$dest (force overwrite)"
         else
@@ -222,6 +253,12 @@ main() {
     log_info "  Installed: ${installed_count}"
     log_info "  Skipped:   ${skipped_count}"
     log_info "  Conflicts: ${conflict_count}"
+    
+    if [[ $backup_count -gt 0 ]]; then
+        log_info "  Backed up: ${backup_count}"
+        log_info ""
+        log_info "Backup location: ${BACKUP_DIR}/"
+    fi
 
     if [[ $conflict_count -gt 0 ]]; then
         log_info ""

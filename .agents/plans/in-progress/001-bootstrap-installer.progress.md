@@ -46,3 +46,26 @@
 
 ---
 
+## Task 3: Add backup mechanism
+
+**Thread**: https://ampcode.com/threads/T-019c1408-6293-750c-a6c2-caef909b0cd5
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `install.sh` - Added create_backup_dir and backup_file functions
+- Backs up files before --force overwrite to `.dot-agents-backup/YYYY-MM-DDTHHMMSSZ/`
+- Summary shows backup count and location
+
+### Commands Run
+
+- Tested backup in /tmp/test-backup with existing AGENTS.md ✓
+- Verified backup file preserved original content ✓
+
+### Next
+
+- Task 4: Add metadata tracking
+
+---
+

@@ -56,7 +56,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
     - `--yes` skips confirmation prompts
   - Notes: Keep arg parsing simple (no getopt dependency)
 
-- [ ] **Task 3: Add backup mechanism**
+- [x] **Task 3: Add backup mechanism**
   - Scope: `install.sh`
   - Depends on: Task 2
   - Acceptance:
