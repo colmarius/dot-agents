@@ -35,7 +35,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
 
 ## Tasks
 
-- [ ] **Task 1: Create install.sh core script with safe merge**
+- [x] **Task 1: Create install.sh core script with safe merge**
   - Scope: `install.sh`
   - Depends on: none
   - Acceptance:
