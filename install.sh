@@ -20,6 +20,73 @@ REF="$DEFAULT_REF"
 DRY_RUN=false
 FORCE=false
 YES=false
+SHOW_HELP=false
+UNINSTALL=false
+INTERACTIVE=false
+
+usage() {
+    cat <<EOF
+Usage: install.sh [OPTIONS]
+
+Install dot-agents into the current project.
+
+Options:
+  --dry-run         Show what would happen without making changes
+  --force           Overwrite conflicts (creates backup first)
+  --ref <ref>       Git ref to install (branch, tag, commit). Default: main
+  --yes             Skip confirmation prompts
+  --help            Show this help message
+
+Examples:
+  # Basic install
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
+
+  # Install specific version
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v1.0.0
+
+  # Preview changes first
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --dry-run
+
+  # Force update (backup + overwrite)
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --force
+EOF
+}
+
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --dry-run)
+                DRY_RUN=true
+                shift
+                ;;
+            --force)
+                FORCE=true
+                shift
+                ;;
+            --ref)
+                if [[ -z "${2:-}" ]]; then
+                    log_error "--ref requires a value"
+                    exit 1
+                fi
+                REF="$2"
+                shift 2
+                ;;
+            --yes)
+                YES=true
+                shift
+                ;;
+            --help|-h)
+                SHOW_HELP=true
+                shift
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                usage
+                exit 1
+                ;;
+        esac
+    done
+}
 
 installed_count=0
 skipped_count=0
@@ -162,4 +229,11 @@ main() {
     fi
 }
 
-main "$@"
+parse_args "$@"
+
+if [[ "$SHOW_HELP" == "true" ]]; then
+    usage
+    exit 0
+fi
+
+main

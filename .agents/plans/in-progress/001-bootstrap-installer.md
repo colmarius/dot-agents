@@ -45,7 +45,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
     - Prints clear summary of: installed, skipped, conflicts
   - Notes: Use GitHub archive URL pattern: `https://github.com/OWNER/REPO/archive/REF.tar.gz`
 
-- [ ] **Task 2: Add CLI flags to install.sh**
+- [x] **Task 2: Add CLI flags to install.sh**
   - Scope: `install.sh`
   - Depends on: Task 1
   - Acceptance:
