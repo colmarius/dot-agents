@@ -134,3 +134,19 @@
 
 ---
 
+## Task 7: Update README.md with installation instructions
+
+**Thread**: https://ampcode.com/threads/T-019c1408-6293-750c-a6c2-caef909b0cd5
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `README.md` - Rewrote with installation instructions, CLI flags, examples, update workflow, structure docs
+
+### Next
+
+- Task 8: Add uninstall command
+
+---
+

@@ -103,7 +103,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
     - Pre-fills PROJECT.md with detected commands as comments
   - Notes: Keep detection simple (file existence only)
 
-- [ ] **Task 7: Update README.md with installation instructions**
+- [x] **Task 7: Update README.md with installation instructions**
   - Scope: `README.md`
   - Depends on: Task 2
   - Acceptance:
