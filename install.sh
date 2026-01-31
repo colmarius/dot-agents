@@ -35,6 +35,7 @@ Options:
   --force           Overwrite conflicts (creates backup first)
   --ref <ref>       Git ref to install (branch, tag, commit). Default: main
   --yes             Skip confirmation prompts
+  --uninstall       Remove dot-agents (keeps PROJECT.md)
   --help            Show this help message
 
 Examples:
@@ -79,6 +80,10 @@ parse_args() {
                 SHOW_HELP=true
                 shift
                 ;;
+            --uninstall)
+                UNINSTALL=true
+                shift
+                ;;
             *)
                 log_error "Unknown option: $1"
                 usage
@@ -86,6 +91,61 @@ parse_args() {
                 ;;
         esac
     done
+}
+
+do_uninstall() {
+    log_info "Uninstalling dot-agents..."
+    log_info ""
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "${YELLOW}DRY RUN - no changes will be made${NC}"
+        log_info ""
+    fi
+    
+    local removed=0
+    
+    # Remove AGENTS.md
+    if [[ -f "AGENTS.md" ]]; then
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_info "${RED}[REMOVE]${NC} AGENTS.md"
+        else
+            rm "AGENTS.md"
+            log_info "${RED}[REMOVE]${NC} AGENTS.md"
+        fi
+        ((removed++))
+    fi
+    
+    # Remove .agents/ but preserve PROJECT.md
+    if [[ -d ".agents" ]]; then
+        if [[ -f ".agents/PROJECT.md" ]]; then
+            log_info "${BLUE}[KEEP]${NC} .agents/PROJECT.md (user data)"
+            if [[ "$DRY_RUN" != "true" ]]; then
+                # Move PROJECT.md out temporarily
+                mv ".agents/PROJECT.md" ".PROJECT.md.tmp"
+            fi
+        fi
+        
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_info "${RED}[REMOVE]${NC} .agents/"
+        else
+            rm -rf ".agents"
+            log_info "${RED}[REMOVE]${NC} .agents/"
+            
+            # Restore PROJECT.md if it existed
+            if [[ -f ".PROJECT.md.tmp" ]]; then
+                mkdir -p ".agents"
+                mv ".PROJECT.md.tmp" ".agents/PROJECT.md"
+            fi
+        fi
+        ((removed++))
+    fi
+    
+    log_info ""
+    if [[ $removed -eq 0 ]]; then
+        log_info "Nothing to uninstall."
+    else
+        log_info "Uninstall complete."
+    fi
 }
 
 installed_count=0
@@ -346,6 +406,19 @@ parse_args "$@"
 
 if [[ "$SHOW_HELP" == "true" ]]; then
     usage
+    exit 0
+fi
+
+if [[ "$UNINSTALL" == "true" ]]; then
+    if [[ "$YES" != "true" ]]; then
+        echo -n "Remove dot-agents from this project? [y/N] "
+        read -r response
+        if [[ ! "$response" =~ ^[Yy]$ ]]; then
+            echo "Aborted."
+            exit 0
+        fi
+    fi
+    do_uninstall
     exit 0
 fi
 

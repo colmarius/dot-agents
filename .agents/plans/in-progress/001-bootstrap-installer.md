@@ -113,7 +113,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
     - Explains PROJECT.md customization
   - Notes: Keep README concise
 
-- [ ] **Task 8: Add uninstall command**
+- [x] **Task 8: Add uninstall command**
   - Scope: `install.sh` or separate `uninstall.sh`
   - Depends on: Task 3
   - Acceptance:

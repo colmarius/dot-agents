@@ -150,3 +150,26 @@
 
 ---
 
+## Task 8: Add uninstall command
+
+**Thread**: https://ampcode.com/threads/T-019c1408-6293-750c-a6c2-caef909b0cd5
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `install.sh` - Added --uninstall flag and do_uninstall function
+- Prompts for confirmation unless --yes
+- Preserves PROJECT.md on uninstall
+
+### Commands Run
+
+- Tested uninstall in /tmp/test-node ✓
+- Verified PROJECT.md preserved after uninstall ✓
+
+### Next
+
+- Task 9: Add --interactive mode (optional)
+
+---
+
