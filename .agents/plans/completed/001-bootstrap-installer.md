@@ -15,7 +15,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
 
 ## Conflict Handling Strategy
 
-**Default behavior: Safe merge (never lose user work)**
+Default behavior: Safe merge (never lose user work)
 
 | Scenario | Action |
 |----------|--------|

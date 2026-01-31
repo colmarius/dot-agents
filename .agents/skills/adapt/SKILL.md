@@ -77,7 +77,6 @@ pnpm format
 - Use kebab-case for file names
 - Components in src/components/
 - API routes in src/app/api/
-```
 
 ## Checklist
 

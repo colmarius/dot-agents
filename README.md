@@ -18,6 +18,8 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 | `--force` | Overwrite conflicts (creates backup first) |
 | `--ref <ref>` | Install specific version (branch, tag, or commit) |
 | `--yes` | Skip confirmation prompts |
+| `--interactive` | Prompt for each conflict with diff preview |
+| `--uninstall` | Remove dot-agents (preserves PROJECT.md) |
 | `--help` | Show usage information |
 
 ### Examples
@@ -36,6 +38,7 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 ## Update
 
 To update an existing installation, run the install command again. By default:
+
 - New files are installed
 - Identical files are skipped
 - Changed files create `.dot-agents.new` conflict files for manual review
@@ -44,7 +47,7 @@ Use `--force` to overwrite all files (backups are created automatically).
 
 ## Structure
 
-```
+```text
 .agents/
 ├── plans/           # Task management
 │   ├── todo/        # Planned work
@@ -60,6 +63,7 @@ Use `--force` to overwrite all files (backups are created automatically).
 
 | Skill | Purpose |
 |-------|---------|
+| **adapt** | Analyze project and fill in PROJECT.md after installation |
 | **ralph** | Autonomous multi-iteration implementation using handoff loops |
 | **research** | Deep research on technical topics, saves findings to `.agents/research/` |
 | **tmux** | Background process management for servers and long-running tasks |
