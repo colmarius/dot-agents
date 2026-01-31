@@ -66,7 +66,7 @@ Create a single-command installer that bootstraps `.agents/` and `AGENTS.md` int
     - Prints backup location to user
   - Notes: Only create backup dir if actually overwriting files
 
-- [ ] **Task 4: Add metadata tracking**
+- [x] **Task 4: Add metadata tracking**
   - Scope: `install.sh`, `.agents/.dot-agents.json`
   - Depends on: Task 1
   - Acceptance:

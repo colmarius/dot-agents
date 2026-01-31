@@ -122,6 +122,27 @@ backup_file() {
     ((backup_count++))
 }
 
+write_metadata() {
+    local metadata_file=".agents/.dot-agents.json"
+    local timestamp
+    timestamp="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "${GREEN}[METADATA]${NC} Would write $metadata_file"
+        return
+    fi
+    
+    mkdir -p .agents
+    cat > "$metadata_file" <<EOF
+{
+  "upstream": "https://github.com/${REPO_OWNER}/${REPO_NAME}",
+  "ref": "${REF}",
+  "installedAt": "${timestamp}"
+}
+EOF
+    log_info "${GREEN}[METADATA]${NC} $metadata_file"
+}
+
 log_install() { echo -e "${GREEN}[INSTALL]${NC} $1"; }
 log_skip() { echo -e "${BLUE}[SKIP]${NC} $1"; }
 log_conflict() { echo -e "${YELLOW}[CONFLICT]${NC} $1"; }
@@ -247,6 +268,8 @@ main() {
     if [[ -d "${extracted_dir}/.agents" ]]; then
         process_directory "${extracted_dir}/.agents" "./.agents"
     fi
+
+    write_metadata
 
     log_info ""
     log_info "Summary:"

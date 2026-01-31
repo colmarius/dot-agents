@@ -69,3 +69,25 @@
 
 ---
 
+## Task 4: Add metadata tracking
+
+**Thread**: https://ampcode.com/threads/T-019c1408-6293-750c-a6c2-caef909b0cd5
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `install.sh` - Added write_metadata function
+- Creates `.agents/.dot-agents.json` with upstream, ref, installedAt
+
+### Commands Run
+
+- `./install.sh` ✓
+- `cat .agents/.dot-agents.json` ✓ (verified correct JSON format)
+
+### Next
+
+- Task 5: Create PROJECT.md template
+
+---
+
