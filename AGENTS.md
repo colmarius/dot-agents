@@ -4,13 +4,27 @@
 
 [Brief project description - update this for your project]
 
+## PRD → Plan → Execute Workflow
+
+```text
+Research → PRD → Plan → Ralph executes
+```
+
+1. **Create PRD**: `Create a PRD for [feature] based on .agents/research/[doc].md`
+2. **Generate Plan**: PRD acceptance criteria → Ralph task format
+3. **Execute**: `Run ralph on .agents/plans/in-progress/[plan].md`
+
+PRD template and rules in `.agents/prds/AGENTS.md`.
+
 ## Project Structure
 
 ```text
 project/
 ├── AGENTS.md                    # This file - project instructions
 ├── .agents/
+│   ├── reference/               # External repos (gitignored)
 │   ├── research/                # Research and reference material
+│   ├── prds/                    # Product requirements documents
 │   ├── plans/                   # Implementation plans
 │   │   ├── todo/                # Planned but not started
 │   │   ├── in-progress/         # Currently being worked on
