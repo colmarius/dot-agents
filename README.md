@@ -60,6 +60,8 @@ Use `--force` to overwrite all files (backups are created automatically).
 │   ├── todo/        # Planned work
 │   ├── in-progress/ # Active work
 │   └── completed/   # Finished work
+├── prds/            # Product requirements documents
+├── reference/       # External repos (gitignored)
 ├── research/        # Saved research findings
 ├── skills/          # Agent capabilities
 └── .dot-agents.json # Installation metadata
