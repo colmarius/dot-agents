@@ -35,7 +35,7 @@ Options:
   --force           Overwrite conflicts (creates backup first)
   --ref <ref>       Git ref to install (branch, tag, commit). Default: main
   --yes             Skip confirmation prompts
-  --uninstall       Remove dot-agents (keeps PROJECT.md)
+  --uninstall       Remove dot-agents
   --interactive     Prompt for each conflict
   --help            Show this help message
 
@@ -120,27 +120,13 @@ do_uninstall() {
         ((removed++))
     fi
     
-    # Remove .agents/ but preserve PROJECT.md
+    # Remove .agents/
     if [[ -d ".agents" ]]; then
-        if [[ -f ".agents/PROJECT.md" ]]; then
-            log_info "${BLUE}[KEEP]${NC} .agents/PROJECT.md (user data)"
-            if [[ "$DRY_RUN" != "true" ]]; then
-                # Move PROJECT.md out temporarily
-                mv ".agents/PROJECT.md" ".PROJECT.md.tmp"
-            fi
-        fi
-        
         if [[ "$DRY_RUN" == "true" ]]; then
             log_info "${RED}[REMOVE]${NC} .agents/"
         else
             rm -rf ".agents"
             log_info "${RED}[REMOVE]${NC} .agents/"
-            
-            # Restore PROJECT.md if it existed
-            if [[ -f ".PROJECT.md.tmp" ]]; then
-                mkdir -p ".agents"
-                mv ".PROJECT.md.tmp" ".agents/PROJECT.md"
-            fi
         fi
         ((removed++))
     fi
@@ -422,31 +408,6 @@ main() {
 
     if [[ -d "${extracted_dir}/.agents" ]]; then
         process_directory "${extracted_dir}/.agents" "./.agents"
-    fi
-
-    # Copy PROJECT.md.template as PROJECT.md if it doesn't exist
-    if [[ -f "${extracted_dir}/.agents/PROJECT.md.template" ]] && [[ ! -f "./.agents/PROJECT.md" ]]; then
-        if [[ "$DRY_RUN" == "true" ]]; then
-            log_install "./.agents/PROJECT.md (from template)"
-        else
-            mkdir -p .agents
-            cp "${extracted_dir}/.agents/PROJECT.md.template" "./.agents/PROJECT.md"
-            
-            # Append detected stack info
-            local stack_info
-            stack_info="$(detect_stack)"
-            if [[ -n "$stack_info" ]]; then
-                {
-                    echo ""
-                    echo "## Detected Stack"
-                    echo ""
-                    echo -e "$stack_info"
-                } >> "./.agents/PROJECT.md"
-            fi
-            
-            log_install "./.agents/PROJECT.md (from template)"
-        fi
-        ((installed_count++))
     fi
 
     write_metadata

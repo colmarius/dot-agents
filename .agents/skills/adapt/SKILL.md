@@ -1,11 +1,11 @@
 ---
 name: adapt
-description: "Analyze project and fill in PROJECT.md. Use when adapting dot-agents to a new project, after initial installation."
+description: "Analyze project and fill in AGENTS.md. Use when adapting dot-agents to a new project, after initial installation."
 ---
 
 # Adapt Skill
 
-Analyze the current project and fill in `.agents/PROJECT.md` with project-specific information.
+Analyze the current project and fill in `AGENTS.md` with project-specific information (tech stack, commands, conventions).
 
 ## When to Use
 
@@ -23,26 +23,20 @@ Run this skill after installing dot-agents into a new project to customize the c
    - Check for existing linter/formatter configs
    - Identify testing patterns
 
-3. **Update PROJECT.md**
-   - Fill in project name from config
+3. **Update AGENTS.md**
+   - Fill in project name/overview
    - List detected tech stack
    - Extract commands from package.json scripts, Cargo.toml, Makefile, etc.
    - Note any project-specific conventions observed
 
-4. **Suggest AGENTS.md updates**
-   - Recommend project-specific commands to add
-   - Suggest conventions to document
-
 ## Example Output
 
-After running, PROJECT.md should look like:
+After running, AGENTS.md should have these sections filled in:
 
 ```markdown
-# Project Configuration
+## Overview
 
-## Project Name
-
-my-awesome-app
+my-awesome-app - A Next.js web application with PostgreSQL backend
 
 ## Tech Stack
 
@@ -85,5 +79,4 @@ pnpm format
 - [ ] Find test commands and test file patterns
 - [ ] Check for Makefile, Justfile, or task runners
 - [ ] Look for .eslintrc, .prettierrc, rustfmt.toml for style configs
-- [ ] Update PROJECT.md with findings
-- [ ] Suggest any AGENTS.md additions
+- [ ] Update AGENTS.md with findings

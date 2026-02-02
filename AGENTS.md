@@ -4,6 +4,12 @@
 
 [Brief project description - update this for your project]
 
+## Tech Stack
+
+- Language: [e.g., TypeScript, Rust, Go, Python]
+- Framework: [e.g., React, Express, Axum, FastAPI]
+- Database: [e.g., PostgreSQL, SQLite, MongoDB]
+
 ## PRD → Plan → Execute Workflow
 
 ```text
@@ -99,3 +105,13 @@ After making changes:
 1. **Update AGENTS.md** - Keep project structure and commands current
 2. **Update README.md** - Reflect user-facing changes
 3. **Update plan status** - Move completed plans to `completed/`
+
+## Conventions
+
+- [Naming conventions]
+- [Code style preferences]
+- [Commit message format]
+
+## Architecture Notes
+
+[Brief description of project structure and key components]

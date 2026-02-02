@@ -19,7 +19,7 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 | `--ref <ref>` | Install specific version (branch, tag, or commit) |
 | `--yes` | Skip confirmation prompts |
 | `--interactive` | Prompt for each conflict with diff preview |
-| `--uninstall` | Remove dot-agents (preserves PROJECT.md) |
+| `--uninstall` | Remove dot-agents |
 | `--help` | Show usage information |
 
 ### Examples
@@ -55,7 +55,6 @@ Use `--force` to overwrite all files (backups are created automatically).
 │   └── completed/   # Finished work
 ├── research/        # Saved research findings
 ├── skills/          # Agent capabilities
-├── PROJECT.md       # Project-specific configuration
 └── .dot-agents.json # Installation metadata
 ```
 
@@ -63,7 +62,7 @@ Use `--force` to overwrite all files (backups are created automatically).
 
 | Skill | Purpose |
 |-------|---------|
-| **adapt** | Analyze project and fill in PROJECT.md after installation |
+| **adapt** | Analyze project and fill in AGENTS.md after installation |
 | **ralph** | Autonomous multi-iteration implementation using handoff loops |
 | **research** | Deep research on technical topics, saves findings to `.agents/research/` |
 | **tmux** | Background process management for servers and long-running tasks |
@@ -72,11 +71,8 @@ Use `--force` to overwrite all files (backups are created automatically).
 
 After installation:
 
-1. **Edit `.agents/PROJECT.md`** - Fill in your project's specific commands and conventions
-2. **Update `AGENTS.md`** - Customize the project-level agent instructions
-3. **Add skills** - Create project-specific skills in `.agents/skills/`
-
-The installer auto-detects your tech stack (Node.js, Rust, Go, Python) and pre-fills suggestions in PROJECT.md.
+1. **Edit `AGENTS.md`** - Fill in your project's tech stack, commands, and conventions
+2. **Add skills** - Create project-specific skills in `.agents/skills/`
 
 ## License
 

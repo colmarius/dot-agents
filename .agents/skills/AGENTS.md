@@ -62,7 +62,7 @@ Verify your skill by loading it and checking:
 
 | Skill | Purpose |
 | ----- | ------- |
-| `adapt` | Analyze project and fill in PROJECT.md after installation |
+| `adapt` | Analyze project and fill in AGENTS.md after installation |
 | `ralph` | Autonomous multi-iteration implementation using handoff loops |
 | `research` | Deep research on technical topics, saves to `.agents/research/` |
 | `tmux` | Manage background processes using tmux windows for servers and long-running tasks |
