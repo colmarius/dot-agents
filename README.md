@@ -24,14 +24,21 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 
 ### Examples
 
+Preview what would be installed:
+
 ```bash
-# Preview what would be installed
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --dry-run
+```
 
-# Install a specific version
+Install a specific version:
+
+```bash
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v1.0.0
+```
 
-# Force update (backs up existing files first)
+Force update (backs up existing files first):
+
+```bash
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --force
 ```
 
