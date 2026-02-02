@@ -4,7 +4,7 @@ Lightweight product requirements for solo development with AI agent execution.
 
 ## Workflow
 
-```
+```text
 Research → PRD → Plan → Ralph executes
 ```
 
@@ -31,7 +31,7 @@ Research → PRD → Plan → Ralph executes
 
 ## Naming
 
-```
+```text
 PRD-YYYYMMDD-short-title.md
 PLAN-YYYYMMDD-short-title.md
 ```
