@@ -15,7 +15,7 @@ When invoking ralph, provide:
 
 - **Plan file path**: Absolute or workspace-relative path to the plan markdown file
 - **Starting task** (optional): Task ID to resume from (e.g., "Task 3")
-- **Max iterations** (optional): Default 20
+- **Max tasks** (optional): Maximum tasks to complete before pausing for review (default: 5)
 
 ### State Files
 
@@ -43,8 +43,8 @@ In plan files, tasks use checkbox status with optional annotations:
 The loop exits when ANY of these occur:
 
 1. **All tasks complete**: Every task checkbox is `[x]`
-2. **Blocked encountered**: A task is marked `(blocked)`
-3. **Max iterations reached**: Default 20 iterations
+2. **Max tasks reached**: Completed N tasks this session (default: 5) — pause for user review
+3. **Blocked encountered**: A task is marked `(blocked)`
 4. **Only manual-verify remaining**: All incomplete tasks require manual verification
 5. **Explicit stop**: User interrupts
 
@@ -56,10 +56,26 @@ When handing off to fresh iteration, include:
 Continue ralph execution for: [plan file path]
 
 Current task: [Task ID and title]
+Tasks completed this session: [N of max_tasks]
 Last progress: [Most recent progress entry summary]
 Next action: [Specific next step]
 
 Load the ralph skill and continue execution.
+```
+
+### Pause for Review
+
+When max tasks is reached (before all tasks complete):
+
+1. **Update progress file**: Log "Paused after N tasks for review"
+2. **Commit all work**: Ensure all completed tasks are committed
+3. **Report to user**: List completed tasks and next task to resume from
+4. **Do NOT handoff**: Wait for user to review and continue
+
+**Resume command:**
+
+```text
+Continue ralph from Task X on [plan file path]
 ```
 
 ## Phases
@@ -88,14 +104,18 @@ Before running the loop, ensure the plan has proper structure.
 
 Each iteration follows this workflow:
 
-1. **Load context**: Read plan file, identify next incomplete task
+1. **Load context**: Read plan file, identify next incomplete task, track tasks completed this session
 2. **Check dependencies**: Ensure all `Depends on` tasks are complete
 3. **Implement**: Complete the task following its scope and acceptance criteria
 4. **Verify**: Run verification commands (see Verification section)
 5. **Update progress**: Append entry to `.progress.md`
 6. **Update plan**: Check off completed task `[x]`
 7. **Commit**: One task = one commit with proper footers
-8. **Handoff or complete**: Continue to next task or exit if done
+8. **Increment counter**: tasks_completed++
+9. **Check stop conditions**:
+   - If tasks_completed >= max_tasks → pause for review (do NOT handoff)
+   - If all tasks complete → exit with success
+   - Otherwise → handoff to next iteration
 
 **Git discipline:**
 
@@ -135,7 +155,6 @@ mypy . && ruff check . && pytest
 
 ### Limits
 
-- **Max iterations**: 20 per session
 - **Max retries per task**: 2 attempts before marking blocked
 - **Scope control**: Only modify files in declared `Scope`
 
@@ -178,19 +197,19 @@ Tasks marked `(manual-verify)` require human interaction:
 ### Starting Fresh
 
 ```text
-Run ralph on .agents/plans/tech-debt/in-progress/my-feature.md
+Run ralph on .agents/plans/in-progress/my-feature.md
 ```
 
 ### Resuming
 
 ```text
-Continue ralph from Task 5 on .agents/plans/tech-debt/in-progress/my-feature.md
+Continue ralph from Task 5 on .agents/plans/in-progress/my-feature.md
 ```
 
 ### Checking Status
 
 ```text
-Show ralph progress for .agents/plans/tech-debt/in-progress/my-feature.md
+Show ralph progress for .agents/plans/in-progress/my-feature.md
 ```
 
 ## Integration with Plans
