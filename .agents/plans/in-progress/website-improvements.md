@@ -17,7 +17,7 @@
     - Canonical URL meta tag added
   - Notes: Use existing tagline/description. For og:image, can use a simple placeholder or skip initially.
 
-- [ ] **Task 2: Add trust/security section near install command**
+- [x] **Task 2: Add trust/security section near install command**
   - Scope: `site/index.html`
   - Depends on: none
   - Acceptance:
