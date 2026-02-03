@@ -18,6 +18,7 @@
 
 html {
   font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -54,6 +55,25 @@ header {
 .tagline {
   font-size: 1.125rem;
   color: var(--text-muted);
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.nav a:hover {
+  color: var(--accent);
 }
 
 /* Hero */

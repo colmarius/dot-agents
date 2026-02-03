@@ -70,7 +70,7 @@
     - Button order reflects user journey priority
   - Notes: Direct path to getting started.
 
-- [ ] **Task 8: Add minimal top navigation anchors**
+- [x] **Task 8: Add minimal top navigation anchors**
   - Scope: `site/index.html`, `site/style.css`
   - Depends on: Tasks 4, 5
   - Acceptance:

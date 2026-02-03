@@ -146,3 +146,24 @@
 
 ---
 
+## Task 8: Add minimal top navigation anchors
+
+**Thread**: https://ampcode.com/threads/T-019c25a5-f588-721b-a09c-c0f878b50860
+**Status**: completed
+**Iteration**: 2
+
+### Changes
+
+- `site/index.html` - Added nav with anchor links (Install · What you get · Workflow · Docs), added IDs to sections
+- `site/style.css` - Added smooth scroll, nav styling
+
+### Commands Run
+
+- ./scripts/lint.sh ✓
+
+### Outcome
+
+All 8 tasks completed.
+
+---
+
