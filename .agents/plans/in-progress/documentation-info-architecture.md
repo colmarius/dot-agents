@@ -52,7 +52,7 @@ Create a documentation hub and concepts page in docs/ to provide better navigati
     - Replaces or supplements existing dot-agents.dev link
   - Notes: Keep both links if dot-agents.dev provides different value
 
-- [ ] **Task 5: Add docs link to landing page**
+- [x] **Task 5: Add docs link to landing page**
   - Scope: `docs/index.html`
   - Depends on: Task 1
   - Acceptance:
