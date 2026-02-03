@@ -1,11 +1,12 @@
 :root {
-  --bg: #0d1117;
-  --bg-secondary: #161b22;
-  --text: #e6edf3;
-  --text-muted: #8b949e;
-  --accent: #58a6ff;
-  --accent-hover: #79b8ff;
-  --border: #30363d;
+  --bg: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: #16161f;
+  --text: #e8e8ed;
+  --text-muted: #8b8b9e;
+  --accent: #00d9ff;
+  --accent-glow: rgba(0, 217, 255, 0.15);
+  --border: #2a2a3a;
   --success: #3fb950;
 }
 
@@ -25,81 +26,133 @@ body {
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 .container {
-  max-width: 720px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
 }
 
+/* Header */
 header {
   text-align: center;
-  padding: 4rem 0 3rem;
+  padding: 4rem 0 2rem;
 }
 
-h1 {
-  font-size: 3rem;
+.logo {
+  font-size: 2.5rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   margin-bottom: 0.5rem;
 }
 
+.logo-dot {
+  color: var(--accent);
+}
+
 .tagline {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   color: var(--text-muted);
 }
 
-main {
-  flex: 1;
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 2rem 0 3rem;
 }
 
+.hero h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.highlight {
+  background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-desc {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* Install section */
 .install {
-  margin: 2rem 0 3rem;
+  margin: 1rem 0 3rem;
 }
 
 .code-block {
   position: relative;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 0 40px var(--accent-glow);
 }
+
+.code-header {
+  display: flex;
+  gap: 6px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+}
+
+.terminal-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.terminal-dot.red { background: #ff5f56; }
+.terminal-dot.yellow { background: #ffbd2e; }
+.terminal-dot.green { background: #27c93f; }
 
 .code-block pre {
   padding: 1.25rem 3.5rem 1.25rem 1.25rem;
-  overflow-x: auto;
   font-family: "SF Mono", "Fira Code", "Consolas", monospace;
   font-size: 0.9rem;
-  line-height: 1.5;
+  line-height: 1.6;
+  overflow-x: auto;
 }
 
 .code-block code {
   color: var(--text);
 }
 
+.prompt {
+  color: var(--accent);
+  user-select: none;
+  margin-right: 0.5rem;
+}
+
 .copy-btn {
   position: absolute;
-  top: 50%;
+  bottom: 1rem;
   right: 0.75rem;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   color: var(--text-muted);
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 4px;
-  transition: color 0.2s, background 0.2s;
+  border-radius: 6px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .copy-btn:hover {
   color: var(--text);
-  background: var(--border);
+  border-color: var(--text-muted);
 }
 
 .copy-btn .icon-check {
@@ -115,52 +168,145 @@ main {
   display: block;
 }
 
+/* Features */
 .features {
-  margin: 2rem 0;
+  margin: 3rem 0;
 }
 
-.features ul {
-  list-style: none;
+.feature-grid {
   display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
 
-.features li {
+.feature-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: border-color 0.2s;
+}
+
+.feature-card:hover {
+  border-color: var(--text-muted);
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.feature-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.feature-card p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Workflow */
+.workflow {
+  margin: 4rem 0 3rem;
+  text-align: center;
+}
+
+.workflow h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+}
+
+.workflow-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.step {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 1.1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
 }
 
-.features .emoji {
+.step-num {
+  width: 24px;
+  height: 24px;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.step-content strong {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.step-content span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.step-arrow {
+  color: var(--text-muted);
   font-size: 1.25rem;
 }
 
+/* CTA */
 .cta {
   text-align: center;
   margin: 3rem 0;
 }
 
 .btn {
-  display: inline-block;
-  padding: 0.875rem 2rem;
-  background: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: var(--text);
   color: var(--bg);
   text-decoration: none;
   font-weight: 600;
+  font-size: 0.9375rem;
   border-radius: 8px;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .btn:hover {
-  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
 }
 
+/* Footer */
 footer {
   text-align: center;
-  padding: 2rem 0;
+  padding: 3rem 0 2rem;
   color: var(--text-muted);
   font-size: 0.875rem;
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
 }
 
 footer a {
@@ -172,21 +318,33 @@ footer a:hover {
   text-decoration: underline;
 }
 
-@media (max-width: 480px) {
-  h1 {
-    font-size: 2.25rem;
+/* Responsive */
+@media (max-width: 640px) {
+  .logo {
+    font-size: 2rem;
   }
 
-  .tagline {
+  .hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .hero-desc {
     font-size: 1rem;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-steps {
+    flex-direction: column;
+  }
+
+  .step-arrow {
+    transform: rotate(90deg);
   }
 
   .code-block pre {
     font-size: 0.8rem;
-    padding: 1rem 3rem 1rem 1rem;
-  }
-
-  .features li {
-    font-size: 1rem;
   }
 }
