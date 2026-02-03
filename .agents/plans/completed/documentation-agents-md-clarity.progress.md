@@ -19,3 +19,13 @@
 ### Task 3: Update QUICKSTART.md to clarify adapt fills template ✅
 - Enhanced step 2 description to mention "AGENTS.md template"
 - Added note that user can also customize manually
+
+### Task 4: Document sync behavior for AGENTS.md ✅
+- Already documented in README.md "Sync Behavior" section
+- Table shows: Skills/scripts updated, AGENTS.md/PRDs/plans/research preserved
+- All acceptance criteria already met
+
+### Completed
+- All 4 tasks complete
+- Verification passed
+- Plan moved to completed

@@ -4,7 +4,7 @@
 |-------|-------|
 | PRD | N/A |
 | Research | `../../research/documentation-agents-md-clarity.md` |
-| Status | in-progress |
+| Status | completed |
 | Created | 2026-02-03 |
 
 ## Overview
@@ -40,7 +40,7 @@ Add a prominent banner to AGENTS.md clarifying it's a template to customize, and
     - Clear that user can also manually customize
   - Notes: Existing text may already cover this, enhance if needed
 
-- [ ] **Task 4: Document sync behavior for AGENTS.md**
+- [x] **Task 4: Document sync behavior for AGENTS.md**
   - Scope: `README.md` or `docs/concepts.md`
   - Depends on: none
   - Acceptance:
