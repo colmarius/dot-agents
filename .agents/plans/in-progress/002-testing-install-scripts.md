@@ -56,7 +56,7 @@ Explicitly **out of scope**:
     - Can be sourced without executing (for tests)
   - Notes: Move `parse_args` call inside `main()`
 
-- [ ] **Task 4: Refactor sync.sh with guard pattern**
+- [x] **Task 4: Refactor sync.sh with guard pattern**
   - Scope: `.agents/scripts/sync.sh`
   - Depends on: Task 2
   - Acceptance:

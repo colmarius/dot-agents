@@ -45,50 +45,57 @@ Examples:
 EOF
 }
 
-# Check for help flag early
-for arg in "$@"; do
-    if [[ "$arg" == "--help" || "$arg" == "-h" ]]; then
-        usage
-        exit 0
+_main() {
+    # Check for help flag early
+    for arg in "$@"; do
+        if [[ "$arg" == "--help" || "$arg" == "-h" ]]; then
+            usage
+            exit 0
+        fi
+    done
+
+    # Check metadata file exists
+    if [[ ! -f "$METADATA_FILE" ]]; then
+        log_error "Metadata file not found: $METADATA_FILE"
+        log_error "This project may not have dot-agents installed."
+        log_error "Run the install script first."
+        exit 1
     fi
-done
 
-# Check metadata file exists
-if [[ ! -f "$METADATA_FILE" ]]; then
-    log_error "Metadata file not found: $METADATA_FILE"
-    log_error "This project may not have dot-agents installed."
-    log_error "Run the install script first."
-    exit 1
+    # Parse upstream URL using sed (no jq dependency)
+    upstream=$(sed -n 's/.*"upstream"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$METADATA_FILE")
+    ref=$(sed -n 's/.*"ref"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$METADATA_FILE")
+
+    if [[ -z "$upstream" ]]; then
+        log_error "Could not parse 'upstream' from $METADATA_FILE"
+        exit 1
+    fi
+
+    if [[ -z "$ref" ]]; then
+        ref="main"
+    fi
+
+    # Validate GitHub URL and extract owner/repo
+    if [[ ! "$upstream" =~ ^https://github\.com/([^/]+)/([^/]+)$ ]]; then
+        log_error "Upstream URL must be a GitHub repository: $upstream"
+        log_error "Expected format: https://github.com/owner/repo"
+        exit 1
+    fi
+
+    owner="${BASH_REMATCH[1]}"
+    repo="${BASH_REMATCH[2]}"
+
+    # Build install.sh URL
+    install_url="https://raw.githubusercontent.com/${owner}/${repo}/${ref}/install.sh"
+
+    echo "Syncing from: ${upstream} (ref: ${ref})"
+    echo ""
+
+    # Fetch and execute upstream install.sh with passthrough flags
+    exec bash <(curl -fsSL "$install_url") --ref "$ref" "$@"
+}
+
+# Only run if script is executed, not sourced
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    _main "$@"
 fi
-
-# Parse upstream URL using sed (no jq dependency)
-upstream=$(sed -n 's/.*"upstream"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$METADATA_FILE")
-ref=$(sed -n 's/.*"ref"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$METADATA_FILE")
-
-if [[ -z "$upstream" ]]; then
-    log_error "Could not parse 'upstream' from $METADATA_FILE"
-    exit 1
-fi
-
-if [[ -z "$ref" ]]; then
-    ref="main"
-fi
-
-# Validate GitHub URL and extract owner/repo
-if [[ ! "$upstream" =~ ^https://github\.com/([^/]+)/([^/]+)$ ]]; then
-    log_error "Upstream URL must be a GitHub repository: $upstream"
-    log_error "Expected format: https://github.com/owner/repo"
-    exit 1
-fi
-
-owner="${BASH_REMATCH[1]}"
-repo="${BASH_REMATCH[2]}"
-
-# Build install.sh URL
-install_url="https://raw.githubusercontent.com/${owner}/${repo}/${ref}/install.sh"
-
-echo "Syncing from: ${upstream} (ref: ${ref})"
-echo ""
-
-# Fetch and execute upstream install.sh with passthrough flags
-exec bash <(curl -fsSL "$install_url") --ref "$ref" "$@"
