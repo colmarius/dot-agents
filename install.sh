@@ -329,6 +329,14 @@ files_identical() {
     fi
 }
 
+atomic_copy() {
+    local src="$1"
+    local dest="$2"
+    local tmp="${dest}.tmp.$$"
+    cp -p "$src" "$tmp"
+    mv -f "$tmp" "$dest"
+}
+
 install_file() {
     local src="$1"
     local dest="$2"
@@ -340,7 +348,7 @@ install_file() {
             log_install "$dest"
         else
             mkdir -p "$dest_dir"
-            cp -p "$src" "$dest"
+            atomic_copy "$src" "$dest"
             log_install "$dest"
         fi
         installed_count=$((installed_count + 1))
@@ -358,7 +366,7 @@ install_file() {
         if [[ "$DRY_RUN" == "true" ]]; then
             log_install "$dest (force overwrite)"
         else
-            cp -p "$src" "$dest"
+            atomic_copy "$src" "$dest"
             log_install "$dest (force overwrite)"
         fi
         installed_count=$((installed_count + 1))
@@ -377,7 +385,7 @@ install_file() {
                 ;;
             overwrite)
                 backup_file "$dest"
-                cp -p "$src" "$dest"
+                atomic_copy "$src" "$dest"
                 log_install "$dest (overwritten)"
                 installed_count=$((installed_count + 1))
                 return 0
