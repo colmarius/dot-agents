@@ -23,3 +23,23 @@
 
 ---
 
+## Task 2: Fix installer skip logic for plans/TEMPLATE.md
+
+**Thread**: https://ampcode.com/threads/T-019c2539-d0c9-740b-8052-cbfa7d112387
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `install.sh` - Changed skip logic to only skip `plans/todo/*.md`, `plans/in-progress/*.md`, `plans/completed/*.md`
+
+### Commands Run
+
+- `./scripts/lint.sh` ✓
+
+### Next
+
+- Task 3: Add plan TEMPLATE.md
+
+---
+

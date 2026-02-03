@@ -23,7 +23,7 @@ Implement improvements identified in the dot-agents framework analysis to enhanc
     - `source ./install.sh` does not output "Installing..." (sourced, no execution)
   - Notes: Empty BASH_SOURCE means stdin (piped), must still run. Only skip when sourced.
 
-- [ ] **Task 2: Fix installer skip logic for plans/TEMPLATE.md**
+- [x] **Task 2: Fix installer skip logic for plans/TEMPLATE.md**
   - Scope: `install.sh`
   - Depends on: Task 1
   - Acceptance:

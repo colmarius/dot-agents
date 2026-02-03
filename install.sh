@@ -378,8 +378,8 @@ process_directory() {
         local rel_path="${file#$src_dir/}"
         local dest_path="${dest_dir}/${rel_path}"
         
-        # Skip .md files in plans/ directories (user's plan files)
-        if [[ "$rel_path" == plans/*.md || "$rel_path" == plans/**/*.md ]]; then
+        # Skip user's plan files in workflow directories (but not TEMPLATE.md at plans root)
+        if [[ "$rel_path" == plans/todo/*.md || "$rel_path" == plans/in-progress/*.md || "$rel_path" == plans/completed/*.md ]]; then
             continue
         fi
         
