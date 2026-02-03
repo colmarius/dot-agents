@@ -9,15 +9,35 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
 cd "$ROOT_DIR"
 
+# Collect all shell scripts
+SCRIPTS=(
+    install.sh
+    .agents/scripts/sync.sh
+    scripts/lint.sh
+    scripts/test.sh
+    test/mocks/curl
+)
+
+# Collect all bats test files
+BATS_FILES=()
+while IFS= read -r -d '' file; do
+    BATS_FILES+=("$file")
+done < <(find test/integration -name '*.bats' -print0 2>/dev/null)
+
 echo "==> Syntax check (bash -n)"
-bash -n install.sh
-bash -n .agents/scripts/sync.sh
+for script in "${SCRIPTS[@]}"; do
+    bash -n "$script"
+done
 echo "    ✓ Syntax OK"
 
 echo ""
 echo "==> ShellCheck"
 if command -v shellcheck &> /dev/null; then
-    shellcheck --severity=warning install.sh .agents/scripts/sync.sh
+    shellcheck --severity=warning "${SCRIPTS[@]}"
+    # Lint bats files with shell=bats directive
+    if [[ ${#BATS_FILES[@]} -gt 0 ]]; then
+        shellcheck --severity=warning --shell=bash "${BATS_FILES[@]}"
+    fi
     echo "    ✓ ShellCheck passed"
 else
     echo "    ⚠ ShellCheck not installed (brew install shellcheck)"
