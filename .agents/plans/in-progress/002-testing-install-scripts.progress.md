@@ -51,5 +51,16 @@
 
 ### Iteration 5
 **Task**: Task 5 - Create test directory structure
+**Status**: ✅ Complete
+
+**Actions**:
+- Created test/ directory structure
+- Added bats-support and bats-assert as git submodules
+- Created test/mocks/, test/fixtures/, test/integration/ directories
+
+---
+
+### Iteration 6
+**Task**: Task 6 - Create mock curl script
 **Status**: In Progress
 

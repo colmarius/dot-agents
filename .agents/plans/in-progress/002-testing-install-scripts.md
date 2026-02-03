@@ -64,7 +64,7 @@ Explicitly **out of scope**:
     - Script still works identically when executed
   - Notes: Simpler script, should be quick
 
-- [ ] **Task 5: Create test directory structure**
+- [x] **Task 5: Create test directory structure**
   - Scope: `test/`
   - Depends on: none
   - Acceptance:
