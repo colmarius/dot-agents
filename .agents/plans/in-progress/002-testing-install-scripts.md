@@ -90,7 +90,7 @@ Explicitly **out of scope**:
     - Exits non-zero with error for unexpected calls
   - Notes: Check install.sh to confirm exact curl invocation patterns
 
-- [ ] **Task 7: Create test fixtures**
+- [x] **Task 7: Create test fixtures**
   - Scope: `test/fixtures/`
   - Depends on: Task 5
   - Acceptance:

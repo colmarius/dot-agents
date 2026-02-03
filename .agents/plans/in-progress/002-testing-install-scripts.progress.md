@@ -77,5 +77,16 @@
 
 ### Iteration 7
 **Task**: Task 7 - Create test fixtures
+**Status**: ✅ Complete
+
+**Actions**:
+- Created sample-archive.tar.gz with GitHub tarball structure
+- Top-level dir: `dot-agents-main/`
+- Contains AGENTS.md and .agents/skills/sample-skill/SKILL.md
+
+---
+
+### Iteration 8
+**Task**: Task 8 - Write core integration tests
 **Status**: In Progress
 
