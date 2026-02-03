@@ -1,0 +1,9 @@
+# Progress: Skills Documentation
+
+## Session: 2026-02-03
+
+### Task 1: Create docs/skills.md overview page
+**Status:** Complete
+**Started:** 2026-02-03
+**Completed:** 2026-02-03
+**Notes:** Created docs/skills.md with intro explaining what skills are, table with all 4 skills (adapt, ralph, research, tmux), columns for trigger phrase and purpose, and anchor links to each section.

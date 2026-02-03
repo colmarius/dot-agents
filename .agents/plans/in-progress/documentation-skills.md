@@ -13,7 +13,7 @@ Create user-facing skills documentation that explains what each skill does, when
 
 ## Tasks
 
-- [ ] **Task 1: Create docs/skills.md overview page**
+- [x] **Task 1: Create docs/skills.md overview page**
   - Scope: `docs/skills.md`
   - Depends on: none
   - Acceptance:
