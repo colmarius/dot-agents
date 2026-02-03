@@ -31,4 +31,4 @@ echo "Serving $DIR at http://localhost:${PORT}"
 echo "Press Ctrl+C to stop"
 echo
 
-python3 -m http.server "$PORT" -d "$SERVE_DIR" -b localhost
+python3 -m http.server "$PORT" -d "$SERVE_DIR" -b localhost 2>/dev/null
