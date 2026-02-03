@@ -55,6 +55,10 @@ dot-agents uses [Semantic Versioning](https://semver.org/). Releases are tagged 
 
 See [CHANGELOG.md](./CHANGELOG.md) for release history.
 
+## Credits
+
+Skills inspired by [amp-contrib](https://github.com/ampcode/amp-contrib).
+
 ## License
 
 MIT
