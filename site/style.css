@@ -311,7 +311,7 @@ header {
   text-decoration: underline;
 }
 
-/* Workflow */
+/* Workflow - Timeline/Flow style */
 .workflow {
   margin: 4rem 0 3rem;
   text-align: center;
@@ -320,67 +320,84 @@ header {
 .workflow h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   color: var(--text-muted);
 }
 
 .workflow-steps {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  position: relative;
+  padding: 0 1rem;
+}
+
+/* Connector line behind steps (desktop) */
+.workflow-steps::before {
+  content: "";
+  position: absolute;
+  left: 4rem;
+  right: 4rem;
+  top: 6px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--border) 50%, var(--accent));
+  opacity: 0.6;
 }
 
 .step {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .step-num {
-  width: 24px;
-  height: 24px;
+  width: 14px;
+  height: 14px;
   background: var(--accent);
-  color: var(--bg);
   border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 0;
+  color: transparent;
+  box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.15), 0 0 12px rgba(0, 217, 255, 0.3);
   flex-shrink: 0;
 }
 
 .step-content {
   display: flex;
   flex-direction: column;
-  text-align: left;
+  text-align: center;
+  gap: 0.25rem;
 }
 
 .step-content strong {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
+  color: var(--text);
 }
 
 .step-content span {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .step-arrow {
-  color: var(--text-muted);
-  font-size: 1.25rem;
+  display: none;
 }
 
-/* Quickstart */
+/* Quickstart - Terminal checklist style */
 .quickstart {
   margin: 3rem 0;
   text-align: center;
+  padding: 2rem 1.5rem;
+  border: 1px solid rgba(42, 42, 58, 0.6);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(0, 217, 255, 0.04) 0%, transparent 60%);
 }
 
 .quickstart h2 {
@@ -392,50 +409,71 @@ header {
 
 .quickstart-steps {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 480px;
+  margin: 0 auto;
 }
 
 .qs-step {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  padding: 0.9rem 1.25rem;
+  position: relative;
+  text-align: left;
+}
+
+/* Cyan accent bar on left */
+.qs-step::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 999px;
+  opacity: 0.8;
 }
 
 .qs-num {
-  width: 24px;
-  height: 24px;
-  background: var(--accent);
-  color: var(--bg);
-  border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: auto;
+  height: auto;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
   flex-shrink: 0;
 }
 
 .qs-content {
   display: flex;
   flex-direction: column;
-  text-align: left;
+  gap: 0.3rem;
 }
 
 .qs-content strong {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 600;
+  color: var(--text);
 }
 
 .qs-content code {
   font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-  font-size: 0.7rem;
-  color: var(--text-muted);
+  font-size: 0.8rem;
+  color: var(--accent);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  display: inline-block;
 }
 
 /* CTA */
@@ -522,11 +560,12 @@ footer a:hover {
   }
 
   .workflow-steps {
-    flex-direction: column;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 1rem;
   }
 
-  .step-arrow {
-    transform: rotate(90deg);
+  .workflow-steps::before {
+    display: none;
   }
 
   .code-block pre {
