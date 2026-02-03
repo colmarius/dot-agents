@@ -13,7 +13,7 @@ Implement improvements identified in the dot-agents framework analysis to enhanc
 
 ## Tasks
 
-- [ ] **Task 1: Fix BASH_SOURCE install script execution guard**
+- [x] **Task 1: Fix BASH_SOURCE install script execution guard**
   - Scope: `install.sh`
   - Depends on: none
   - Acceptance:

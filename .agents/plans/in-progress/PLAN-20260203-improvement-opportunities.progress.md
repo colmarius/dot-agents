@@ -1,0 +1,25 @@
+# Progress: dot-agents Improvement Opportunities
+
+## Task 1: Fix BASH_SOURCE install script execution guard
+
+**Thread**: https://ampcode.com/threads/T-019c2539-d0c9-740b-8052-cbfa7d112387
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `install.sh` - Fixed execution guard to handle piped execution (empty BASH_SOURCE)
+
+### Commands Run
+
+- `./install.sh --dry-run` ✓
+- `cat install.sh | bash -s -- --dry-run` ✓
+- `source ./install.sh` (no output) ✓
+- `./scripts/lint.sh` ✓
+
+### Next
+
+- Task 2: Fix installer skip logic for plans/TEMPLATE.md
+
+---
+

@@ -474,6 +474,7 @@ _main() {
 }
 
 # Only run if script is executed, not sourced
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+# Empty BASH_SOURCE means stdin (piped), must still run. Only skip when sourced.
+if [[ -z "${BASH_SOURCE[0]:-}" || "${BASH_SOURCE[0]:-}" == "$0" ]]; then
     _main "$@"
 fi
