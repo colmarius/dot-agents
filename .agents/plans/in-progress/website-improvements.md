@@ -52,7 +52,7 @@
     - Styled as compact list or cards
   - Notes: Mirrors workflow section but with actionable commands.
 
-- [ ] **Task 6: Clarify Ralph/Amp terminology in feature cards**
+- [x] **Task 6: Clarify Ralph/Amp terminology in feature cards**
   - Scope: `site/index.html`
   - Depends on: none
   - Acceptance:

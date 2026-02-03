@@ -277,6 +277,20 @@ header {
   line-height: 1.5;
 }
 
+.feature-card .term {
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.feature-card .term a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.feature-card .term a:hover {
+  text-decoration: underline;
+}
+
 /* Workflow */
 .workflow {
   margin: 4rem 0 3rem;

@@ -104,3 +104,24 @@
 
 ---
 
+## Task 6: Clarify Ralph/Amp terminology in feature cards
+
+**Thread**: https://ampcode.com/threads/T-019c25a5-f588-721b-a09c-c0f878b50860
+**Status**: completed
+**Iteration**: 2
+
+### Changes
+
+- `site/index.html` - Renamed "Ralph Loops" to "Autonomous Execution (Ralph)" with link to glossary; removed "Ralph-ready" from "Structured Plans" card
+- `site/style.css` - Added styling for `.term` span and its link
+
+### Commands Run
+
+- ./scripts/lint.sh ✓
+
+### Next
+
+- Task 7: Update CTA section with Quickstart button
+
+---
+
