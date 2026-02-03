@@ -2,6 +2,18 @@
 
 Get productive with dot-agents in 5 minutes.
 
+## Prerequisites
+
+- **bash** 4.0+ (5.0+ recommended)
+- **git** for version control
+- **curl** for installation
+- **OS:** macOS, Linux, or WSL
+
+> **Security:** Review the install script before running:
+> ```bash
+> curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | less
+> ```
+
 ## 1. Install
 
 ```bash

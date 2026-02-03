@@ -4,7 +4,7 @@
 |-------|-------|
 | PRD | N/A |
 | Research | `../../research/documentation-onboarding.md` |
-| Status | todo |
+| Status | in-progress |
 | Created | 2026-02-03 |
 
 ## Overview
@@ -13,7 +13,7 @@ Improve QUICKSTART.md with prerequisites, expected outputs, installation verific
 
 ## Tasks
 
-- [ ] **Task 1: Add Prerequisites section to QUICKSTART.md**
+- [x] **Task 1: Add Prerequisites section to QUICKSTART.md**
   - Scope: `QUICKSTART.md`
   - Depends on: none
   - Acceptance:
