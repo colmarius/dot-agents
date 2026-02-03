@@ -4,7 +4,7 @@
 |-------|-------|
 | PRD | N/A (based on research) |
 | Research | `../../research/improvement-opportunities.md` |
-| Status | todo |
+| Status | completed |
 | Created | 2026-02-03 |
 
 ## Overview
