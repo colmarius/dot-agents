@@ -38,7 +38,7 @@ Add `.agents/scripts/sync.sh` - a local wrapper script that allows projects to e
     - Existing `installedAt` is preserved on updates
   - Notes: Detect if `.dot-agents.json` already exists to differentiate install vs sync
 
-- [ ] **Task 4: Update README documentation**
+- [x] **Task 4: Update README documentation**
   - Scope: `README.md`
   - Depends on: Task 1, Task 2
   - Acceptance:

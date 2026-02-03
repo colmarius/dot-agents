@@ -70,3 +70,20 @@
 
 ---
 
+## Task 4: Update README documentation
+
+**Thread**: https://ampcode.com/threads/T-019c2451-52fc-71b9-a960-c6be11126b87
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `README.md` - Added "Sync" section with usage examples
+- `README.md` - Updated structure section to show scripts/ directory
+
+### Next
+
+- Task 5: Test sync workflow (manual-verify)
+
+---
+

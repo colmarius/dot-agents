@@ -42,15 +42,35 @@ Force update (backs up existing files first):
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --force
 ```
 
-## Update
+## Sync
 
-To update an existing installation, run the install command again. By default:
+After installation, use the sync script to pull updates from upstream:
 
-- New files are installed
-- Identical files are skipped
-- Changed files create `.dot-agents.new` conflict files for manual review
+```bash
+.agents/scripts/sync.sh
+```
 
-Use `--force` to overwrite all files (backups are created automatically).
+### Sync Options
+
+All options are passed through to the install script:
+
+```bash
+# Preview changes
+.agents/scripts/sync.sh --dry-run
+
+# Force update with backup
+.agents/scripts/sync.sh --force
+
+# Interactive conflict resolution
+.agents/scripts/sync.sh --interactive
+```
+
+The sync script reads `.agents/.dot-agents.json` for the upstream URL and ref, then fetches and executes the upstream install script.
+
+**Metadata tracking:**
+
+- `installedAt` - Set on first install, preserved on updates
+- `lastSyncedAt` - Updated on each sync
 
 ## Structure
 
@@ -63,6 +83,8 @@ Use `--force` to overwrite all files (backups are created automatically).
 ├── prds/            # Product requirements documents
 ├── reference/       # External repos (gitignored)
 ├── research/        # Saved research findings
+├── scripts/         # Helper scripts
+│   └── sync.sh      # Sync updates from upstream
 ├── skills/          # Agent capabilities
 └── .dot-agents.json # Installation metadata
 ```
