@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.0] - 2025-02-03
+
 ### Changed
 
 - **BREAKING:** Sync now overwrites conflicts by default (with backup)
@@ -18,11 +20,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - `--diff` flag to show unified diffs for conflicts without modifying files
 - `--write-conflicts` flag to create `.dot-agents.new` files for manual review
-
-## [0.1.0] - 2025-02-03
-
-### Added
-
 - Initial project structure
 - Install script with dry-run, force, interactive modes
 - Sync script for updating from upstream

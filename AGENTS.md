@@ -140,6 +140,7 @@ git add -A && git commit -m "Release v1.0.0"
 ```
 
 The release script:
+
 - Reads version from `VERSION` file
 - Extracts release notes from `CHANGELOG.md`
 - Creates git tag `vX.Y.Z`
