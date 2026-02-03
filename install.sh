@@ -149,7 +149,7 @@ do_uninstall() {
             rm "AGENTS.md"
             log_info "${RED}[REMOVE]${NC} AGENTS.md"
         fi
-        ((removed++)) || true
+        removed=$((removed + 1))
     fi
     
     # Remove .agents/
@@ -160,7 +160,7 @@ do_uninstall() {
             rm -rf ".agents"
             log_info "${RED}[REMOVE]${NC} .agents/"
         fi
-        ((removed++)) || true
+        removed=$((removed + 1))
     fi
     
     log_info ""
@@ -202,7 +202,7 @@ backup_file() {
         cp "$file" "$backup_path"
         log_info "  ${BLUE}[BACKUP]${NC} $file"
     fi
-    ((backup_count++)) || true
+    backup_count=$((backup_count + 1))
 }
 
 detect_stack() {
@@ -343,13 +343,13 @@ install_file() {
             cp -p "$src" "$dest"
             log_install "$dest"
         fi
-        ((installed_count++)) || true
+        installed_count=$((installed_count + 1))
         return 0
     fi
 
     if files_identical "$src" "$dest"; then
         log_skip "$dest (identical)"
-        ((skipped_count++)) || true
+        skipped_count=$((skipped_count + 1))
         return 0
     fi
 
@@ -361,7 +361,7 @@ install_file() {
             cp -p "$src" "$dest"
             log_install "$dest (force overwrite)"
         fi
-        ((installed_count++)) || true
+        installed_count=$((installed_count + 1))
         return 0
     fi
 
@@ -372,14 +372,14 @@ install_file() {
         case "$action" in
             keep|skip)
                 log_skip "$dest (kept yours)"
-                ((skipped_count++)) || true
+                skipped_count=$((skipped_count + 1))
                 return 0
                 ;;
             overwrite)
                 backup_file "$dest"
                 cp -p "$src" "$dest"
                 log_install "$dest (overwritten)"
-                ((installed_count++)) || true
+                installed_count=$((installed_count + 1))
                 return 0
                 ;;
         esac
@@ -398,7 +398,7 @@ install_file() {
         cp -p "$src" "$conflict_file"
         log_conflict "$dest differs. Wrote ${conflict_file} for review."
     fi
-    ((conflict_count++)) || true
+    conflict_count=$((conflict_count + 1))
     return 0
 }
 
