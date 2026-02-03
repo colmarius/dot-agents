@@ -83,3 +83,23 @@
 
 ---
 
+## Task 5: Add skill invocation documentation to AGENTS.md
+
+**Thread**: https://ampcode.com/threads/T-019c2539-d0c9-740b-8052-cbfa7d112387
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `AGENTS.md` - Added "## Using Skills" section with command/effect table
+
+### Commands Run
+
+- `./scripts/lint.sh` ✓
+
+### Next
+
+- Task 6: Add --version flag to install.sh
+
+---
+

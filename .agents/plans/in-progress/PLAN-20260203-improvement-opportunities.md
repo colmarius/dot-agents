@@ -51,7 +51,7 @@ Implement improvements identified in the dot-agents framework analysis to enhanc
     - Contains comment explaining purpose
   - Notes: Keep simple, don't ignore progress files by default
 
-- [ ] **Task 5: Add skill invocation documentation to AGENTS.md**
+- [x] **Task 5: Add skill invocation documentation to AGENTS.md**
   - Scope: `AGENTS.md`
   - Depends on: none
   - Acceptance:

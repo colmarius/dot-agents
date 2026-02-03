@@ -43,6 +43,14 @@ project/
 └── src/                         # Source code
 ```
 
+## Using Skills
+
+| Command | Effect |
+|---------|--------|
+| `Run adapt` | Analyze project and fill in AGENTS.md sections |
+| `Research [topic]` | Deep investigation, saves to `.agents/research/` |
+| `Run ralph on [plan.md]` | Autonomous execution of plan tasks |
+
 ## Plan Management
 
 Plans in `.agents/plans/` follow this workflow:
