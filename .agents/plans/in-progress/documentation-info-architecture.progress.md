@@ -7,3 +7,9 @@
 - **Started:** 2026-02-03
 - **Completed:** 2026-02-03
 - **Changes:** Created docs/README.md with Getting Started, Concepts, Reference, and For Contributors sections
+
+### Task 2: Create docs/concepts.md with workflow and glossary
+- **Status:** Complete
+- **Started:** 2026-02-03
+- **Completed:** 2026-02-03
+- **Changes:** Created docs/concepts.md with Workflow section and Glossary table defining adapt, Ralph, PRD, Plan, Skills, sync

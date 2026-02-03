@@ -25,7 +25,7 @@ Create a documentation hub and concepts page in docs/ to provide better navigati
     - Uses relative paths that work from docs/ directory
   - Notes: Keep lightweight, this is an index page
 
-- [ ] **Task 2: Create docs/concepts.md with workflow and glossary**
+- [x] **Task 2: Create docs/concepts.md with workflow and glossary**
   - Scope: `docs/concepts.md`
   - Depends on: Task 1
   - Acceptance:
