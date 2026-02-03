@@ -100,5 +100,16 @@
 
 ### Iteration 9
 **Task**: Task 9 - Write sync.sh integration tests
+**Status**: ✅ Complete
+
+**Actions**:
+- Created test/integration/sync.bats with 4 tests
+- Tests: --help, missing metadata, valid metadata triggers install, flags passthrough
+- All 13 tests pass (9 install + 4 sync)
+
+---
+
+### Iteration 10
+**Task**: Task 10 - Add BATS to CI workflow
 **Status**: In Progress
 

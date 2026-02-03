@@ -116,7 +116,7 @@ Explicitly **out of scope**:
     - Paths with spaces work (run from temp dir with space in name)
   - Notes: Each test uses `$BATS_TEST_TMPDIR`, prepends mock PATH
 
-- [ ] **Task 9: Write sync.sh integration tests**
+- [x] **Task 9: Write sync.sh integration tests**
   - Scope: `test/integration/sync.bats`
   - Depends on: Tasks 4, 5, 6
   - Acceptance:
