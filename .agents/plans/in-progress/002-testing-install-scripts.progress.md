@@ -111,5 +111,19 @@
 
 ### Iteration 10
 **Task**: Task 10 - Add BATS to CI workflow
-**Status**: In Progress
+**Status**: ✅ Complete
+
+**Actions**:
+- BATS job already exists in `.github/workflows/test.yml`
+- Matrix runs on `ubuntu-latest` and `macos-latest`
+- Uses `actions/checkout@v4` with `submodules: true`
+- Installs BATS via apt (Linux) or brew (macOS)
+- Runs `bats test/`
+- Verified: all 13 tests pass locally
+
+---
+
+## Plan Complete
+
+All 10 tasks completed successfully.
 

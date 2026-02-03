@@ -126,7 +126,7 @@ Explicitly **out of scope**:
     - Flags pass through correctly
   - Notes: Simpler than install.sh tests
 
-- [ ] **Task 10: Add BATS to CI workflow**
+- [x] **Task 10: Add BATS to CI workflow**
   - Scope: `.github/workflows/test.yml`
   - Depends on: Task 5
   - Acceptance:

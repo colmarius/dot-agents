@@ -22,3 +22,25 @@ jobs:
           scandir: '.'
           severity: warning
           additional_files: 'install.sh .agents/scripts/sync.sh'
+
+  bats:
+    name: BATS Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install BATS (Ubuntu)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y bats
+
+      - name: Install BATS (macOS)
+        if: runner.os == 'macOS'
+        run: brew install bats-core
+
+      - name: Run tests
+        run: bats test/
