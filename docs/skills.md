@@ -60,3 +60,33 @@ Background process management:
 **Note:** This skill is typically loaded automatically when background processes are required.
 
 **Details:** [.agents/skills/tmux/SKILL.md](../.agents/skills/tmux/SKILL.md)
+
+## Adding Custom Skills
+
+Create a new skill by adding a directory under `.agents/skills/`:
+
+```
+.agents/skills/my-skill/
+└── SKILL.md
+```
+
+### SKILL.md Format
+
+```markdown
+---
+name: my-skill
+description: Brief description for skill discovery
+---
+
+# My Skill
+
+Instructions for the agent when this skill is loaded...
+```
+
+The `name` and `description` in the frontmatter are used for skill discovery. The agent matches user requests against skill descriptions to determine which skill to load.
+
+**Invocation:** Skills are loaded via natural language matching. If your description mentions "deploy" or "deployment", saying "help me deploy" will load your skill.
+
+### Preserving Custom Skills
+
+Custom skills in `.agents/skills/` are preserved during `sync.sh` updates. Only upstream skills (adapt, ralph, research, tmux) are updated—your custom skills remain untouched.

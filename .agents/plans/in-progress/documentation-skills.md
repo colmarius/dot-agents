@@ -35,7 +35,7 @@ Create user-facing skills documentation that explains what each skill does, when
     - Each section links to actual SKILL.md as source of truth
   - Notes: Keep descriptions brief, link to SKILL.md for details
 
-- [ ] **Task 3: Add custom skills section to docs/skills.md**
+- [x] **Task 3: Add custom skills section to docs/skills.md**
   - Scope: `docs/skills.md`
   - Depends on: Task 2
   - Acceptance:
