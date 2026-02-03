@@ -8,6 +8,27 @@
   --accent-glow: rgba(0, 217, 255, 0.15);
   --border: #2a2a3a;
   --success: #3fb950;
+  --t-fast: 140ms;
+  --t-med: 220ms;
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+  --ring: 0 0 0 3px rgba(0, 217, 255, 0.22);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Keyboard focus ring */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-radius: 8px;
 }
 
 * {
@@ -116,6 +137,12 @@ header {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 0 40px var(--accent-glow);
+  transition: border-color var(--t-med) var(--ease-out), box-shadow var(--t-med) var(--ease-out);
+}
+
+.code-block:hover {
+  border-color: rgba(0, 217, 255, 0.22);
+  box-shadow: 0 0 0 1px rgba(0, 217, 255, 0.08), 0 0 48px rgba(0, 217, 255, 0.12);
 }
 
 .code-header {
@@ -164,7 +191,11 @@ header {
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 6px;
-  transition: all 0.2s;
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out),
+    background var(--t-fast) var(--ease-out);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -173,6 +204,10 @@ header {
 .copy-btn:hover {
   color: var(--text);
   border-color: var(--text-muted);
+}
+
+.copy-btn:active {
+  transform: scale(0.94);
 }
 
 .copy-btn .icon-check {
@@ -188,16 +223,21 @@ header {
   display: block;
 }
 
+.copy-btn.copied {
+  border-color: rgba(63, 185, 80, 0.55);
+  background: rgba(63, 185, 80, 0.08);
+}
+
 .install-hint {
   margin-top: 0.75rem;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--text-muted);
   text-align: center;
 }
 
 .install-hint code {
   font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   background: var(--bg-secondary);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
@@ -206,7 +246,7 @@ header {
 
 .install-details {
   margin-top: 0.5rem;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--text-muted);
   text-align: center;
 }
@@ -224,7 +264,7 @@ header {
   display: block;
   margin-top: 0.5rem;
   font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   background: var(--bg-secondary);
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
@@ -273,16 +313,28 @@ header {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.5rem;
-  transition: border-color 0.2s;
+  transition:
+    transform var(--t-med) var(--ease-out),
+    border-color var(--t-med) var(--ease-out),
+    box-shadow var(--t-med) var(--ease-out),
+    background var(--t-med) var(--ease-out);
 }
 
 .feature-card:hover {
-  border-color: var(--text-muted);
+  transform: translateY(-2px);
+  border-color: rgba(0, 217, 255, 0.25);
+  box-shadow: 0 0 0 1px rgba(0, 217, 255, 0.08), 0 16px 32px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(180deg, rgba(0, 217, 255, 0.04), transparent 55%);
 }
 
 .feature-icon {
   font-size: 1.5rem;
   margin-bottom: 0.75rem;
+  transition: transform var(--t-med) var(--ease-out);
+}
+
+.feature-card:hover .feature-icon {
+  transform: translateY(-2px);
 }
 
 .feature-card h3 {
@@ -354,6 +406,11 @@ header {
   padding: 0;
   position: relative;
   z-index: 1;
+  transition: transform var(--t-med) var(--ease-out);
+}
+
+.step:hover {
+  transform: translateY(-2px);
 }
 
 .step-num {
@@ -365,6 +422,16 @@ header {
   color: transparent;
   box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.15), 0 0 12px rgba(0, 217, 255, 0.3);
   flex-shrink: 0;
+  transition:
+    box-shadow var(--t-med) var(--ease-out),
+    transform var(--t-med) var(--ease-out);
+}
+
+.step:hover .step-num {
+  transform: scale(1.15);
+  box-shadow:
+    0 0 0 6px rgba(0, 217, 255, 0.18),
+    0 0 20px rgba(0, 217, 255, 0.5);
 }
 
 .step-content {
@@ -381,9 +448,9 @@ header {
 }
 
 .step-content span {
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--text-muted);
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .step-arrow {
@@ -425,6 +492,16 @@ header {
   padding: 0.9rem 1.25rem;
   position: relative;
   text-align: left;
+  transition:
+    transform var(--t-med) var(--ease-out),
+    border-color var(--t-med) var(--ease-out),
+    box-shadow var(--t-med) var(--ease-out);
+}
+
+.qs-step:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 217, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 /* Cyan accent bar on left */
@@ -438,6 +515,12 @@ header {
   background: var(--accent);
   border-radius: 999px;
   opacity: 0.8;
+  transition: opacity var(--t-med) var(--ease-out), filter var(--t-med) var(--ease-out);
+}
+
+.qs-step:hover::before {
+  opacity: 1;
+  filter: brightness(1.2);
 }
 
 .qs-num {
@@ -448,7 +531,7 @@ header {
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0.15rem 0.6rem;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -456,18 +539,18 @@ header {
 .qs-content {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.35rem;
 }
 
 .qs-content strong {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text);
 }
 
 .qs-content code {
   font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--accent);
   background: var(--bg-card);
   border: 1px solid var(--border);
