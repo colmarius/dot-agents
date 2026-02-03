@@ -461,12 +461,21 @@ main() {
         exit 1
     fi
 
-    if [[ -f "${extracted_dir}/AGENTS.md" ]]; then
+    # Install AGENTS.md from template (fresh install only)
+    local template_src=""
+    if [[ -f "${extracted_dir}/AGENTS.template.md" ]]; then
+        template_src="${extracted_dir}/AGENTS.template.md"
+    elif [[ -f "${extracted_dir}/AGENTS.md" ]]; then
+        # Fallback for older versions
+        template_src="${extracted_dir}/AGENTS.md"
+    fi
+
+    if [[ -n "$template_src" ]]; then
         if [[ -e "./AGENTS.md" ]]; then
             log_skip "AGENTS.md (user content, skipped on sync)"
             skipped_count=$((skipped_count + 1))
         else
-            install_file "${extracted_dir}/AGENTS.md" "./AGENTS.md"
+            install_file "$template_src" "./AGENTS.md"
         fi
     fi
 

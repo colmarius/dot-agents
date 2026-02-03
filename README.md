@@ -29,7 +29,7 @@ Then:
 
 ## Sync Behavior
 
-The sync script (`.agents/scripts/sync.sh`) updates dot-agents from upstream while preserving your work:
+Re-running `install.sh` updates dot-agents from upstream while preserving your work:
 
 | What | Behavior |
 |------|----------|
@@ -37,6 +37,8 @@ The sync script (`.agents/scripts/sync.sh`) updates dot-agents from upstream whi
 | AGENTS.md | Skipped (your customizations preserved) |
 | PRDs, plans | Skipped (your content preserved) |
 | Research | Skipped (your content preserved) |
+
+The installer copies `AGENTS.template.md` → `AGENTS.md` on fresh install only.
 
 Use `--dry-run` to preview changes, `--force` to overwrite with backup.
 

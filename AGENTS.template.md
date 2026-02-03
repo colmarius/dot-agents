@@ -1,13 +1,18 @@
+> **📝 TEMPLATE:** This is the dot-agents AGENTS.md template.
+> Customize it for your project by filling in the sections below.
+> Delete this banner when done.
+
 # Project Instructions
 
 ## Overview
 
-dot-agents is an AI-ready `.agents/` workspace scaffold for any project. It provides plans, PRDs, research folders, and skills for agent-assisted development workflows.
+[Brief project description - update this for your project]
 
 ## Tech Stack
 
-- Language: Bash (install/sync scripts), Markdown (documentation, skills)
-- Testing: Bats (Bash Automated Testing System)
+- Language: [e.g., TypeScript, Rust, Go, Python]
+- Framework: [e.g., React, Express, Axum, FastAPI]
+- Database: [e.g., PostgreSQL, SQLite, MongoDB]
 
 ## Workflow
 
@@ -23,23 +28,22 @@ Research → PRD → Plan → Execute
 ## Project Structure
 
 ```text
-dot-agents/
+project/
 ├── AGENTS.md                    # This file - project instructions
-├── AGENTS.template.md           # Template copied to user projects
-├── install.sh                   # Main installation script
 ├── .agents/
-│   ├── skills/                  # Agent skills (adapt, ralph, research, tmux)
-│   ├── plans/                   # Implementation plans
+│   ├── reference/               # External repos (gitignored)
+│   ├── research/                # Research and reference material
 │   ├── prds/                    # Product requirements documents
-│   └── research/                # Research and reference material
-├── docs/                        # Full documentation
-├── site/                        # Landing page source
-├── scripts/                     # Development scripts
-└── test/                        # Bats integration tests
-    ├── integration/             # install.bats, sync.bats
-    ├── fixtures/                # Test fixtures (sample-archive.tar.gz)
-    ├── mocks/                   # Mock curl for offline testing
-    └── test_helper/             # Bats support libraries
+│   ├── plans/                   # Implementation plans
+│   │   ├── todo/                # Planned but not started
+│   │   ├── in-progress/         # Currently being worked on
+│   │   └── completed/           # Finished and verified
+│   └── skills/                  # Agent skills
+│       ├── adapt/               # Project analysis and AGENTS.md setup
+│       ├── ralph/               # Autonomous implementation loops
+│       ├── research/            # Deep research workflow
+│       └── tmux/                # Background process management
+└── src/                         # Source code
 ```
 
 ## Using Skills
@@ -90,14 +94,11 @@ Plans in `.agents/plans/` follow this workflow:
 ## Commands
 
 ```bash
-# Run tests
-cd test && bats integration/
-
-# Rebuild test fixture after changes to .agents/ or AGENTS.template.md
-./scripts/build-test-fixture.sh
-
-# Test installation locally
-./install.sh --dry-run
+# Add your project-specific commands here
+# Examples:
+# npm install / npm run dev / npm test
+# cargo build / cargo test
+# go build / go test
 ```
 
 ## Git Workflow
@@ -122,19 +123,13 @@ After making changes:
 1. **Update AGENTS.md** - Keep project structure and commands current
 2. **Update README.md** - Reflect user-facing changes
 3. **Update plan status** - Move completed plans to `completed/`
-4. **Rebuild test fixture** - Run `./scripts/build-test-fixture.sh` if `.agents/` or `AGENTS.template.md` changed
 
 ## Conventions
 
-- Shell scripts use `set -euo pipefail`
-- Skills use YAML frontmatter with `name` and `description`
-- Documentation in Markdown
+- [Naming conventions]
+- [Code style preferences]
+- [Commit message format]
 
 ## Architecture Notes
 
-The installer (`install.sh`) downloads a tarball from GitHub, extracts it to a temp directory, and copies:
-
-- `AGENTS.template.md` → `./AGENTS.md` (only on fresh install, skipped on sync)
-- `.agents/` contents (skills, empty directories for plans/prds/research)
-
-User content in `.agents/research/`, `.agents/plans/`, and `.agents/prds/` is preserved during sync. The `AGENTS.md` file is treated as user content after initial install.
+[Brief description of project structure and key components]
