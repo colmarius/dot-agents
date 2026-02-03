@@ -41,3 +41,24 @@
 
 ---
 
+## Task 3: Add "Pin a version" example
+
+**Thread**: https://ampcode.com/threads/T-019c25a3-5f40-75a7-a0e2-c28e75b5800e
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `site/index.html` - Added collapsible details element with pinned version command
+- `site/style.css` - Added styling for .install-details
+
+### Commands Run
+
+- Visual verification ✓
+
+### Next
+
+- Task 4: Add "What gets installed" directory tree section
+
+---
+

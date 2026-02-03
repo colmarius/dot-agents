@@ -25,7 +25,7 @@
     - Styled consistently with existing design (muted text, small font)
   - Notes: Critical for curl|bash credibility. Keep it one line.
 
-- [ ] **Task 3: Add "Pin a version" example**
+- [x] **Task 3: Add "Pin a version" example**
   - Scope: `site/index.html`
   - Depends on: Task 2
   - Acceptance:
