@@ -373,7 +373,6 @@ install_file() {
 process_directory() {
     local src_dir="$1"
     local dest_dir="$2"
-    local prefix="${3:-}"
 
     while IFS= read -r -d '' file; do
         local rel_path="${file#$src_dir/}"

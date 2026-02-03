@@ -19,5 +19,15 @@
 
 ### Iteration 2
 **Task**: Task 2 - Fix any ShellCheck warnings
+**Status**: ✅ Complete
+
+**Actions**:
+- Removed unused `prefix` variable in `process_directory()` (line 376)
+- ShellCheck now passes with zero warnings
+
+---
+
+### Iteration 3
+**Task**: Task 3 - Refactor install.sh with guard pattern
 **Status**: In Progress
 

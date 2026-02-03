@@ -38,7 +38,7 @@ Explicitly **out of scope**:
     - CI fails if ShellCheck finds warnings or errors
   - Notes: Create `.github/workflows/test.yml` with `shellcheck` job
 
-- [ ] **Task 2: Fix any ShellCheck warnings**
+- [x] **Task 2: Fix any ShellCheck warnings**
   - Scope: `install.sh`, `.agents/scripts/sync.sh`
   - Depends on: Task 1
   - Acceptance:
