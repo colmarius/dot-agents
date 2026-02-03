@@ -14,6 +14,7 @@ Skills are specialized instructions that agents load for specific workflows. Whe
 ## adapt
 
 Analyzes your project and fills in AGENTS.md with:
+
 - Project overview and tech stack
 - Build/test/lint commands
 - Code conventions
@@ -26,6 +27,7 @@ Analyzes your project and fills in AGENTS.md with:
 ## ralph
 
 Executes plans autonomously, iterating through tasks:
+
 - Reads plan from `.agents/plans/`
 - Completes tasks one by one
 - Commits after each task
@@ -34,6 +36,7 @@ Executes plans autonomously, iterating through tasks:
 **Invoke:** `Run ralph on .agents/plans/in-progress/my-plan.md`
 
 **Options:**
+
 - Start from specific task: `Continue ralph from Task 5 on [plan]`
 - Default max tasks per session: 5
 
@@ -42,6 +45,7 @@ Executes plans autonomously, iterating through tasks:
 ## research
 
 Deep investigation workflow:
+
 - Web search and documentation reading
 - Explores libraries, APIs, patterns
 - Saves findings to `.agents/research/`
@@ -53,6 +57,7 @@ Deep investigation workflow:
 ## tmux
 
 Background process management:
+
 - Spawns long-running processes (servers, watchers)
 - Captures output for review
 - Auto-loaded by other skills when needed
