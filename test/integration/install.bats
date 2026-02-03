@@ -80,27 +80,33 @@ teardown() {
     assert_output --partial "SKIP"
 }
 
-@test "conflict creates .dot-agents.new file" {
+@test "AGENTS.md is skipped on re-install (sync scenario)" {
     # First install
     bash "$INSTALL_SCRIPT" --yes
 
-    # Modify AGENTS.md to create conflict
+    # Modify AGENTS.md (user customization)
     echo "# Modified by user" > AGENTS.md
 
-    # Re-install should detect conflict
+    # Re-install should skip AGENTS.md entirely
     run bash "$INSTALL_SCRIPT" --yes
     assert_success
+    assert_output --partial "AGENTS.md (user content, skipped on sync)"
 
-    # Should create conflict file
-    [ -f "AGENTS.md.dot-agents.new" ] || [ -f "AGENTS.dot-agents.md" ]
+    # User's modification should be preserved
+    run cat AGENTS.md
+    assert_output "# Modified by user"
+
+    # Should NOT create conflict file
+    [ ! -f "AGENTS.md.dot-agents.new" ]
+    [ ! -f "AGENTS.dot-agents.md" ]
 }
 
 @test "--force creates backup directory" {
     # First install
     bash "$INSTALL_SCRIPT" --yes
 
-    # Modify AGENTS.md
-    echo "# Modified by user" > AGENTS.md
+    # Modify a skill file (not AGENTS.md which is skipped on sync)
+    echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
 
     # Force re-install
     run bash "$INSTALL_SCRIPT" --force --yes
@@ -181,4 +187,33 @@ teardown() {
     # Files should still exist
     [ -f "AGENTS.md" ]
     [ -d ".agents" ]
+}
+
+@test "md files in research/plans/prds are not installed" {
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Skills should be installed
+    [ -f ".agents/skills/sample-skill/SKILL.md" ]
+
+    # User content directories should NOT have md files from upstream
+    [ ! -f ".agents/research/example.md" ]
+    [ ! -f ".agents/plans/todo/plan-001.md" ]
+    [ ! -f ".agents/prds/feature.md" ]
+}
+
+@test "conflict on non-AGENTS.md files creates .dot-agents.new" {
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Modify a skill file to create conflict
+    echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
+
+    # Re-install should detect conflict on skill file
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    assert_output --partial "CONFLICT"
+
+    # Should create conflict file for the skill
+    [ -f ".agents/skills/sample-skill/SKILL.dot-agents.md" ]
 }
