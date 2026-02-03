@@ -60,7 +60,7 @@ Implement improvements identified in the dot-agents framework analysis to enhanc
     - Documents: adapt, ralph, research skills
   - Notes: Keep to essential commands only
 
-- [ ] **Task 6: Add --version flag to install.sh**
+- [x] **Task 6: Add --version flag to install.sh**
   - Scope: `install.sh`
   - Depends on: Task 1
   - Acceptance:

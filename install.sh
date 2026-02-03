@@ -23,6 +23,7 @@ YES=false
 SHOW_HELP=false
 UNINSTALL=false
 INTERACTIVE=false
+SHOW_VERSION=false
 
 usage() {
     cat <<EOF
@@ -37,6 +38,7 @@ Options:
   --yes             Skip confirmation prompts
   --uninstall       Remove dot-agents
   --interactive     Prompt for each conflict
+  --version         Show version and installation info
   --help            Show this help message
 
 Examples:
@@ -89,6 +91,10 @@ parse_args() {
                 INTERACTIVE=true
                 shift
                 ;;
+            --version)
+                SHOW_VERSION=true
+                shift
+                ;;
             *)
                 log_error "Unknown option: $1"
                 usage
@@ -96,6 +102,32 @@ parse_args() {
                 ;;
         esac
     done
+}
+
+do_version() {
+    local metadata_file=".agents/.dot-agents.json"
+    
+    echo "dot-agents"
+    echo "  Upstream: https://github.com/${REPO_OWNER}/${REPO_NAME}"
+    echo "  Default ref: ${DEFAULT_REF}"
+    
+    if [[ -f "$metadata_file" ]]; then
+        local ref installed_at last_synced_at
+        ref=$(sed -n 's/.*"ref"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$metadata_file")
+        installed_at=$(sed -n 's/.*"installedAt"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$metadata_file")
+        last_synced_at=$(sed -n 's/.*"lastSyncedAt"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$metadata_file")
+        
+        echo ""
+        echo "Installation:"
+        echo "  Ref: ${ref:-unknown}"
+        echo "  Installed at: ${installed_at:-unknown}"
+        if [[ -n "$last_synced_at" ]]; then
+            echo "  Last synced at: ${last_synced_at}"
+        fi
+    else
+        echo ""
+        echo "dot-agents not installed in this directory"
+    fi
 }
 
 do_uninstall() {
@@ -454,6 +486,11 @@ _main() {
 
     if [[ "$SHOW_HELP" == "true" ]]; then
         usage
+        exit 0
+    fi
+
+    if [[ "$SHOW_VERSION" == "true" ]]; then
+        do_version
         exit 0
     fi
 

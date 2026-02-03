@@ -103,3 +103,25 @@
 
 ---
 
+## Task 6: Add --version flag to install.sh
+
+**Thread**: https://ampcode.com/threads/T-019c253d-2c8f-74be-8e09-ad5690094dec
+**Status**: completed
+**Iteration**: 2
+
+### Changes
+
+- `install.sh` - Added `--version` flag with `do_version()` function that outputs upstream URL, default ref, and installation metadata if present
+
+### Commands Run
+
+- `./scripts/lint.sh` ✓
+- `./install.sh --version` ✓ (shows installation info)
+- `/tmp: ./install.sh --version` ✓ (shows "not installed" message)
+
+### Next
+
+- Task 7: Create QUICKSTART.md
+
+---
+
