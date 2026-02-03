@@ -106,17 +106,17 @@ parse_args() {
 
 do_version() {
     local metadata_file=".agents/.dot-agents.json"
-    
+
     echo "dot-agents"
     echo "  Upstream: https://github.com/${REPO_OWNER}/${REPO_NAME}"
     echo "  Default ref: ${DEFAULT_REF}"
-    
+
     if [[ -f "$metadata_file" ]]; then
         local ref installed_at last_synced_at
         ref=$(sed -n 's/.*"ref"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$metadata_file")
         installed_at=$(sed -n 's/.*"installedAt"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$metadata_file")
         last_synced_at=$(sed -n 's/.*"lastSyncedAt"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$metadata_file")
-        
+
         echo ""
         echo "Installation:"
         echo "  Ref: ${ref:-unknown}"
@@ -133,14 +133,14 @@ do_version() {
 do_uninstall() {
     log_info "Uninstalling dot-agents..."
     log_info ""
-    
+
     if [[ "$DRY_RUN" == "true" ]]; then
         log_info "${YELLOW}DRY RUN - no changes will be made${NC}"
         log_info ""
     fi
-    
+
     local removed=0
-    
+
     # Remove AGENTS.md
     if [[ -f "AGENTS.md" ]]; then
         if [[ "$DRY_RUN" == "true" ]]; then
@@ -151,7 +151,7 @@ do_uninstall() {
         fi
         removed=$((removed + 1))
     fi
-    
+
     # Remove .agents/
     if [[ -d ".agents" ]]; then
         if [[ "$DRY_RUN" == "true" ]]; then
@@ -162,7 +162,7 @@ do_uninstall() {
         fi
         removed=$((removed + 1))
     fi
-    
+
     log_info ""
     if [[ $removed -eq 0 ]]; then
         log_info "Nothing to uninstall."
@@ -194,7 +194,7 @@ backup_file() {
     local backup_path="${BACKUP_DIR}/${file}"
     local backup_dir
     backup_dir="$(dirname "$backup_path")"
-    
+
     if [[ "$DRY_RUN" == "true" ]]; then
         log_info "  ${BLUE}[BACKUP]${NC} $file → $backup_path"
     else
@@ -207,29 +207,29 @@ backup_file() {
 
 detect_stack() {
     local detected=""
-    
+
     if [[ -f "package.json" ]]; then
         detected="${detected}# Detected: Node.js project (package.json)\n"
         detected="${detected}# npm install | pnpm install | yarn install\n"
         detected="${detected}# npm run dev | npm run build | npm test\n\n"
     fi
-    
+
     if [[ -f "Cargo.toml" ]]; then
         detected="${detected}# Detected: Rust project (Cargo.toml)\n"
         detected="${detected}# cargo build | cargo run | cargo test | cargo clippy\n\n"
     fi
-    
+
     if [[ -f "go.mod" ]]; then
         detected="${detected}# Detected: Go project (go.mod)\n"
         detected="${detected}# go build ./... | go run . | go test ./...\n\n"
     fi
-    
+
     if [[ -f "pyproject.toml" ]] || [[ -f "requirements.txt" ]]; then
         detected="${detected}# Detected: Python project\n"
         detected="${detected}# pip install -r requirements.txt | pip install -e .\n"
         detected="${detected}# python main.py | pytest | ruff check . | mypy .\n\n"
     fi
-    
+
     echo -e "$detected"
 }
 
@@ -237,14 +237,14 @@ write_metadata() {
     local metadata_file=".agents/.dot-agents.json"
     local timestamp
     timestamp="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-    
+
     if [[ "$DRY_RUN" == "true" ]]; then
         log_info "${GREEN}[METADATA]${NC} Would write $metadata_file"
         return
     fi
-    
+
     mkdir -p .agents
-    
+
     # Check if this is an update (metadata file already exists)
     if [[ -f "$metadata_file" ]]; then
         # Preserve existing installedAt, add/update lastSyncedAt
@@ -286,7 +286,7 @@ INTERACTIVE_OVERWRITE_ALL=false
 prompt_conflict() {
     local src="$1"
     local dest="$2"
-    
+
     if [[ "$INTERACTIVE_SKIP_ALL" == "true" ]]; then
         echo "skip"
         return
@@ -295,7 +295,7 @@ prompt_conflict() {
         echo "overwrite"
         return
     fi
-    
+
     echo ""
     echo -e "${YELLOW}CONFLICT:${NC} $dest differs from upstream"
     if command -v diff >/dev/null 2>&1; then
@@ -306,7 +306,7 @@ prompt_conflict() {
     fi
     echo -n "[k]eep / [o]verwrite / [n]ew file / [s]kip all / [O]verwrite all? "
     read -r response
-    
+
     case "$response" in
         k|K) echo "keep" ;;
         o) echo "overwrite" ;;
@@ -409,12 +409,12 @@ process_directory() {
     while IFS= read -r -d '' file; do
         local rel_path="${file#$src_dir/}"
         local dest_path="${dest_dir}/${rel_path}"
-        
-        # Skip user's plan files in workflow directories (but not TEMPLATE.md at plans root)
-        if [[ "$rel_path" == plans/todo/*.md || "$rel_path" == plans/in-progress/*.md || "$rel_path" == plans/completed/*.md ]]; then
+
+        # Skip *.md files in user content directories (research, plans, prds)
+        if [[ "$rel_path" == research/*.md || "$rel_path" == plans/*.md || "$rel_path" == plans/**/*.md || "$rel_path" == prds/*.md ]]; then
             continue
         fi
-        
+
         if [[ -f "$file" ]]; then
             install_file "$file" "$dest_path"
         fi
@@ -468,7 +468,7 @@ main() {
     log_info "  Installed: ${installed_count}"
     log_info "  Skipped:   ${skipped_count}"
     log_info "  Conflicts: ${conflict_count}"
-    
+
     if [[ $backup_count -gt 0 ]]; then
         log_info "  Backed up: ${backup_count}"
         log_info ""
