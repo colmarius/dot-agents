@@ -29,5 +29,16 @@
 
 ### Iteration 3
 **Task**: Task 3 - Refactor install.sh with guard pattern
+**Status**: ✅ Complete
+
+**Actions**:
+- Wrapped all execution (parse_args, help, uninstall, main) in `_main()` function
+- Added guard: `if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then _main "$@"; fi`
+- Verified: script works when executed, can be sourced without running
+
+---
+
+### Iteration 4
+**Task**: Task 4 - Refactor sync.sh with guard pattern
 **Status**: In Progress
 

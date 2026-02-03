@@ -46,7 +46,7 @@ Explicitly **out of scope**:
     - No suppressions unless absolutely necessary (document reason)
   - Notes: Run locally first before CI runs
 
-- [ ] **Task 3: Refactor install.sh with guard pattern**
+- [x] **Task 3: Refactor install.sh with guard pattern**
   - Scope: `install.sh`
   - Depends on: Task 2
   - Acceptance:

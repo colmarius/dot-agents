@@ -449,24 +449,31 @@ main() {
     fi
 }
 
-parse_args "$@"
+_main() {
+    parse_args "$@"
 
-if [[ "$SHOW_HELP" == "true" ]]; then
-    usage
-    exit 0
-fi
-
-if [[ "$UNINSTALL" == "true" ]]; then
-    if [[ "$YES" != "true" ]]; then
-        echo -n "Remove dot-agents from this project? [y/N] "
-        read -r response
-        if [[ ! "$response" =~ ^[Yy]$ ]]; then
-            echo "Aborted."
-            exit 0
-        fi
+    if [[ "$SHOW_HELP" == "true" ]]; then
+        usage
+        exit 0
     fi
-    do_uninstall
-    exit 0
-fi
 
-main
+    if [[ "$UNINSTALL" == "true" ]]; then
+        if [[ "$YES" != "true" ]]; then
+            echo -n "Remove dot-agents from this project? [y/N] "
+            read -r response
+            if [[ ! "$response" =~ ^[Yy]$ ]]; then
+                echo "Aborted."
+                exit 0
+            fi
+        fi
+        do_uninstall
+        exit 0
+    fi
+
+    main
+}
+
+# Only run if script is executed, not sourced
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    _main "$@"
+fi
