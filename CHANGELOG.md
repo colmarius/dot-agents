@@ -27,5 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - BASH_SOURCE execution guard for piped installation
 - Installer skip logic now correctly includes plans/TEMPLATE.md
+- Postfix increment operators causing script exit on bash 5.3+ with `set -e` ([#1](https://github.com/colmarius/dot-agents/issues/1))
 
 [Unreleased]: https://github.com/colmarius/dot-agents/commits/main
