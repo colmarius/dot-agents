@@ -83,3 +83,24 @@
 
 ---
 
+## Task 5: Add Quickstart 5-step recipe section
+
+**Thread**: https://ampcode.com/threads/T-019c25a3-5f40-75a7-a0e2-c28e75b5800e
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `site/index.html` - Added "Get started in 5 steps" section with actionable commands
+- `site/style.css` - Added styles for .quickstart, .qs-step, .qs-num, .qs-content
+
+### Commands Run
+
+- Visual verification ✓
+
+### Next
+
+- Task 6: Clarify Ralph/Amp terminology in feature cards
+
+---
+

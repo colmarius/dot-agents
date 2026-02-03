@@ -43,7 +43,7 @@
     - Brief heading like "What you get"
   - Notes: Reduces uncertainty, shows concrete output.
 
-- [ ] **Task 5: Add Quickstart 5-step recipe section**
+- [x] **Task 5: Add Quickstart 5-step recipe section**
   - Scope: `site/index.html`, `site/style.css`
   - Depends on: Task 4
   - Acceptance:

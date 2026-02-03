@@ -343,6 +343,67 @@ header {
   font-size: 1.25rem;
 }
 
+/* Quickstart */
+.quickstart {
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.quickstart h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+}
+
+.quickstart-steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.qs-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.qs-num {
+  width: 24px;
+  height: 24px;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.qs-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.qs-content strong {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.qs-content code {
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
 /* CTA */
 .cta {
   text-align: center;
