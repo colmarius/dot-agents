@@ -13,46 +13,51 @@ Projects with dot-agents installed need an easy way to check for and pull update
 - `.agents/.dot-agents.json` stores: `upstream`, `ref`, `installedAt`
 - Conflict resolution exists: identical files skipped, changed files create `.dot-agents.new`
 
-## Decision: Add `--sync` to install.sh
+## Decision: Local Sync Script
 
-**Chosen approach:** Option A - single flag addition to existing script.
+**Chosen approach:** Local wrapper script for best UX.
+
+| Component | Purpose |
+|-----------|---------|
+| `.agents/scripts/sync.sh` | Local wrapper script (primary UX) |
+| `install.sh` | Underlying install/update logic (unchanged) |
+
+### Why This Approach
 
 | Alternative | Pros | Cons | Decision |
 |-------------|------|------|----------|
-| `--sync` flag | Simple, DRY, reuses all existing logic | Couples sync to install | ✅ Chosen |
-| Separate sync.sh | Cleaner separation | Code duplication, drift | ❌ Rejected |
+| Local wrapper script | Discoverable, simple UX, self-updating | Adds a file | ✅ Chosen |
+| `--sync` flag on install.sh | No new files | Users must remember curl command | ❌ Rejected |
+| Separate sync.sh at root | Visible | Clutters project root | ❌ Rejected |
 
 ## Implementation Plan
 
-### Phase 1: Core Sync (MVP)
+### Phase 1: Local Sync Script (MVP)
 
-1. **Add `--sync` flag to parse_args**
-   - New variable `SYNC=false`
-   - Update usage() with sync docs
+1. **Create `.agents/scripts/sync.sh`**
+   - Thin wrapper that fetches and runs upstream install.sh
+   - Reads `.dot-agents.json` for upstream URL and ref
+   - Passes through all user flags (`--dry-run`, `--force`, etc.)
+   - Self-updating: always fetches latest install.sh from upstream
 
-2. **Read metadata in sync mode**
-   - Path: `.agents/.dot-agents.json`
-   - Parse with `sed`/`grep` (no jq dependency)
-   - Error clearly if not installed
+2. **Create `.agents/scripts/` directory structure**
+   - Add to install.sh file processing
+   - Ensure script is executable
 
-3. **Extract upstream URL → derive archive URL**
-   - Support only `https://github.com/<owner>/<repo>` format
-   - Error on unsupported upstream (GitLab, etc.)
-
-4. **Update metadata tracking**
+3. **Update metadata tracking in install.sh**
    - Keep `installedAt` as first install time
-   - Add `lastSyncedAt` on sync operations
+   - Add `lastSyncedAt` on subsequent runs
 
-5. **Update README documentation**
+4. **Update README documentation**
 
 ### Edge Cases to Handle
 
 | Case | Handling |
 |------|----------|
-| Missing `.dot-agents.json` | Error: "dot-agents not installed; run install first" |
-| Non-GitHub upstream | Error: "Unsupported upstream; only github.com supported" |
+| Missing `.dot-agents.json` | Error: "dot-agents not installed" |
+| Non-GitHub upstream | Error: "Only github.com upstreams supported" |
 | Malformed JSON | Error with helpful message |
-| `--sync` + `--ref` | Allow `--ref` to override stored ref |
+| Custom ref override | Support `--ref` flag passthrough |
 
 ### Scope Exclusions (v1)
 
@@ -71,20 +76,58 @@ Projects with dot-agents installed need an easy way to check for and pull update
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 ```
 
-### After (with sync)
+### After (with sync script)
 
 ```bash
-# Simple sync from within project
-curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --sync
+# Simple - run local script
+.agents/scripts/sync.sh
 
-# Or with options
-curl -fsSL ... | bash -s -- --sync --dry-run
-curl -fsSL ... | bash -s -- --sync --force
+# With options
+.agents/scripts/sync.sh --dry-run
+.agents/scripts/sync.sh --force
+.agents/scripts/sync.sh --ref v2.0.0
 ```
 
 ## Technical Notes
 
-### Metadata parsing (no jq)
+### sync.sh Implementation
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+METADATA=".agents/.dot-agents.json"
+
+if [[ ! -f "$METADATA" ]]; then
+    echo "Error: dot-agents not installed (.dot-agents.json missing)" >&2
+    exit 1
+fi
+
+upstream=$(sed -nE 's/.*"upstream"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/p' "$METADATA")
+ref=$(sed -nE 's/.*"ref"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/p' "$METADATA")
+
+if [[ ! "$upstream" =~ ^https://github\.com/([^/]+)/([^/]+)/?$ ]]; then
+    echo "Error: Only github.com upstreams supported" >&2
+    exit 1
+fi
+
+owner="${BASH_REMATCH[1]}"
+repo="${BASH_REMATCH[2]%.git}"
+
+curl -fsSL "https://raw.githubusercontent.com/${owner}/${repo}/${ref:-main}/install.sh" \
+    | bash -s -- "$@"
+```
+
+### Key Design Points
+
+| Aspect | Design |
+|--------|--------|
+| Self-updating | Fetches latest install.sh from upstream on each run |
+| Passthrough | All flags go to install.sh (`--dry-run`, `--force`, `--ref`) |
+| No duplication | Reuses all install.sh logic (conflicts, backups, etc.) |
+| Portable | Pure bash, no dependencies beyond curl |
+
+### Metadata Parsing (no jq)
 
 ```bash
 # Extract ref
@@ -94,12 +137,11 @@ sed -nE 's/.*"ref"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/p' .agents/.dot-agents
 sed -nE 's/.*"upstream"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/p' .agents/.dot-agents.json
 ```
 
-### GitHub URL parsing
+### GitHub URL Parsing
 
 ```bash
 # From: https://github.com/colmarius/dot-agents
 # Extract: owner=colmarius, repo=dot-agents
-upstream="https://github.com/colmarius/dot-agents"
 if [[ "$upstream" =~ ^https://github\.com/([^/]+)/([^/]+)/?$ ]]; then
     owner="${BASH_REMATCH[1]}"
     repo="${BASH_REMATCH[2]%.git}"
@@ -108,12 +150,12 @@ fi
 
 ## Effort Estimate
 
-**Small-Medium (1-3 hours)**
+**Small (1-2 hours)**
 
-- Add flag + metadata reading: 30 min
-- GitHub URL parsing: 15 min
-- Timestamp tracking: 15 min
-- Testing (fresh, sync, conflicts): 1 hour
+- Create sync.sh script: 15 min
+- Update install.sh to include scripts/: 15 min
+- Add lastSyncedAt tracking: 15 min
+- Testing (fresh, sync, conflicts): 45 min
 - Documentation: 30 min
 
 ## Future Considerations
