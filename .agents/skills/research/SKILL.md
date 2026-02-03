@@ -34,8 +34,9 @@ Use these tools in combination:
 | `read_web_page` | Extract detailed content from URLs |
 | `oracle` | Deep analysis, synthesizing findings, reasoning about trade-offs |
 | `librarian` | Explore open-source implementations |
+| `gh` (via Bash) | Fetch repo content, issues, PRs, releases when you have a direct GitHub URL |
 
-> **Note:** `librarian` accesses GitHub repositories (public repos and private repos you've authorized). For local codebase searches, use `finder` or `Grep` instead.
+> **Note:** `librarian` accesses GitHub repositories (public repos and private repos you've authorized). For local codebase searches, use `finder` or `Grep` instead. Use `gh` CLI for targeted queries like `gh repo view`, `gh issue list`, or `gh release list`.
 
 **Research strategy:**
 
