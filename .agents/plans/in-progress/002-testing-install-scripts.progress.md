@@ -88,5 +88,17 @@
 
 ### Iteration 8
 **Task**: Task 8 - Write core integration tests
+**Status**: ✅ Complete
+
+**Actions**:
+- Created test/integration/install.bats with 9 tests
+- Fixed bug: `((count++))` returns 1 when count=0, causing exit under `set -e`
+- Added `|| true` to all arithmetic increment expressions
+- All tests pass
+
+---
+
+### Iteration 9
+**Task**: Task 9 - Write sync.sh integration tests
 **Status**: In Progress
 

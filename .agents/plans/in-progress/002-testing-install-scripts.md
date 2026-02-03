@@ -101,7 +101,7 @@ Explicitly **out of scope**:
     - Readable by both GNU tar and BSD tar (use standard gzip compression)
   - Notes: Create via `tar -czf sample-archive.tar.gz dot-agents-main/`
 
-- [ ] **Task 8: Write core integration tests**
+- [x] **Task 8: Write core integration tests**
   - Scope: `test/integration/install.bats`
   - Depends on: Tasks 3, 5, 6, 7
   - Acceptance:
