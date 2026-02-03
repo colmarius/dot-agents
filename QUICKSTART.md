@@ -58,4 +58,4 @@ Ralph iterates through tasks, commits after each, and pauses for review.
 
 ---
 
-For detailed documentation: <https://dot-agents.dev>
+**Next:** [Full Documentation](./docs/README.md) · [dot-agents.dev](https://dot-agents.dev)

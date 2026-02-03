@@ -44,7 +44,7 @@ Create a documentation hub and concepts page in docs/ to provide better navigati
     - Links to docs/README.md as "Full Docs"
   - Notes: Add near top of README, after install section
 
-- [ ] **Task 4: Update QUICKSTART.md to link to docs hub**
+- [x] **Task 4: Update QUICKSTART.md to link to docs hub**
   - Scope: `QUICKSTART.md`
   - Depends on: Task 1
   - Acceptance:

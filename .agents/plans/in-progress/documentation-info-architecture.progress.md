@@ -19,3 +19,9 @@
 - **Started:** 2026-02-03
 - **Completed:** 2026-02-03
 - **Changes:** Added Documentation section with Quickstart, Full Docs, and Website links; removed duplicate Documentation section
+
+### Task 4: Update QUICKSTART.md to link to docs hub
+- **Status:** Complete
+- **Started:** 2026-02-03
+- **Completed:** 2026-02-03
+- **Changes:** Updated footer to link to docs/README.md while keeping dot-agents.dev link

@@ -2,7 +2,7 @@
 
 ## Workflow
 
-```
+```text
 Research → PRD → Plan → Execute
 ```
 
