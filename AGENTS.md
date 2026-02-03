@@ -52,6 +52,8 @@ Plans in `.agents/plans/` follow this workflow:
 | **IN-PROGRESS** | `plans/in-progress/` |
 | **COMPLETED** | `plans/completed/` |
 
+**Completing plans:** When moving a plan to `completed/`, also move its corresponding `.progress.md` file if one exists.
+
 **Archive command:** When asked to "archive completed plans", delete each plan from `completed/` with its own commit. Git history preserves them.
 
 ### Writing Ralph-Ready Plans
