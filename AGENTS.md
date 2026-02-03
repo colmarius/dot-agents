@@ -36,6 +36,7 @@ project/
 │   │   ├── in-progress/         # Currently being worked on
 │   │   └── completed/           # Finished and verified
 │   └── skills/                  # Agent skills
+│       ├── adapt/               # Project analysis and AGENTS.md setup
 │       ├── ralph/               # Autonomous implementation loops
 │       ├── research/            # Deep research workflow
 │       └── tmux/                # Background process management
