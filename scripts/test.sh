@@ -22,10 +22,10 @@ echo ""
 # Run BATS tests
 echo "==> BATS tests"
 if command -v bats &> /dev/null; then
-    if [[ -d "test" ]]; then
-        bats "$@" test/
+    if [[ -d "test/integration" ]]; then
+        bats "$@" test/integration/
     else
-        echo "    ⚠ No test/ directory yet (run plan tasks 5-9)"
+        echo "    ⚠ No test/integration/ directory yet"
     fi
 else
     echo "    ⚠ BATS not installed (brew install bats-core)"
