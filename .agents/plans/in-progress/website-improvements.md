@@ -8,7 +8,7 @@
 
 ## Tasks
 
-- [ ] **Task 1: Add OG meta tags for link previews**
+- [x] **Task 1: Add OG meta tags for link previews**
   - Scope: `site/index.html`
   - Depends on: none
   - Acceptance:
