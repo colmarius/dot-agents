@@ -39,7 +39,7 @@ Running `sync` creates untracked conflict files (`.dot-agents.new`, `.dot-agents
     - Update help text and documentation
   - Notes: Breaking change—document in CHANGELOG
 
-- [ ] **Task 4: Update tests for new flags**
+- [x] **Task 4: Update tests for new flags**
   - Scope: `test/integration/install.bats`
   - Depends on: Task 1, Task 2, Task 3
   - Acceptance:

@@ -24,13 +24,25 @@
 - Creates backup before overwriting
 - Tests already exist for this functionality
 
-### Task 3: Change default sync behavior to show diff instead of creating files
+### Task 3: Change default sync behavior
 **Status**: Completed
 
 **Changes**:
 - Added `WRITE_CONFLICTS` flag variable
-- Added `--write-conflicts` option for old behavior
-- Auto-enable diff mode on sync (when .agents exists) unless --force, --write-conflicts, or --interactive
-- Updated test for old behavior to use --write-conflicts
-- Added test for new default diff behavior on sync
+- Added `--write-conflicts` option for creating conflict files
+- Auto-enable force mode on sync (when .agents exists) unless --diff, --write-conflicts, or --interactive
+- Updated tests for new default force behavior
 - Updated CHANGELOG with breaking change notice
+
+**Revised behavior** (per user feedback):
+- Default sync: force overwrite with backup
+- `--diff`: show diffs only, no file changes
+- `--write-conflicts`: create .dot-agents.new files
+
+### Task 4: Update tests for new flags
+**Status**: Completed (covered by Tasks 1 and 3)
+
+**Notes**:
+- Tests for --diff added in Task 1
+- Tests for --force already existed
+- Conflict tests updated in Task 3

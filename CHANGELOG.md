@@ -9,14 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **BREAKING:** Sync now shows unified diff by default instead of creating `.dot-agents.new` conflict files
-  - Use `--write-conflicts` to restore old behavior
-  - Exit code 1 when conflicts exist, 0 when clean
+- **BREAKING:** Sync now overwrites conflicts by default (with backup)
+  - Use `--diff` to preview changes before syncing
+  - Use `--write-conflicts` to create `.dot-agents.new` files instead
 
 ### Added
 
-- `--diff` flag to show unified diffs for conflicts (now default on sync)
-- `--write-conflicts` flag to create `.dot-agents.new` files (old behavior)
+- `--diff` flag to show unified diffs for conflicts without modifying files
+- `--write-conflicts` flag to create `.dot-agents.new` files for manual review
 
 ## [0.1.0] - 2025-02-03
 

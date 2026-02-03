@@ -35,9 +35,9 @@ Install dot-agents into the current project.
 
 Options:
   --dry-run         Show what would happen without making changes
-  --diff            Show unified diff for conflicts (default on sync)
-  --force           Overwrite conflicts (creates backup first)
-  --write-conflicts Create .dot-agents.new files for conflicts (old behavior)
+  --diff            Show unified diff for conflicts instead of overwriting
+  --force           Overwrite conflicts (creates backup first, default on sync)
+  --write-conflicts Create .dot-agents.new files for conflicts
   --ref <ref>       Git ref to install (branch, tag, commit). Default: main
   --yes             Skip confirmation prompts
   --uninstall       Remove dot-agents
@@ -466,9 +466,9 @@ main() {
     TMP_DIR="$(mktemp -d)"
     trap cleanup EXIT
 
-    # Auto-enable diff mode on sync (when already installed) unless overridden
-    if [[ -d ".agents" ]] && [[ "$FORCE" != "true" ]] && [[ "$WRITE_CONFLICTS" != "true" ]] && [[ "$INTERACTIVE" != "true" ]]; then
-        DIFF_ONLY=true
+    # Auto-enable force mode on sync (when already installed) unless diff or write-conflicts is set
+    if [[ -d ".agents" ]] && [[ "$DIFF_ONLY" != "true" ]] && [[ "$WRITE_CONFLICTS" != "true" ]] && [[ "$INTERACTIVE" != "true" ]]; then
+        FORCE=true
     fi
 
     log_info "Installing dot-agents (ref: ${REF})..."

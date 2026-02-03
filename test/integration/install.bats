@@ -218,21 +218,22 @@ teardown() {
     [ -f ".agents/skills/sample-skill/SKILL.dot-agents.md" ]
 }
 
-@test "sync defaults to diff mode" {
+@test "sync defaults to force mode (overwrites with backup)" {
     # First install
     bash "$INSTALL_SCRIPT" --yes
 
     # Modify a skill file to create conflict
     echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
 
-    # Re-install (sync) should default to diff mode
+    # Re-install (sync) should default to force mode
     run bash "$INSTALL_SCRIPT"
-    assert_failure  # Exit 1 due to conflicts
-    assert_output --partial "CONFLICT"
-    assert_output --partial "---"  # Diff header
+    assert_success
+    assert_output --partial "force overwrite"
+    assert_output --partial "BACKUP"
 
-    # Should NOT create conflict files
-    [ ! -f ".agents/skills/sample-skill/SKILL.dot-agents.md" ]
+    # Should create backup directory
+    run find . -type d -name ".dot-agents-backup*"
+    assert_output --partial ".dot-agents-backup"
 }
 
 @test "--diff shows unified diff for conflicts" {
