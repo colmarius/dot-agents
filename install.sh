@@ -212,13 +212,33 @@ write_metadata() {
     fi
     
     mkdir -p .agents
-    cat > "$metadata_file" <<EOF
+    
+    # Check if this is an update (metadata file already exists)
+    if [[ -f "$metadata_file" ]]; then
+        # Preserve existing installedAt, add/update lastSyncedAt
+        local installed_at
+        installed_at=$(sed -n 's/.*"installedAt"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$metadata_file")
+        if [[ -z "$installed_at" ]]; then
+            installed_at="$timestamp"
+        fi
+        cat > "$metadata_file" <<EOF
+{
+  "upstream": "https://github.com/${REPO_OWNER}/${REPO_NAME}",
+  "ref": "${REF}",
+  "installedAt": "${installed_at}",
+  "lastSyncedAt": "${timestamp}"
+}
+EOF
+    else
+        # Fresh install - only set installedAt
+        cat > "$metadata_file" <<EOF
 {
   "upstream": "https://github.com/${REPO_OWNER}/${REPO_NAME}",
   "ref": "${REF}",
   "installedAt": "${timestamp}"
 }
 EOF
+    fi
     log_info "${GREEN}[METADATA]${NC} $metadata_file"
 }
 

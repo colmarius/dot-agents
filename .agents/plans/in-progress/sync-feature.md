@@ -29,7 +29,7 @@ Add `.agents/scripts/sync.sh` - a local wrapper script that allows projects to e
     - Existing conflict/backup logic applies to scripts
   - Notes: May need to ensure executable bit is preserved
 
-- [ ] **Task 3: Add lastSyncedAt metadata tracking**
+- [x] **Task 3: Add lastSyncedAt metadata tracking**
   - Scope: `install.sh` (write_metadata function)
   - Depends on: none
   - Acceptance:
