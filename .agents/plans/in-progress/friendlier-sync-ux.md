@@ -12,7 +12,7 @@ Running `sync` creates untracked conflict files (`.dot-agents.new`, `.dot-agents
 
 ## Tasks
 
-- [ ] **Task 1: Add `--diff` flag to show changes without creating files**
+- [x] **Task 1: Add `--diff` flag to show changes without creating files**
   - Scope: `install.sh`
   - Depends on: none
   - Acceptance:

@@ -24,6 +24,7 @@ SHOW_HELP=false
 UNINSTALL=false
 INTERACTIVE=false
 SHOW_VERSION=false
+DIFF_ONLY=false
 
 usage() {
     cat <<EOF
@@ -33,6 +34,7 @@ Install dot-agents into the current project.
 
 Options:
   --dry-run         Show what would happen without making changes
+  --diff            Show unified diff for conflicts without creating files
   --force           Overwrite conflicts (creates backup first)
   --ref <ref>       Git ref to install (branch, tag, commit). Default: main
   --yes             Skip confirmation prompts
@@ -61,6 +63,10 @@ parse_args() {
         case "$1" in
             --dry-run)
                 DRY_RUN=true
+                shift
+                ;;
+            --diff)
+                DIFF_ONLY=true
                 shift
                 ;;
             --force)
@@ -393,6 +399,15 @@ install_file() {
         esac
     fi
 
+    # Diff-only mode: show unified diff, no file creation
+    if [[ "$DIFF_ONLY" == "true" ]]; then
+        log_conflict "$dest"
+        diff -u "$dest" "$src" 2>/dev/null || true
+        echo ""
+        conflict_count=$((conflict_count + 1))
+        return 0
+    fi
+
     local conflict_file
     if [[ "$dest" == *.md ]]; then
         conflict_file="${dest%.md}.dot-agents.md"
@@ -420,6 +435,11 @@ process_directory() {
 
         # Skip *.md files in user content directories (research, plans, prds)
         if [[ "$rel_path" == research/*.md || "$rel_path" == plans/*.md || "$rel_path" == plans/**/*.md || "$rel_path" == prds/*.md ]]; then
+            continue
+        fi
+
+        # Skip metadata file in diff mode (it's auto-generated and will always differ)
+        if [[ "$DIFF_ONLY" == "true" ]] && [[ "$rel_path" == ".dot-agents.json" ]]; then
             continue
         fi
 
@@ -483,7 +503,10 @@ main() {
         process_directory "${extracted_dir}/.agents" "./.agents"
     fi
 
-    write_metadata
+    # Skip metadata write in diff-only mode
+    if [[ "$DIFF_ONLY" != "true" ]]; then
+        write_metadata
+    fi
 
     log_info ""
     log_info "Summary:"
@@ -499,7 +522,16 @@ main() {
 
     if [[ $conflict_count -gt 0 ]]; then
         log_info ""
-        log_info "Review conflicts with: find . -name '*.dot-agents.new' -o -name '*.dot-agents.md'"
+        if [[ "$DIFF_ONLY" == "true" ]]; then
+            log_info "Use --force to overwrite conflicts, or resolve manually."
+        else
+            log_info "Review conflicts with: find . -name '*.dot-agents.new' -o -name '*.dot-agents.md'"
+        fi
+    fi
+
+    # In diff mode, exit 1 if conflicts exist
+    if [[ "$DIFF_ONLY" == "true" ]] && [[ $conflict_count -gt 0 ]]; then
+        return 1
     fi
 }
 

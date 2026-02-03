@@ -217,3 +217,51 @@ teardown() {
     # Should create conflict file for the skill
     [ -f ".agents/skills/sample-skill/SKILL.dot-agents.md" ]
 }
+
+@test "--diff shows unified diff for conflicts" {
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Modify a skill file to create conflict
+    echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
+
+    # --diff should show diff output
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure  # Exit code 1 when conflicts exist
+    assert_output --partial "CONFLICT"
+    assert_output --partial "---"  # Diff header
+    assert_output --partial "+++"  # Diff header
+
+    # Should NOT create conflict files
+    [ ! -f ".agents/skills/sample-skill/SKILL.dot-agents.md" ]
+}
+
+@test "--diff exits 0 when no conflicts" {
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # --diff with no changes should exit 0
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_success
+    refute_output --partial "CONFLICT"
+}
+
+@test "--diff does not write metadata" {
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Record original metadata timestamp
+    local original_meta
+    original_meta=$(cat .agents/.dot-agents.json)
+
+    # Modify a skill file
+    echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
+
+    # --diff should not update metadata
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+
+    # Metadata should be unchanged
+    run cat .agents/.dot-agents.json
+    assert_output "$original_meta"
+}
