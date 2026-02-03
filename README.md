@@ -51,7 +51,9 @@ The installer copies `AGENTS.template.md` → `AGENTS.md` on fresh install only.
 
 ## Versioning
 
-dot-agents uses [Semantic Versioning](https://semver.org/). Releases are tagged as `vMAJOR.MINOR.PATCH`. See [CHANGELOG.md](./CHANGELOG.md) for release history.
+dot-agents uses [Semantic Versioning](https://semver.org/). Releases are tagged as `vMAJOR.MINOR.PATCH`.
+
+See [CHANGELOG.md](./CHANGELOG.md) for release history.
 
 ## License
 
