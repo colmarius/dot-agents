@@ -125,3 +125,24 @@
 
 ---
 
+## Task 7: Update CTA section with Quickstart button
+
+**Thread**: https://ampcode.com/threads/T-019c25a5-f588-721b-a09c-c0f878b50860
+**Status**: completed
+**Iteration**: 2
+
+### Changes
+
+- `site/index.html` - Reordered CTA buttons: Quickstart (primary) | Full Docs | GitHub
+- `site/style.css` - Added `.btn-primary` styling with accent color
+
+### Commands Run
+
+- ./scripts/lint.sh ✓
+
+### Next
+
+- Task 8: Add minimal top navigation anchors
+
+---
+

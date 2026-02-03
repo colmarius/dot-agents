@@ -443,6 +443,15 @@ header {
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
 }
 
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
 .btn-secondary {
   background: transparent;
   color: var(--text);

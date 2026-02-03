@@ -61,7 +61,7 @@
     - Add link to docs/concepts.md glossary section from Ralph mention
   - Notes: Visitors may not know Amp ecosystem terminology.
 
-- [ ] **Task 7: Update CTA section with Quickstart button**
+- [x] **Task 7: Update CTA section with Quickstart button**
   - Scope: `site/index.html`
   - Depends on: none
   - Acceptance:
