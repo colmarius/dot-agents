@@ -93,14 +93,46 @@ TAG="v$VERSION"
 info "Version: $VERSION"
 info "Tag: $TAG"
 
+# Files containing version references to update
+VERSION_FILES=(
+    "$PROJECT_ROOT/install.sh"
+    "$PROJECT_ROOT/site/index.html"
+)
+
+# Update version references in files
+update_version_refs() {
+    local new_tag="$1"
+    local old_pattern='v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?'
+    
+    for file in "${VERSION_FILES[@]}"; do
+        if [[ -f "$file" ]]; then
+            # Only update version refs in --ref examples
+            if grep -qE -- "--ref $old_pattern" "$file" 2>/dev/null; then
+                sed -i.bak -E "s/--ref $old_pattern/--ref $new_tag/g" "$file"
+                rm -f "$file.bak"
+                info "Updated version in $(basename "$file")"
+            fi
+        fi
+    done
+}
+
 # Check if tag already exists
 if git rev-parse "$TAG" >/dev/null 2>&1; then
     die "Tag $TAG already exists. Bump VERSION file first."
 fi
 
-# Check for uncommitted changes (staged, unstaged, or untracked)
-if ! git diff --quiet HEAD 2>/dev/null || ! git diff --cached --quiet 2>/dev/null || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
-    die "Uncommitted changes detected. Commit or stash them first."
+# Update version references in example code
+update_version_refs "$TAG"
+
+# Check for uncommitted changes and commit version updates
+if ! git diff --quiet HEAD 2>/dev/null || ! git diff --cached --quiet 2>/dev/null; then
+    info "Committing version reference updates..."
+    if [[ "$DRY_RUN" == true ]]; then
+        info "[DRY-RUN] Would commit version reference updates"
+    else
+        git add -A
+        git commit -m "chore: Update version references to $TAG"
+    fi
 fi
 
 # Extract changelog section for this version

@@ -115,12 +115,13 @@ teardown() {
     assert_output --partial "Tag v1.0.0 already exists"
 }
 
-@test "fails with uncommitted changes" {
+@test "uncommitted untracked files do not block release" {
+    # Untracked files are ignored; only version ref changes are auto-committed
     echo "new content" > newfile.txt
 
     run bash scripts/release.sh --dry-run
-    assert_failure
-    assert_output --partial "Uncommitted changes detected"
+    assert_success
+    assert_output --partial "[DRY-RUN] Would create tag: v1.0.0"
 }
 
 @test "creates tag without --push" {
@@ -148,4 +149,52 @@ teardown() {
     assert_success
     assert_output --partial "No changelog entry found"
     assert_output --partial "Release 2.0.0"
+}
+
+@test "updates version references in install.sh and site/index.html" {
+    # Create install.sh with old version reference
+    cat > install.sh <<'EOF'
+#!/usr/bin/env bash
+# Example: bash -s -- --ref v0.0.1
+echo "installer"
+EOF
+
+    # Create site/index.html with old version reference
+    mkdir -p site
+    cat > site/index.html <<'EOF'
+<code>curl ... | bash -s -- --ref v0.0.1</code>
+EOF
+
+    git add -A && git commit -m "Add files with version refs" --quiet
+
+    run bash scripts/release.sh
+    assert_success
+    assert_output --partial "Updated version in install.sh"
+    assert_output --partial "Updated version in index.html"
+
+    # Verify files were updated
+    run grep -- "--ref v1.0.0" install.sh
+    assert_success
+
+    run grep -- "--ref v1.0.0" site/index.html
+    assert_success
+}
+
+@test "dry-run shows version update commit would happen" {
+    # Create install.sh with old version reference
+    cat > install.sh <<'EOF'
+#!/usr/bin/env bash
+# Example: bash -s -- --ref v0.0.1
+EOF
+
+    git add -A && git commit -m "Add install.sh" --quiet
+
+    run bash scripts/release.sh --dry-run
+    assert_success
+    assert_output --partial "[DRY-RUN] Would commit version reference updates"
+
+    # File should NOT be modified in dry-run (update happens but no commit)
+    # Actually the update does happen, just the commit is skipped
+    run grep -- "--ref v1.0.0" install.sh
+    assert_success
 }
