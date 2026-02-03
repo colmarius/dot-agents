@@ -211,6 +211,32 @@ header {
   border: 1px solid var(--border);
 }
 
+/* What you get */
+.what-you-get {
+  margin: 2rem 0 3rem;
+  text-align: center;
+}
+
+.what-you-get h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+}
+
+.tree-block {
+  text-align: left;
+  box-shadow: none;
+}
+
+.tree-block pre {
+  padding: 1.25rem;
+}
+
+.tree-comment {
+  color: var(--text-muted);
+}
+
 /* Features */
 .features {
   margin: 3rem 0;

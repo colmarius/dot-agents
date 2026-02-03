@@ -62,3 +62,24 @@
 
 ---
 
+## Task 4: Add "What gets installed" directory tree section
+
+**Thread**: https://ampcode.com/threads/T-019c25a3-5f40-75a7-a0e2-c28e75b5800e
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `site/index.html` - Added "What you get" section with directory tree
+- `site/style.css` - Added styles for .what-you-get, .tree-block, and .tree-comment
+
+### Commands Run
+
+- Visual verification ✓
+
+### Next
+
+- Task 5: Add Quickstart 5-step recipe section
+
+---
+

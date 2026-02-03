@@ -90,11 +90,20 @@ Plans in `.agents/plans/` follow this workflow:
 ## Commands
 
 ```bash
-# Run tests
-cd test && bats integration/
+# Run all tests (lint + BATS)
+./scripts/test.sh
+
+# Run tests with filter
+./scripts/test.sh --filter "help"
+
+# Lint shell scripts (ShellCheck + syntax)
+./scripts/lint.sh
 
 # Rebuild test fixture after changes to .agents/ or AGENTS.template.md
 ./scripts/build-test-fixture.sh
+
+# Serve docs locally
+./scripts/serve-docs.sh [port]
 
 # Test installation locally
 ./install.sh --dry-run

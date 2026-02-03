@@ -34,7 +34,7 @@
     - Styled consistently
   - Notes: Already documented in README, just surface it.
 
-- [ ] **Task 4: Add "What gets installed" directory tree section**
+- [x] **Task 4: Add "What gets installed" directory tree section**
   - Scope: `site/index.html`, `site/style.css`
   - Depends on: none
   - Acceptance:
