@@ -24,7 +24,7 @@ Improve QUICKSTART.md with prerequisites, expected outputs, installation verific
     - Includes example command to review script with `less`
   - Notes: See research file for exact content
 
-- [ ] **Task 2: Add Expected Outputs section to QUICKSTART.md**
+- [x] **Task 2: Add Expected Outputs section to QUICKSTART.md**
   - Scope: `QUICKSTART.md`
   - Depends on: Task 1
   - Acceptance:

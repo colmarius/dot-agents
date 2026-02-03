@@ -20,6 +20,38 @@ Get productive with dot-agents in 5 minutes.
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 ```
 
+### What Gets Installed
+
+After running the install command, you'll have:
+
+```
+your-project/
+├── AGENTS.md              # Template - customize for your project
+└── .agents/
+    ├── plans/
+    │   ├── todo/
+    │   ├── in-progress/
+    │   └── completed/
+    ├── prds/
+    │   └── TEMPLATE.md
+    ├── research/
+    ├── reference/         # gitignored - for external repos
+    ├── scripts/
+    │   └── sync.sh
+    └── skills/
+        ├── adapt/
+        ├── ralph/
+        ├── research/
+        └── tmux/
+```
+
+### Verify Installation
+
+```bash
+ls -la .agents/
+cat AGENTS.md | head -20
+```
+
 ## 2. Adapt AGENTS.md
 
 ```text
