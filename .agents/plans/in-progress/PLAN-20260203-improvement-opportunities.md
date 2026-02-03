@@ -32,7 +32,7 @@ Implement improvements identified in the dot-agents framework analysis to enhanc
     - Fresh install includes `.agents/plans/TEMPLATE.md`
   - Notes: Current `plans/*.md` glob incorrectly skips TEMPLATE.md at plans root
 
-- [ ] **Task 3: Add plan TEMPLATE.md**
+- [x] **Task 3: Add plan TEMPLATE.md**
   - Scope: `.agents/plans/TEMPLATE.md`
   - Depends on: Task 2
   - Acceptance:

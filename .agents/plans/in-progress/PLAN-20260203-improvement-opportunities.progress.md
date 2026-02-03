@@ -43,3 +43,23 @@
 
 ---
 
+## Task 3: Add plan TEMPLATE.md
+
+**Thread**: https://ampcode.com/threads/T-019c2539-d0c9-740b-8052-cbfa7d112387
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `.agents/plans/TEMPLATE.md` - Created plan template with metadata table and Ralph-ready task format
+
+### Commands Run
+
+- `./scripts/lint.sh` ✓
+
+### Next
+
+- Task 4: Add .agents/.gitignore
+
+---
+
