@@ -63,3 +63,23 @@
 
 ---
 
+## Task 4: Add .agents/.gitignore
+
+**Thread**: https://ampcode.com/threads/T-019c2539-d0c9-740b-8052-cbfa7d112387
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `.agents/.gitignore` - Created with `reference/` exclusion and explanatory comment
+
+### Commands Run
+
+- `./scripts/lint.sh` ✓
+
+### Next
+
+- Task 5: Add skill invocation documentation to AGENTS.md
+
+---
+

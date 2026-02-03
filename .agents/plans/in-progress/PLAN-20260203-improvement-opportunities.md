@@ -42,7 +42,7 @@ Implement improvements identified in the dot-agents framework analysis to enhanc
     - Consistent with format documented in root AGENTS.md
   - Notes: Mirror structure from research doc recommendations
 
-- [ ] **Task 4: Add .agents/.gitignore**
+- [x] **Task 4: Add .agents/.gitignore**
   - Scope: `.agents/.gitignore`
   - Depends on: none
   - Acceptance:

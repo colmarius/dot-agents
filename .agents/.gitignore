@@ -1,0 +1,3 @@
+# External reference repositories cloned for analysis
+# These are typically large and should not be committed
+reference/
