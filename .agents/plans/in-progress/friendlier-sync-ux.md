@@ -47,7 +47,7 @@ Running `sync` creates untracked conflict files (`.dot-agents.new`, `.dot-agents
     - Tests for `--force` flag behavior
     - Existing conflict tests updated for new defaults
 
-- [ ] **Task 5: Update documentation**
+- [x] **Task 5: Update documentation**
   - Scope: `README.md`, `docs/`
   - Depends on: Task 3
   - Acceptance:

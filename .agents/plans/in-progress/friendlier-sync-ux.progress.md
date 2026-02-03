@@ -46,3 +46,10 @@
 - Tests for --diff added in Task 1
 - Tests for --force already existed
 - Conflict tests updated in Task 3
+
+### Task 5: Update documentation
+**Status**: Completed
+
+**Changes**:
+- Updated README.md with sync options table
+- docs/ did not need updates (no conflict-specific content)
