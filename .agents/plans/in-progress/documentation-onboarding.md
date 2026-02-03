@@ -4,7 +4,7 @@
 |-------|-------|
 | PRD | N/A |
 | Research | `../../research/documentation-onboarding.md` |
-| Status | in-progress |
+| Status | completed |
 | Created | 2026-02-03 |
 
 ## Overview
@@ -34,7 +34,7 @@ Improve QUICKSTART.md with prerequisites, expected outputs, installation verific
     - Includes verification commands (`ls -la .agents/`, `cat AGENTS.md | head -20`)
   - Notes: Directory tree should match actual installed structure
 
-- [ ] **Task 3: Add Golden Path example to QUICKSTART.md**
+- [x] **Task 3: Add Golden Path example to QUICKSTART.md**
   - Scope: `QUICKSTART.md`
   - Depends on: Task 2
   - Acceptance:

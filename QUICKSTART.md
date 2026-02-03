@@ -102,4 +102,42 @@ Ralph iterates through tasks, commits after each, and pauses for review.
 
 ---
 
+## Example: Adding User Authentication
+
+Here's a complete workflow from research to execution:
+
+### 1. Research
+
+```text
+Research JWT authentication patterns for Express.js
+```
+
+Creates: `.agents/research/jwt-authentication-patterns.md`
+
+### 2. Create PRD
+
+```text
+Create a PRD for user authentication based on .agents/research/jwt-authentication-patterns.md
+```
+
+Creates: `.agents/prds/user-authentication.md`
+
+### 3. Generate Plan
+
+```text
+Create a plan from .agents/prds/user-authentication.md
+```
+
+Creates: `.agents/plans/todo/user-authentication.md`
+
+### 4. Execute
+
+```text
+Run ralph on .agents/plans/in-progress/user-authentication.md
+```
+
+Ralph commits after each task, pauses for review.
+
+---
+
 **Next:** [Full Documentation](./docs/README.md) · [dot-agents.dev](https://dot-agents.dev)
