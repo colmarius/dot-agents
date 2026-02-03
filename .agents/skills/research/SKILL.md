@@ -35,6 +35,8 @@ Use these tools in combination:
 | `oracle` | Deep analysis, synthesizing findings, reasoning about trade-offs |
 | `librarian` | Explore open-source implementations |
 
+> **Note:** `librarian` accesses GitHub repositories (public repos and private repos you've authorized). For local codebase searches, use `finder` or `Grep` instead.
+
 **Research strategy:**
 
 1. Start with `web_search` to find authoritative sources

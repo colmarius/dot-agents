@@ -82,7 +82,7 @@ Implement improvements identified in the dot-agents framework analysis to enhanc
     - Links to <https://dot-agents.dev> for detailed docs
   - Notes: Focus on actionable examples
 
-- [ ] **Task 8: Clarify librarian scope in research skill**
+- [x] **Task 8: Clarify librarian scope in research skill**
   - Scope: `.agents/skills/research/SKILL.md`
   - Depends on: none
   - Acceptance:

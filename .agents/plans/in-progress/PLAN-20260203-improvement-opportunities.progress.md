@@ -145,3 +145,23 @@
 
 ---
 
+## Task 8: Clarify librarian scope in research skill
+
+**Thread**: https://ampcode.com/threads/T-019c253e-84f7-759d-9bdb-5db2b7466159
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `.agents/skills/research/SKILL.md` - Added blockquote note explaining librarian accesses GitHub repos, not local code
+
+### Commands Run
+
+- `./scripts/lint.sh` ✓
+
+### Next
+
+- All tasks complete
+
+---
+
