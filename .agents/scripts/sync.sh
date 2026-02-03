@@ -7,6 +7,8 @@ set -euo pipefail
 # the upstream install.sh with passthrough flags.
 
 METADATA_FILE=".agents/.dot-agents.json"
+UPSTREAM_URL="https://github.com/colmarius/dot-agents"
+DEFAULT_REF="main"
 
 # Colors (only if terminal supports them)
 if [[ -t 1 ]]; then
@@ -17,6 +19,30 @@ else
 fi
 
 log_error() { echo -e "${RED}[ERROR]${NC} $1" >&2; }
+
+do_version() {
+    echo "dot-agents"
+    echo "  Upstream: ${UPSTREAM_URL}"
+    echo "  Default ref: ${DEFAULT_REF}"
+    
+    if [[ -f "$METADATA_FILE" ]]; then
+        local ref installed_at last_synced_at
+        ref=$(sed -n 's/.*"ref"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$METADATA_FILE")
+        installed_at=$(sed -n 's/.*"installedAt"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$METADATA_FILE")
+        last_synced_at=$(sed -n 's/.*"lastSyncedAt"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$METADATA_FILE")
+        
+        echo ""
+        echo "Installation:"
+        echo "  Ref: ${ref:-unknown}"
+        echo "  Installed at: ${installed_at:-unknown}"
+        if [[ -n "$last_synced_at" ]]; then
+            echo "  Last synced at: ${last_synced_at}"
+        fi
+    else
+        echo ""
+        echo "dot-agents not installed in this directory"
+    fi
+}
 
 usage() {
     cat <<EOF
@@ -31,6 +57,7 @@ Options:
   --force           Overwrite conflicts (creates backup first)
   --interactive     Prompt for each conflict
   --yes             Skip confirmation prompts
+  --version         Show version and installation info
   --help            Show this help message
 
 Examples:
@@ -46,10 +73,14 @@ EOF
 }
 
 _main() {
-    # Check for help flag early
+    # Check for help/version flags early
     for arg in "$@"; do
         if [[ "$arg" == "--help" || "$arg" == "-h" ]]; then
             usage
+            exit 0
+        fi
+        if [[ "$arg" == "--version" ]]; then
+            do_version
             exit 0
         fi
     done
