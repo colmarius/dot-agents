@@ -14,7 +14,7 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 Run adapt
 ```
 
-This analyzes your project and fills in AGENTS.md with your tech stack, commands, and conventions.
+This analyzes your project and fills in the AGENTS.md template with your tech stack, commands, and conventions. You can also customize it manually.
 
 ## 3. Research
 

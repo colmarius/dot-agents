@@ -32,7 +32,7 @@ Add a prominent banner to AGENTS.md clarifying it's a template to customize, and
     - Clear that AGENTS.md is user's project file after install
   - Notes: Add to install or post-install section
 
-- [ ] **Task 3: Update QUICKSTART.md to clarify adapt fills template**
+- [x] **Task 3: Update QUICKSTART.md to clarify adapt fills template**
   - Scope: `QUICKSTART.md`
   - Depends on: none
   - Acceptance:

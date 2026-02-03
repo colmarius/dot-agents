@@ -15,3 +15,7 @@
 - Changed "Edit" to "Customize" in Next Steps
 - Added "run `adapt` to auto-fill or edit manually"
 - Clear that AGENTS.md becomes user's project file
+
+### Task 3: Update QUICKSTART.md to clarify adapt fills template ✅
+- Enhanced step 2 description to mention "AGENTS.md template"
+- Added note that user can also customize manually
