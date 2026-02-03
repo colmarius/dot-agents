@@ -55,6 +55,8 @@ project/
 | `Research [topic]` | Deep investigation, saves to `.agents/research/` |
 | `Run ralph on [plan.md]` | Autonomous execution of plan tasks |
 
+See [docs/skills.md](docs/skills.md) for full skill documentation.
+
 ## Plan Management
 
 Plans in `.agents/plans/` follow this workflow:

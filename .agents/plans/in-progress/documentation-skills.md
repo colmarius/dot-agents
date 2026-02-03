@@ -4,7 +4,7 @@
 |-------|-------|
 | PRD | N/A |
 | Research | `../../research/documentation-skills.md` |
-| Status | todo |
+| Status | complete |
 | Created | 2026-02-03 |
 
 ## Overview
@@ -46,7 +46,7 @@ Create user-facing skills documentation that explains what each skill does, when
     - Notes that custom skills are preserved during sync
   - Notes: Important for extensibility story
 
-- [ ] **Task 4: Update AGENTS.md to link to skills documentation**
+- [x] **Task 4: Update AGENTS.md to link to skills documentation**
   - Scope: `AGENTS.md`
   - Depends on: Task 1
   - Acceptance:

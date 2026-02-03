@@ -19,3 +19,15 @@
 **Started:** 2026-02-03
 **Completed:** 2026-02-03
 **Notes:** Added "Adding Custom Skills" section with directory structure, SKILL.md frontmatter format, invocation explanation, and sync preservation note.
+
+### Task 4: Update AGENTS.md to link to skills documentation
+**Status:** Complete
+**Started:** 2026-02-03
+**Completed:** 2026-02-03
+**Notes:** Added link to docs/skills.md after the Using Skills table.
+
+---
+
+## Plan Complete
+
+All 4 tasks completed successfully. Final verification passed.
