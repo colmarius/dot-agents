@@ -115,6 +115,27 @@ git push
 - Reference plan numbers in commits (e.g., "Plan 001: Initial setup")
 - Commit after each logical step
 
+### Release Workflow
+
+```bash
+# 1. Update VERSION file with new version
+echo "1.0.0" > VERSION
+
+# 2. Update CHANGELOG.md - move [Unreleased] items to new version section
+
+# 3. Commit changes
+git add -A && git commit -m "Release v1.0.0"
+
+# 4. Create and push release
+./scripts/release.sh --push
+```
+
+The release script:
+- Reads version from `VERSION` file
+- Extracts release notes from `CHANGELOG.md`
+- Creates git tag `vX.Y.Z`
+- Pushes tag and creates GitHub release (requires `gh` CLI)
+
 ## Maintenance
 
 After making changes:
