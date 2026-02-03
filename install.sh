@@ -462,7 +462,12 @@ main() {
     fi
 
     if [[ -f "${extracted_dir}/AGENTS.md" ]]; then
-        install_file "${extracted_dir}/AGENTS.md" "./AGENTS.md"
+        if [[ -e "./AGENTS.md" ]]; then
+            log_skip "AGENTS.md (user content, skipped on sync)"
+            skipped_count=$((skipped_count + 1))
+        else
+            install_file "${extracted_dir}/AGENTS.md" "./AGENTS.md"
+        fi
     fi
 
     if [[ -d "${extracted_dir}/.agents" ]]; then
