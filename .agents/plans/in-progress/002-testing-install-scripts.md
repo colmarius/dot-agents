@@ -27,7 +27,7 @@ Explicitly **out of scope**:
 
 ## Tasks
 
-- [ ] **Task 1: Add ShellCheck and syntax validation to CI**
+- [x] **Task 1: Add ShellCheck and syntax validation to CI**
   - Scope: `.github/workflows/test.yml`
   - Depends on: none
   - Acceptance:
