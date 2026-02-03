@@ -9,7 +9,7 @@ Add `.agents/scripts/sync.sh` - a local wrapper script that allows projects to e
 
 ## Tasks
 
-- [ ] **Task 1: Create sync.sh script**
+- [x] **Task 1: Create sync.sh script**
   - Scope: `.agents/scripts/sync.sh`
   - Depends on: none
   - Acceptance:
