@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dot-agents — AI-ready agent workspace</title>
+  <meta name="description" content="One-command setup for AI agent workflows in any project. Structured plans, PRDs, and autonomous execution.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>dot-agents</h1>
+      <p class="tagline">AI-ready agent workspace for any project</p>
+    </header>
+
+    <main>
+      <section class="install">
+        <div class="code-block">
+          <pre><code id="install-cmd">curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash</code></pre>
+          <button class="copy-btn" onclick="copyCommand()" title="Copy to clipboard">
+            <svg class="icon-copy" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <svg class="icon-check" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="features">
+        <ul>
+          <li><span class="emoji">🚀</span> One-command setup for any project</li>
+          <li><span class="emoji">📋</span> Structured plans and PRDs workflow</li>
+          <li><span class="emoji">🤖</span> Ralph autonomous execution loops</li>
+          <li><span class="emoji">🔬</span> Built-in research and documentation</li>
+        </ul>
+      </section>
+
+      <section class="cta">
+        <a href="https://github.com/colmarius/dot-agents" class="btn">View on GitHub</a>
+      </section>
+    </main>
+
+    <footer>
+      <p>MIT License · <a href="https://github.com/colmarius/dot-agents">GitHub</a></p>
+    </footer>
+  </div>
+
+  <script>
+    function copyCommand() {
+      const cmd = document.getElementById('install-cmd').textContent;
+      navigator.clipboard.writeText(cmd).then(() => {
+        document.querySelector('.copy-btn').classList.add('copied');
+        setTimeout(() => {
+          document.querySelector('.copy-btn').classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
