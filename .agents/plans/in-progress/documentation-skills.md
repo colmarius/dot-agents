@@ -24,7 +24,7 @@ Create user-facing skills documentation that explains what each skill does, when
     - Each skill name links to its section in the document
   - Notes: See research file for table content
 
-- [ ] **Task 2: Add individual skill sections to docs/skills.md**
+- [x] **Task 2: Add individual skill sections to docs/skills.md**
   - Scope: `docs/skills.md`
   - Depends on: Task 1
   - Acceptance:
