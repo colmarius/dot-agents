@@ -13,3 +13,9 @@
 - **Started:** 2026-02-03
 - **Completed:** 2026-02-03
 - **Changes:** Created docs/concepts.md with Workflow section and Glossary table defining adapt, Ralph, PRD, Plan, Skills, sync
+
+### Task 3: Update README.md to link to docs hub
+- **Status:** Complete
+- **Started:** 2026-02-03
+- **Completed:** 2026-02-03
+- **Changes:** Added Documentation section with Quickstart, Full Docs, and Website links; removed duplicate Documentation section

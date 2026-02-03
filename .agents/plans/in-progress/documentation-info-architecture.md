@@ -35,7 +35,7 @@ Create a documentation hub and concepts page in docs/ to provide better navigati
     - Each glossary term has clear, concise definition
   - Notes: See research file for exact definitions
 
-- [ ] **Task 3: Update README.md to link to docs hub**
+- [x] **Task 3: Update README.md to link to docs hub**
   - Scope: `README.md`
   - Depends on: Task 1
   - Acceptance:

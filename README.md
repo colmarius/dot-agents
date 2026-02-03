@@ -14,9 +14,13 @@ Pin a version:
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v1.0.0
 ```
 
-## Next Steps
+## Documentation
 
-**Start here:** [QUICKSTART.md](./QUICKSTART.md) — step-by-step guide from install to autonomous execution.
+- **[Quickstart](./QUICKSTART.md)** — Step-by-step guide from install to autonomous execution
+- **[Full Docs](./docs/README.md)** — Concepts, skills, troubleshooting
+- **[Website](https://dot-agents.dev)** — Landing page
+
+## Next Steps
 
 Then:
 
@@ -47,10 +51,6 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 ```
 
 See [CHANGELOG.md](./CHANGELOG.md) for release history.
-
-## Documentation
-
-<https://dot-agents.dev>
 
 ## License
 
