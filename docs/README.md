@@ -14,7 +14,6 @@
 
 - [Skills](./skills.md)
 - [AGENTS.md Template](../AGENTS.md)
-- [Troubleshooting](./troubleshooting.md)
 
 ## For Contributors
 

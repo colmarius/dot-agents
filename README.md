@@ -17,8 +17,8 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 ## Documentation
 
 - **[Quickstart](./QUICKSTART.md)** — Step-by-step guide from install to autonomous execution
-- **[Full Docs](./docs/README.md)** — Concepts, skills, troubleshooting
-- **[Website](https://dot-agents.dev)** — Landing page
+- **[Full Docs](./docs/README.md)** — Concepts, skills reference
+- **[Website](https://dot-agents.dev)** — Landing page (source: [site/](./site/))
 
 ## Next Steps
 
@@ -42,15 +42,7 @@ Use `--dry-run` to preview changes, `--force` to overwrite with backup.
 
 ## Versioning
 
-dot-agents uses [Semantic Versioning](https://semver.org/). Releases are tagged as `vMAJOR.MINOR.PATCH`.
-
-Pin to a specific version:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v1.0.0
-```
-
-See [CHANGELOG.md](./CHANGELOG.md) for release history.
+dot-agents uses [Semantic Versioning](https://semver.org/). Releases are tagged as `vMAJOR.MINOR.PATCH`. See [CHANGELOG.md](./CHANGELOG.md) for release history.
 
 ## License
 

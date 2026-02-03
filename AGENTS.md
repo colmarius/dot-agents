@@ -14,17 +14,9 @@
 - Framework: [e.g., React, Express, Axum, FastAPI]
 - Database: [e.g., PostgreSQL, SQLite, MongoDB]
 
-## PRD → Plan → Execute Workflow
+## Workflow
 
-```text
-Research → PRD → Plan → Ralph executes
-```
-
-1. **Create PRD**: `Create a PRD for [feature] based on .agents/research/[doc].md`
-2. **Generate Plan**: PRD acceptance criteria → Ralph task format
-3. **Execute**: `Run ralph on .agents/plans/in-progress/[plan].md`
-
-PRD template and rules in `.agents/prds/AGENTS.md`.
+See [docs/concepts.md](docs/concepts.md) for the Research → PRD → Plan → Execute workflow.
 
 ## Project Structure
 
