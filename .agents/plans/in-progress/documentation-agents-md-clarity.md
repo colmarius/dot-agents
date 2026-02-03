@@ -4,7 +4,7 @@
 |-------|-------|
 | PRD | N/A |
 | Research | `../../research/documentation-agents-md-clarity.md` |
-| Status | todo |
+| Status | in-progress |
 | Created | 2026-02-03 |
 
 ## Overview
@@ -13,7 +13,7 @@ Add a prominent banner to AGENTS.md clarifying it's a template to customize, and
 
 ## Tasks
 
-- [ ] **Task 1: Add prominent template banner to AGENTS.md**
+- [x] **Task 1: Add prominent template banner to AGENTS.md**
   - Scope: `AGENTS.md`
   - Depends on: none
   - Acceptance:

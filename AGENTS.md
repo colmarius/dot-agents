@@ -1,3 +1,7 @@
+> **📝 TEMPLATE:** This is the dot-agents AGENTS.md template.
+> Customize it for your project by filling in the sections below.
+> Delete this banner when done.
+
 # Project Instructions
 
 ## Overview
