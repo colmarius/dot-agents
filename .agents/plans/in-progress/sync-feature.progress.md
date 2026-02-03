@@ -22,3 +22,28 @@
 
 ---
 
+## Task 2: Update install.sh to include scripts directory
+
+**Thread**: https://ampcode.com/threads/T-019c2451-52fc-71b9-a960-c6be11126b87
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `install.sh` - Changed all `cp` to `cp -p` to preserve executable permissions
+
+### Learnings
+
+- The `process_directory` function already handles all files in `.agents/` recursively, so scripts/ is automatically included
+- Using `cp -p` preserves file permissions including executable bit
+
+### Commands Run
+
+- `bash -n install.sh` ✓
+
+### Next
+
+- Task 3: Add lastSyncedAt metadata tracking
+
+---
+

@@ -288,7 +288,7 @@ install_file() {
             log_install "$dest"
         else
             mkdir -p "$dest_dir"
-            cp "$src" "$dest"
+            cp -p "$src" "$dest"
             log_install "$dest"
         fi
         ((installed_count++))
@@ -306,7 +306,7 @@ install_file() {
         if [[ "$DRY_RUN" == "true" ]]; then
             log_install "$dest (force overwrite)"
         else
-            cp "$src" "$dest"
+            cp -p "$src" "$dest"
             log_install "$dest (force overwrite)"
         fi
         ((installed_count++))
@@ -325,7 +325,7 @@ install_file() {
                 ;;
             overwrite)
                 backup_file "$dest"
-                cp "$src" "$dest"
+                cp -p "$src" "$dest"
                 log_install "$dest (overwritten)"
                 ((installed_count++))
                 return 0
@@ -343,7 +343,7 @@ install_file() {
     if [[ "$DRY_RUN" == "true" ]]; then
         log_conflict "$dest (would write ${conflict_file})"
     else
-        cp "$src" "$conflict_file"
+        cp -p "$src" "$conflict_file"
         log_conflict "$dest differs. Wrote ${conflict_file} for review."
     fi
     ((conflict_count++))

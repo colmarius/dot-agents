@@ -20,7 +20,7 @@ Add `.agents/scripts/sync.sh` - a local wrapper script that allows projects to e
     - Script is executable (`chmod +x`)
   - Notes: Use sed for JSON parsing (no jq dependency)
 
-- [ ] **Task 2: Update install.sh to include scripts directory**
+- [x] **Task 2: Update install.sh to include scripts directory**
   - Scope: `install.sh`
   - Depends on: Task 1
   - Acceptance:
