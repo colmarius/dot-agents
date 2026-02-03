@@ -125,3 +125,23 @@
 
 ---
 
+## Task 7: Create QUICKSTART.md
+
+**Thread**: https://ampcode.com/threads/T-019c253e-84f7-759d-9bdb-5db2b7466159
+**Status**: completed
+**Iteration**: 1
+
+### Changes
+
+- `QUICKSTART.md` - Created quickstart guide with 6 numbered steps: install, adapt, research, PRD, plan, ralph
+
+### Commands Run
+
+- `./scripts/lint.sh` ✓
+
+### Next
+
+- Task 8: Clarify librarian scope in research skill
+
+---
+
