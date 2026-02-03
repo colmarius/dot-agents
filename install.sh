@@ -25,6 +25,7 @@ UNINSTALL=false
 INTERACTIVE=false
 SHOW_VERSION=false
 DIFF_ONLY=false
+WRITE_CONFLICTS=false
 
 usage() {
     cat <<EOF
@@ -34,8 +35,9 @@ Install dot-agents into the current project.
 
 Options:
   --dry-run         Show what would happen without making changes
-  --diff            Show unified diff for conflicts without creating files
+  --diff            Show unified diff for conflicts (default on sync)
   --force           Overwrite conflicts (creates backup first)
+  --write-conflicts Create .dot-agents.new files for conflicts (old behavior)
   --ref <ref>       Git ref to install (branch, tag, commit). Default: main
   --yes             Skip confirmation prompts
   --uninstall       Remove dot-agents
@@ -67,6 +69,10 @@ parse_args() {
                 ;;
             --diff)
                 DIFF_ONLY=true
+                shift
+                ;;
+            --write-conflicts)
+                WRITE_CONFLICTS=true
                 shift
                 ;;
             --force)
@@ -459,6 +465,11 @@ main() {
     local archive_url="https://github.com/${REPO_OWNER}/${REPO_NAME}/archive/${REF}.tar.gz"
     TMP_DIR="$(mktemp -d)"
     trap cleanup EXIT
+
+    # Auto-enable diff mode on sync (when already installed) unless overridden
+    if [[ -d ".agents" ]] && [[ "$FORCE" != "true" ]] && [[ "$WRITE_CONFLICTS" != "true" ]] && [[ "$INTERACTIVE" != "true" ]]; then
+        DIFF_ONLY=true
+    fi
 
     log_info "Installing dot-agents (ref: ${REF})..."
     log_info ""

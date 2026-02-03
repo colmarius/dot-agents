@@ -21,16 +21,16 @@ Running `sync` creates untracked conflict files (`.dot-agents.new`, `.dot-agents
     - Exit code indicates if conflicts exist (0=clean, 1=conflicts)
   - Notes: Use `diff -u` for familiar git-like output
 
-- [ ] **Task 2: Add `--force` flag to overwrite conflicts**
+- [x] **Task 2: Add `--force` flag to overwrite conflicts**
   - Scope: `install.sh`
   - Depends on: none
   - Acceptance:
     - `--force` overwrites local files with upstream versions
     - Warning printed for each overwritten file
     - Works with `--sync` mode
-  - Notes: Useful when user wants to accept all upstream changes
+  - Notes: Already implemented - creates backup and overwrites
 
-- [ ] **Task 3: Change default sync behavior to show diff instead of creating files**
+- [x] **Task 3: Change default sync behavior to show diff instead of creating files**
   - Scope: `install.sh`
   - Depends on: Task 1
   - Acceptance:

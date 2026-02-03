@@ -202,20 +202,37 @@ teardown() {
     [ ! -f ".agents/prds/feature.md" ]
 }
 
-@test "conflict on non-AGENTS.md files creates .dot-agents.new" {
+@test "--write-conflicts creates .dot-agents.new files for conflicts" {
     # First install
     bash "$INSTALL_SCRIPT" --yes
 
     # Modify a skill file to create conflict
     echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
 
-    # Re-install should detect conflict on skill file
-    run bash "$INSTALL_SCRIPT" --yes
+    # Re-install with --write-conflicts should create conflict files
+    run bash "$INSTALL_SCRIPT" --write-conflicts --yes
     assert_success
     assert_output --partial "CONFLICT"
 
     # Should create conflict file for the skill
     [ -f ".agents/skills/sample-skill/SKILL.dot-agents.md" ]
+}
+
+@test "sync defaults to diff mode" {
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Modify a skill file to create conflict
+    echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
+
+    # Re-install (sync) should default to diff mode
+    run bash "$INSTALL_SCRIPT"
+    assert_failure  # Exit 1 due to conflicts
+    assert_output --partial "CONFLICT"
+    assert_output --partial "---"  # Diff header
+
+    # Should NOT create conflict files
+    [ ! -f ".agents/skills/sample-skill/SKILL.dot-agents.md" ]
 }
 
 @test "--diff shows unified diff for conflicts" {

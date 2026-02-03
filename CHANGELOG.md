@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING:** Sync now shows unified diff by default instead of creating `.dot-agents.new` conflict files
+  - Use `--write-conflicts` to restore old behavior
+  - Exit code 1 when conflicts exist, 0 when clean
+
+### Added
+
+- `--diff` flag to show unified diffs for conflicts (now default on sync)
+- `--write-conflicts` flag to create `.dot-agents.new` files (old behavior)
+
 ## [0.1.0] - 2025-02-03
 
 ### Added
