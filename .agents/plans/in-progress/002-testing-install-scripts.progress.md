@@ -62,5 +62,20 @@
 
 ### Iteration 6
 **Task**: Task 6 - Create mock curl script
+**Status**: ✅ Complete
+
+**Actions**:
+- Created test/mocks/curl with support for:
+  - `-o`/`--output` file output
+  - `-fsSL` and other common flags
+  - GitHub archive URLs → returns sample-archive.tar.gz
+  - raw.githubusercontent.com install.sh URLs → returns actual install.sh
+  - `*nonexistent*` URLs → exits 22 (404)
+- Logs all calls to $MOCK_LOG
+
+---
+
+### Iteration 7
+**Task**: Task 7 - Create test fixtures
 **Status**: In Progress
 

@@ -76,7 +76,7 @@ Explicitly **out of scope**:
     - `.gitmodules` updated with submodule entries
   - Notes: CI must use `submodules: true` in checkout
 
-- [ ] **Task 6: Create mock curl script**
+- [x] **Task 6: Create mock curl script**
   - Scope: `test/mocks/curl`
   - Depends on: Task 5
   - Acceptance:

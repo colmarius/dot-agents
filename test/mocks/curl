@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Mock curl for testing - intercepts network calls
+
+set -euo pipefail
+
+MOCK_LOG="${MOCK_LOG:-/tmp/curl-mock.log}"
+FIXTURES_DIR="${FIXTURES_DIR:-$(dirname "$0")/../fixtures}"
+
+# Log the call
+echo "curl $*" >> "$MOCK_LOG"
+
+# Parse arguments to find URL and output options
+url=""
+output_file=""
+args=("$@")
+
+for ((i=0; i<${#args[@]}; i++)); do
+    arg="${args[$i]}"
+    case "$arg" in
+        -o)
+            output_file="${args[$((i+1))]}"
+            ((i++))
+            ;;
+        --output)
+            output_file="${args[$((i+1))]}"
+            ((i++))
+            ;;
+        -o*)
+            output_file="${arg#-o}"
+            ;;
+        --output=*)
+            output_file="${arg#--output=}"
+            ;;
+        -f|-s|-S|-L|-fsSL|-fsL|-fSL)
+            # Common curl flags, ignore
+            ;;
+        -*)
+            # Other flags, ignore
+            ;;
+        *)
+            # Assume it's the URL
+            url="$arg"
+            ;;
+    esac
+done
+
+# Helper to output content (to file or stdout)
+output_content() {
+    if [[ -n "$output_file" ]]; then
+        cat > "$output_file"
+    else
+        cat
+    fi
+}
+
+# Return pre-built archive for GitHub archive URLs
+if [[ "$url" == *"github.com"*"archive"* ]]; then
+    if [[ -f "$FIXTURES_DIR/sample-archive.tar.gz" ]]; then
+        cat "$FIXTURES_DIR/sample-archive.tar.gz" | output_content
+        exit 0
+    else
+        echo "Mock curl: fixture not found: $FIXTURES_DIR/sample-archive.tar.gz" >&2
+        exit 1
+    fi
+fi
+
+# Return install.sh content for raw content URLs
+if [[ "$url" == *"raw.githubusercontent.com"*"install.sh"* ]]; then
+    # Return the actual install.sh from the repo root
+    REPO_ROOT="$(dirname "$0")/../.."
+    if [[ -f "$REPO_ROOT/install.sh" ]]; then
+        cat "$REPO_ROOT/install.sh" | output_content
+        exit 0
+    else
+        echo "Mock curl: install.sh not found at $REPO_ROOT/install.sh" >&2
+        exit 1
+    fi
+fi
+
+# Simulate 404 for nonexistent URLs
+if [[ "$url" == *"nonexistent"* ]]; then
+    echo "curl: (22) The requested URL returned error: 404" >&2
+    exit 22
+fi
+
+# Fail for unexpected calls
+echo "Mock curl: unexpected call: $*" >&2
+echo "Mock curl: URL was: $url" >&2
+exit 1
