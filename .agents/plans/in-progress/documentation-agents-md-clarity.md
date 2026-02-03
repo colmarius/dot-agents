@@ -23,7 +23,7 @@ Add a prominent banner to AGENTS.md clarifying it's a template to customize, and
     - Instructs user to fill in sections and delete banner when done
   - Notes: Keep banner concise, 2-3 lines max
 
-- [ ] **Task 2: Update README.md to clarify AGENTS.md customization**
+- [x] **Task 2: Update README.md to clarify AGENTS.md customization**
   - Scope: `README.md`
   - Depends on: none
   - Acceptance:

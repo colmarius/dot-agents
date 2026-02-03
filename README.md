@@ -20,7 +20,7 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 
 Then:
 
-1. Edit `AGENTS.md` for your project's stack and conventions
+1. Customize `AGENTS.md` for your project — run `adapt` to auto-fill or edit manually
 2. Sync updates later: `.agents/scripts/sync.sh`
 
 ## Sync Behavior

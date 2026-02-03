@@ -10,3 +10,8 @@
 - Added blockquote banner at top of AGENTS.md
 - Format: `> **📝 TEMPLATE:**` with 3-line message
 - Instructs user to customize and delete banner when done
+
+### Task 2: Update README.md to clarify AGENTS.md customization ✅
+- Changed "Edit" to "Customize" in Next Steps
+- Added "run `adapt` to auto-fill or edit manually"
+- Clear that AGENTS.md becomes user's project file
