@@ -4,7 +4,7 @@
 |-------|-------|
 | PRD | N/A |
 | Research | `../../research/documentation-information-architecture.md` |
-| Status | todo |
+| Status | in-progress |
 | Created | 2026-02-03 |
 
 ## Overview
@@ -13,7 +13,7 @@ Create a documentation hub and concepts page in docs/ to provide better navigati
 
 ## Tasks
 
-- [ ] **Task 1: Create docs/README.md as hub page**
+- [x] **Task 1: Create docs/README.md as hub page**
   - Scope: `docs/README.md`
   - Depends on: none
   - Acceptance:
