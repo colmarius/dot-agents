@@ -26,6 +26,7 @@ INTERACTIVE=false
 SHOW_VERSION=false
 DIFF_ONLY=false
 WRITE_CONFLICTS=false
+IS_FRESH_INSTALL=true
 
 usage() {
     cat <<EOF
@@ -490,9 +491,13 @@ main() {
     TMP_DIR="$(mktemp -d)"
     trap cleanup EXIT
 
-    # Auto-enable force mode on sync (when already installed) unless diff or write-conflicts is set
-    if [[ -d ".agents" ]] && [[ "$DIFF_ONLY" != "true" ]] && [[ "$WRITE_CONFLICTS" != "true" ]] && [[ "$INTERACTIVE" != "true" ]]; then
-        FORCE=true
+    # Detect fresh install vs sync
+    if [[ -d ".agents" ]]; then
+        IS_FRESH_INSTALL=false
+        # Auto-enable force mode on sync unless diff or write-conflicts is set
+        if [[ "$DIFF_ONLY" != "true" ]] && [[ "$WRITE_CONFLICTS" != "true" ]] && [[ "$INTERACTIVE" != "true" ]]; then
+            FORCE=true
+        fi
     fi
 
     log_info "Installing dot-agents (ref: ${REF})..."
@@ -570,6 +575,14 @@ main() {
     # In diff mode, exit 1 if conflicts exist
     if [[ "$DIFF_ONLY" == "true" ]] && [[ $conflict_count -gt 0 ]]; then
         return 1
+    fi
+
+    # Show post-install guidance for fresh installs
+    if [[ "$IS_FRESH_INSTALL" == "true" ]] && [[ "$DRY_RUN" != "true" ]]; then
+        log_info ""
+        log_info "${GREEN}Next steps:${NC}"
+        log_info "  1. Run 'adapt' to customize AGENTS.md for your project"
+        log_info "  2. See QUICKSTART.md for workflow guidance"
     fi
 }
 

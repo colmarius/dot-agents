@@ -22,7 +22,7 @@ Address high and medium priority improvements from user feedback after installin
     - Existing `.gitignore` content preserved
   - Notes: Create `.agents/.gitignore` if it doesn't exist
 
-- [ ] **Task 2: Add post-install guidance with next steps**
+- [x] **Task 2: Add post-install guidance with next steps**
   - Scope: `install.sh`
   - Depends on: none
   - Acceptance:
