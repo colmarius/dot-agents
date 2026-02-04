@@ -559,6 +559,60 @@ header {
   display: inline-block;
 }
 
+/* Inspiration */
+.inspiration {
+  margin: 3rem 0;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  border: 1px solid rgba(42, 42, 58, 0.6);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.06) 0%, transparent 60%);
+}
+
+.inspiration h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-muted);
+}
+
+.inspiration-desc {
+  max-width: 560px;
+  margin: 0 auto 1rem;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.inspiration-desc em {
+  color: var(--text);
+  font-style: italic;
+}
+
+.inspiration-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.inspiration-links li {
+  font-size: 0.9375rem;
+}
+
+.inspiration-links a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--t-fast);
+}
+
+.inspiration-links a:hover {
+  text-decoration: underline;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
 /* CTA */
 .cta {
   display: flex;
