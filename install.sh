@@ -26,6 +26,7 @@ INTERACTIVE=false
 SHOW_VERSION=false
 DIFF_ONLY=false
 WRITE_CONFLICTS=false
+IS_FRESH_INSTALL=true
 
 usage() {
     cat <<EOF
@@ -349,6 +350,108 @@ atomic_copy() {
     mv -f "$tmp" "$dest"
 }
 
+format_version_string() {
+    local ref="$1"
+    local extracted_dir="${2:-}"
+
+    # For tags (vX.Y.Z format), show as version
+    if [[ "$ref" =~ ^v[0-9]+\.[0-9]+ ]]; then
+        echo "dot-agents ${ref}"
+        return
+    fi
+
+    # For branches/commits, try to get short SHA from directory name
+    local short_sha=""
+    if [[ -n "$extracted_dir" ]]; then
+        local dir_name
+        dir_name="$(basename "$extracted_dir")"
+        # Directory format: repo-name-REF (e.g., dot-agents-main or dot-agents-abc123f)
+        short_sha="${dir_name##*-}"
+        # Only use if it looks like a SHA (7+ hex chars)
+        if [[ ! "$short_sha" =~ ^[0-9a-f]{7,}$ ]]; then
+            short_sha=""
+        fi
+    fi
+
+    if [[ -n "$short_sha" ]]; then
+        echo "dot-agents (${ref} @ ${short_sha:0:7})"
+    else
+        echo "dot-agents (ref: ${ref})"
+    fi
+}
+
+# Core skills that come from upstream (sample-skill is for testing)
+CORE_SKILLS="adapt ralph research tmux sample-skill"
+
+detect_custom_skills() {
+    local skills_dir=".agents/skills"
+    local custom_skills=()
+
+    if [[ ! -d "$skills_dir" ]]; then
+        return
+    fi
+
+    for skill_dir in "$skills_dir"/*/; do
+        [[ -d "$skill_dir" ]] || continue
+        local skill_name
+        skill_name="$(basename "$skill_dir")"
+
+        # Skip if it's a core skill
+        local is_core=false
+        for core in $CORE_SKILLS; do
+            if [[ "$skill_name" == "$core" ]]; then
+                is_core=true
+                break
+            fi
+        done
+
+        if [[ "$is_core" == "false" ]]; then
+            custom_skills+=("$skill_name")
+        fi
+    done
+
+    if [[ ${#custom_skills[@]} -gt 0 ]]; then
+        printf '%s\n' "${custom_skills[@]}"
+    fi
+}
+
+report_custom_skills() {
+    local custom_skills
+    custom_skills="$(detect_custom_skills)"
+
+    if [[ -n "$custom_skills" ]]; then
+        log_info ""
+        log_info "${BLUE}Custom skills preserved:${NC}"
+        while IFS= read -r skill; do
+            log_info "  - $skill"
+        done <<< "$custom_skills"
+    fi
+}
+
+ensure_gitignore_entry() {
+    local gitignore_file=".agents/.gitignore"
+    local backup_entry="../.dot-agents-backup/"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        if [[ ! -f "$gitignore_file" ]]; then
+            log_info "  ${GREEN}[CREATE]${NC} $gitignore_file"
+        elif ! grep -qxF "$backup_entry" "$gitignore_file" 2>/dev/null; then
+            log_info "  ${GREEN}[UPDATE]${NC} $gitignore_file (add backup entry)"
+        fi
+        return 0
+    fi
+
+    mkdir -p ".agents"
+
+    if [[ ! -f "$gitignore_file" ]]; then
+        echo "$backup_entry" > "$gitignore_file"
+        log_info "  ${GREEN}[CREATE]${NC} $gitignore_file"
+    elif ! grep -qxF "$backup_entry" "$gitignore_file" 2>/dev/null; then
+        echo "$backup_entry" >> "$gitignore_file"
+        log_info "  ${GREEN}[UPDATE]${NC} $gitignore_file (add backup entry)"
+    fi
+}
+
 install_file() {
     local src="$1"
     local dest="$2"
@@ -466,13 +569,14 @@ main() {
     TMP_DIR="$(mktemp -d)"
     trap cleanup EXIT
 
-    # Auto-enable force mode on sync (when already installed) unless diff or write-conflicts is set
-    if [[ -d ".agents" ]] && [[ "$DIFF_ONLY" != "true" ]] && [[ "$WRITE_CONFLICTS" != "true" ]] && [[ "$INTERACTIVE" != "true" ]]; then
-        FORCE=true
+    # Detect fresh install vs sync
+    if [[ -d ".agents" ]]; then
+        IS_FRESH_INSTALL=false
+        # Auto-enable force mode on sync unless diff or write-conflicts is set
+        if [[ "$DIFF_ONLY" != "true" ]] && [[ "$WRITE_CONFLICTS" != "true" ]] && [[ "$INTERACTIVE" != "true" ]]; then
+            FORCE=true
+        fi
     fi
-
-    log_info "Installing dot-agents (ref: ${REF})..."
-    log_info ""
 
     if [[ "$DRY_RUN" == "true" ]]; then
         log_info "${YELLOW}DRY RUN - no changes will be made${NC}"
@@ -491,6 +595,11 @@ main() {
         log_error "Failed to extract archive"
         exit 1
     fi
+
+    local version_string
+    version_string="$(format_version_string "$REF" "$extracted_dir")"
+    log_info "Installing ${version_string}..."
+    log_info ""
 
     # Install AGENTS.md from template (fresh install only)
     local template_src=""
@@ -514,6 +623,9 @@ main() {
         process_directory "${extracted_dir}/.agents" "./.agents"
     fi
 
+    # Ensure .agents/.gitignore includes backup directory
+    ensure_gitignore_entry
+
     # Skip metadata write in diff-only mode
     if [[ "$DIFF_ONLY" != "true" ]]; then
         write_metadata
@@ -531,6 +643,11 @@ main() {
         log_info "Backup location: ${BACKUP_DIR}/"
     fi
 
+    # Report custom skills that were preserved (on sync only)
+    if [[ "$IS_FRESH_INSTALL" != "true" ]]; then
+        report_custom_skills
+    fi
+
     if [[ $conflict_count -gt 0 ]]; then
         log_info ""
         if [[ "$DIFF_ONLY" == "true" ]]; then
@@ -543,6 +660,20 @@ main() {
     # In diff mode, exit 1 if conflicts exist
     if [[ "$DIFF_ONLY" == "true" ]] && [[ $conflict_count -gt 0 ]]; then
         return 1
+    fi
+
+    # Show post-install guidance for fresh installs
+    if [[ "$IS_FRESH_INSTALL" == "true" ]] && [[ "$DRY_RUN" != "true" ]]; then
+        log_info ""
+        log_info "${GREEN}Next steps:${NC}"
+        log_info "  1. Run 'adapt' to customize AGENTS.md for your project"
+        log_info "  2. See QUICKSTART.md for workflow guidance"
+    fi
+
+    # Show sync update hint on sync (not fresh install)
+    if [[ "$IS_FRESH_INSTALL" != "true" ]] && [[ "$DRY_RUN" != "true" ]]; then
+        log_info ""
+        log_info "To update again: curl -fsSL https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/install.sh | bash"
     fi
 }
 

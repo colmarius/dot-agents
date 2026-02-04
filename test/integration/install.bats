@@ -283,3 +283,133 @@ teardown() {
     run cat .agents/.dot-agents.json
     assert_output "$original_meta"
 }
+
+# ===== Task 1: .gitignore entry tests =====
+
+@test "fresh install creates .agents/.gitignore with backup entry" {
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # .gitignore should exist and contain backup entry
+    [ -f ".agents/.gitignore" ]
+    run cat ".agents/.gitignore"
+    assert_output --partial "../.dot-agents-backup/"
+}
+
+@test "sync overwrites .agents/.gitignore and adds backup entry" {
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Modify .gitignore (will be overwritten by force mode, then backup entry added)
+    echo "# Custom entry only" > .agents/.gitignore
+
+    # Re-install (force mode) should overwrite then add backup entry
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    assert_output --partial "BACKUP"
+    assert_output --partial ".agents/.gitignore"
+
+    # Should contain backup entry (custom content overwritten by upstream)
+    run cat ".agents/.gitignore"
+    assert_output --partial "../.dot-agents-backup/"
+}
+
+# ===== Task 2: Post-install guidance tests =====
+
+@test "fresh install shows next steps guidance" {
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Should show next steps
+    assert_output --partial "Next steps:"
+    assert_output --partial "Run 'adapt'"
+    assert_output --partial "QUICKSTART.md"
+}
+
+@test "sync does not show next steps guidance" {
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Re-install (sync)
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Should NOT show next steps
+    refute_output --partial "Next steps:"
+    refute_output --partial "Run 'adapt'"
+}
+
+# ===== Task 3: Version string tests =====
+
+@test "install shows version string for tag ref" {
+    run bash "$INSTALL_SCRIPT" --ref v1.2.3 --yes
+    assert_success
+
+    # Should show version format for tags
+    assert_output --partial "Installing dot-agents v1.2.3"
+}
+
+@test "install shows ref format for branch" {
+    run bash "$INSTALL_SCRIPT" --ref main --yes
+    assert_success
+
+    # Should show ref format for branches
+    assert_output --partial "Installing dot-agents (ref: main)"
+}
+
+# ===== Task 4: Sync update hint tests =====
+
+@test "sync shows update command hint" {
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Re-install (sync)
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Should show update hint
+    assert_output --partial "To update again:"
+    assert_output --partial "curl"
+}
+
+@test "fresh install does not show update hint" {
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Should NOT show update hint on fresh install
+    refute_output --partial "To update again:"
+}
+
+# ===== Task 5: Custom skills preservation tests =====
+
+@test "sync reports custom skills preserved" {
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Create a custom skill
+    mkdir -p .agents/skills/my-custom-skill
+    echo "# My Custom Skill" > .agents/skills/my-custom-skill/SKILL.md
+
+    # Re-install (sync)
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Should report custom skill preserved
+    assert_output --partial "Custom skills preserved:"
+    assert_output --partial "my-custom-skill"
+
+    # Custom skill should still exist
+    [ -f ".agents/skills/my-custom-skill/SKILL.md" ]
+}
+
+@test "core skills are not reported as custom" {
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Re-install (sync)
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Should NOT report core skills (they're from upstream)
+    refute_output --partial "Custom skills preserved:"
+}
