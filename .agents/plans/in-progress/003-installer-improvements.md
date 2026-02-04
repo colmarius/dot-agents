@@ -49,7 +49,7 @@ Address high and medium priority improvements from user feedback after installin
     - Message: "To update: curl ... | bash" or reference local script
   - Notes: Keep it concise, single line
 
-- [ ] **Task 5: Preserve custom skills during sync**
+- [x] **Task 5: Preserve custom skills during sync**
   - Scope: `install.sh`, `.agents/skills/`
   - Depends on: none
   - Acceptance:

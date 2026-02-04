@@ -380,6 +380,54 @@ format_version_string() {
     fi
 }
 
+# Core skills that come from upstream
+CORE_SKILLS="adapt ralph research tmux"
+
+detect_custom_skills() {
+    local skills_dir=".agents/skills"
+    local custom_skills=()
+
+    if [[ ! -d "$skills_dir" ]]; then
+        return
+    fi
+
+    for skill_dir in "$skills_dir"/*/; do
+        [[ -d "$skill_dir" ]] || continue
+        local skill_name
+        skill_name="$(basename "$skill_dir")"
+
+        # Skip if it's a core skill
+        local is_core=false
+        for core in $CORE_SKILLS; do
+            if [[ "$skill_name" == "$core" ]]; then
+                is_core=true
+                break
+            fi
+        done
+
+        if [[ "$is_core" == "false" ]]; then
+            custom_skills+=("$skill_name")
+        fi
+    done
+
+    if [[ ${#custom_skills[@]} -gt 0 ]]; then
+        printf '%s\n' "${custom_skills[@]}"
+    fi
+}
+
+report_custom_skills() {
+    local custom_skills
+    custom_skills="$(detect_custom_skills)"
+
+    if [[ -n "$custom_skills" ]]; then
+        log_info ""
+        log_info "${BLUE}Custom skills preserved:${NC}"
+        while IFS= read -r skill; do
+            log_info "  - $skill"
+        done <<< "$custom_skills"
+    fi
+}
+
 ensure_gitignore_entry() {
     local gitignore_file=".agents/.gitignore"
     local backup_entry="../.dot-agents-backup/"
@@ -593,6 +641,11 @@ main() {
         log_info "  Backed up: ${backup_count}"
         log_info ""
         log_info "Backup location: ${BACKUP_DIR}/"
+    fi
+
+    # Report custom skills that were preserved (on sync only)
+    if [[ "$IS_FRESH_INSTALL" != "true" ]]; then
+        report_custom_skills
     fi
 
     if [[ $conflict_count -gt 0 ]]; then

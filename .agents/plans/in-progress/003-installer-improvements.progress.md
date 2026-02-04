@@ -37,3 +37,13 @@
   - Added sync update hint for existing installations
   - Shows curl command to update again
   - Only shows on sync (not fresh install or dry-run)
+
+### Task 5: Preserve custom skills during sync
+- **Status**: Complete
+- **Started**: 2026-02-04
+- **Changes**:
+  - Added CORE_SKILLS constant (adapt, ralph, research, tmux)
+  - Added detect_custom_skills() to find non-core skill directories
+  - Added report_custom_skills() to print preserved skills
+  - Custom skills are inherently preserved (process_directory only copies, doesn't delete)
+  - Reports which custom skills were preserved on sync
