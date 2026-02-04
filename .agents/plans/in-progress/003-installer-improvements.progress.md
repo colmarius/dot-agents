@@ -29,3 +29,11 @@
   - For branches: shows "dot-agents (ref: main)"
   - For commits with SHA in directory: shows "dot-agents (main @ abc123f)"
   - Moved install message after archive extraction to access directory name
+
+### Task 4: Document sync command in post-install output
+- **Status**: Complete
+- **Started**: 2026-02-04
+- **Changes**:
+  - Added sync update hint for existing installations
+  - Shows curl command to update again
+  - Only shows on sync (not fresh install or dry-run)

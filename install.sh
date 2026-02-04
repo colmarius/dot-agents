@@ -616,6 +616,12 @@ main() {
         log_info "  1. Run 'adapt' to customize AGENTS.md for your project"
         log_info "  2. See QUICKSTART.md for workflow guidance"
     fi
+
+    # Show sync update hint on sync (not fresh install)
+    if [[ "$IS_FRESH_INSTALL" != "true" ]] && [[ "$DRY_RUN" != "true" ]]; then
+        log_info ""
+        log_info "To update again: curl -fsSL https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/install.sh | bash"
+    fi
 }
 
 _main() {

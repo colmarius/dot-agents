@@ -41,7 +41,7 @@ Address high and medium priority improvements from user feedback after installin
     - Commit SHA available from extracted archive directory name
   - Notes: Parse short SHA from extracted directory or use git API
 
-- [ ] **Task 4: Document sync command in post-install output**
+- [x] **Task 4: Document sync command in post-install output**
   - Scope: `install.sh`
   - Depends on: Task 2
   - Acceptance:
