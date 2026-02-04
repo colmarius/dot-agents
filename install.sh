@@ -349,6 +349,30 @@ atomic_copy() {
     mv -f "$tmp" "$dest"
 }
 
+ensure_gitignore_entry() {
+    local gitignore_file=".agents/.gitignore"
+    local backup_entry="../.dot-agents-backup/"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        if [[ ! -f "$gitignore_file" ]]; then
+            log_info "  ${GREEN}[CREATE]${NC} $gitignore_file"
+        elif ! grep -qxF "$backup_entry" "$gitignore_file" 2>/dev/null; then
+            log_info "  ${GREEN}[UPDATE]${NC} $gitignore_file (add backup entry)"
+        fi
+        return 0
+    fi
+
+    mkdir -p ".agents"
+
+    if [[ ! -f "$gitignore_file" ]]; then
+        echo "$backup_entry" > "$gitignore_file"
+        log_info "  ${GREEN}[CREATE]${NC} $gitignore_file"
+    elif ! grep -qxF "$backup_entry" "$gitignore_file" 2>/dev/null; then
+        echo "$backup_entry" >> "$gitignore_file"
+        log_info "  ${GREEN}[UPDATE]${NC} $gitignore_file (add backup entry)"
+    fi
+}
+
 install_file() {
     local src="$1"
     local dest="$2"
@@ -513,6 +537,9 @@ main() {
     if [[ -d "${extracted_dir}/.agents" ]]; then
         process_directory "${extracted_dir}/.agents" "./.agents"
     fi
+
+    # Ensure .agents/.gitignore includes backup directory
+    ensure_gitignore_entry
 
     # Skip metadata write in diff-only mode
     if [[ "$DIFF_ONLY" != "true" ]]; then

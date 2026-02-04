@@ -13,7 +13,7 @@ Address high and medium priority improvements from user feedback after installin
 
 ## Tasks
 
-- [ ] **Task 1: Add backup directory to gitignore**
+- [x] **Task 1: Add backup directory to gitignore**
   - Scope: `install.sh`
   - Depends on: none
   - Acceptance:
