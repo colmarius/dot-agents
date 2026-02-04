@@ -8,6 +8,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-02-04
+
+### Added
+
+- Post-install guidance showing next steps (run 'adapt', see QUICKSTART.md)
+- Version string in install message (e.g., "Installing dot-agents v1.2.3...")
+- Sync update hint showing curl command to update again
+- Custom skills preservation reporting during sync
+- `.agents/.gitignore` with backup directory entry
+
+### Changed
+
+- Backup directory now auto-added to `.agents/.gitignore`
+
 ## [0.1.0] - 2025-02-03
 
 ### Changed
@@ -40,5 +54,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Installer skip logic now correctly includes plans/TEMPLATE.md
 - Postfix increment operators causing script exit on bash 5.3+ with `set -e` ([#1](https://github.com/colmarius/dot-agents/issues/1))
 
-[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/colmarius/dot-agents/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/colmarius/dot-agents/releases/tag/v0.1.0
