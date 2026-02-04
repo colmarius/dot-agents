@@ -32,7 +32,7 @@ Address high and medium priority improvements from user feedback after installin
     - Only show on fresh install (not sync)
   - Notes: Use existing color formatting for consistency
 
-- [ ] **Task 3: Show version/commit in install message**
+- [x] **Task 3: Show version/commit in install message**
   - Scope: `install.sh`
   - Depends on: none
   - Acceptance:

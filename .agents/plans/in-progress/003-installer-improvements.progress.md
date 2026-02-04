@@ -19,3 +19,13 @@
   - Added "Next steps" section after summary for fresh installs
   - Includes guidance to run 'adapt' and see QUICKSTART.md
   - Only shows on fresh install, not sync or dry-run
+
+### Task 3: Show version/commit in install message
+- **Status**: Complete
+- **Started**: 2026-02-04
+- **Changes**:
+  - Added `format_version_string()` function
+  - For tags (vX.Y.Z): shows "dot-agents v1.2.0"
+  - For branches: shows "dot-agents (ref: main)"
+  - For commits with SHA in directory: shows "dot-agents (main @ abc123f)"
+  - Moved install message after archive extraction to access directory name

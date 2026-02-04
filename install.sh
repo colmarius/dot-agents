@@ -350,6 +350,36 @@ atomic_copy() {
     mv -f "$tmp" "$dest"
 }
 
+format_version_string() {
+    local ref="$1"
+    local extracted_dir="${2:-}"
+
+    # For tags (vX.Y.Z format), show as version
+    if [[ "$ref" =~ ^v[0-9]+\.[0-9]+ ]]; then
+        echo "dot-agents ${ref}"
+        return
+    fi
+
+    # For branches/commits, try to get short SHA from directory name
+    local short_sha=""
+    if [[ -n "$extracted_dir" ]]; then
+        local dir_name
+        dir_name="$(basename "$extracted_dir")"
+        # Directory format: repo-name-REF (e.g., dot-agents-main or dot-agents-abc123f)
+        short_sha="${dir_name##*-}"
+        # Only use if it looks like a SHA (7+ hex chars)
+        if [[ ! "$short_sha" =~ ^[0-9a-f]{7,}$ ]]; then
+            short_sha=""
+        fi
+    fi
+
+    if [[ -n "$short_sha" ]]; then
+        echo "dot-agents (${ref} @ ${short_sha:0:7})"
+    else
+        echo "dot-agents (ref: ${ref})"
+    fi
+}
+
 ensure_gitignore_entry() {
     local gitignore_file=".agents/.gitignore"
     local backup_entry="../.dot-agents-backup/"
@@ -500,9 +530,6 @@ main() {
         fi
     fi
 
-    log_info "Installing dot-agents (ref: ${REF})..."
-    log_info ""
-
     if [[ "$DRY_RUN" == "true" ]]; then
         log_info "${YELLOW}DRY RUN - no changes will be made${NC}"
         log_info ""
@@ -520,6 +547,11 @@ main() {
         log_error "Failed to extract archive"
         exit 1
     fi
+
+    local version_string
+    version_string="$(format_version_string "$REF" "$extracted_dir")"
+    log_info "Installing ${version_string}..."
+    log_info ""
 
     # Install AGENTS.md from template (fresh install only)
     local template_src=""
