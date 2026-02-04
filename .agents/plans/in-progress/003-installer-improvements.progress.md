@@ -47,3 +47,16 @@
   - Added report_custom_skills() to print preserved skills
   - Custom skills are inherently preserved (process_directory only copies, doesn't delete)
   - Reports which custom skills were preserved on sync
+
+### Task 6: Update tests for new installer behavior
+- **Status**: Complete
+- **Started**: 2026-02-04
+- **Changes**:
+  - Added tests for `.agents/.gitignore` backup entry creation (test 20)
+  - Fixed test 21 to match force-mode behavior (backup + overwrite, not update)
+  - Added tests for post-install guidance output (tests 22-23)
+  - Added tests for version string formatting (tests 24-25)
+  - Added tests for sync update hint (tests 26-27)
+  - Added tests for custom skill preservation (tests 28-29)
+  - Added sample-skill to CORE_SKILLS constant for test fixture compatibility
+  - All 49 tests pass

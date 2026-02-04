@@ -59,7 +59,7 @@ Address high and medium priority improvements from user feedback after installin
     - Print message listing preserved custom skills
   - Notes: Skills are directories under `.agents/skills/`
 
-- [ ] **Task 6: Update tests for new installer behavior**
+- [x] **Task 6: Update tests for new installer behavior**
   - Scope: `test/integration/install.bats`
   - Depends on: Task 1, Task 2, Task 3, Task 4, Task 5
   - Acceptance:

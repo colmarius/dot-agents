@@ -380,8 +380,8 @@ format_version_string() {
     fi
 }
 
-# Core skills that come from upstream
-CORE_SKILLS="adapt ralph research tmux"
+# Core skills that come from upstream (sample-skill is for testing)
+CORE_SKILLS="adapt ralph research tmux sample-skill"
 
 detect_custom_skills() {
     local skills_dir=".agents/skills"
