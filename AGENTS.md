@@ -67,6 +67,14 @@ Skills are loaded via natural language. See each skill's SKILL.md in `.agents/sk
 
 Verify it's up-to-date: `./scripts/check-registry.sh`
 
+### Claude Code Integration
+
+When `.claude/` exists, `install.sh` creates symlinks so skills appear in Claude Code's `/` menu:
+
+```
+.claude/skills/<skill>/SKILL.md → ../../../.agents/skills/<skill>/SKILL.md
+```
+
 ## Plan Management
 
 Plans in `.agents/plans/` follow this workflow:

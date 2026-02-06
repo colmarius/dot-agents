@@ -164,3 +164,44 @@ for skill in registry["skills"]:
 ```
 
 The registry is agent-system agnostic—it works with Claude Code, ampcode, Cursor, or any tool that reads JSON.
+
+## Claude Code Native Discovery
+
+When `install.sh` detects a `.claude/` directory in your project, it automatically creates symlinks so dot-agents skills appear in Claude Code's `/` slash command menu.
+
+### How It Works
+
+Claude Code discovers skills in `.claude/skills/*/SKILL.md`. Since dot-agents installs skills to `.agents/skills/`, the installer bridges the gap by creating symlinks:
+
+```
+.claude/skills/adapt/SKILL.md    → ../../../.agents/skills/adapt/SKILL.md
+.claude/skills/research/SKILL.md → ../../../.agents/skills/research/SKILL.md
+```
+
+These symlinks are gitignored (via `.claude/skills/.gitignore`) so they don't pollute your repository.
+
+### What This Enables
+
+| Before | After |
+|--------|-------|
+| Skills only work via natural language ("Run adapt") | Also invocable via `/adapt` in Claude Code |
+| Skills don't appear in `/` menu | Skills listed in `/` menu with descriptions |
+| Requires AGENTS.md context injection | Native Claude Code skill discovery |
+
+### Requirements
+
+- A `.claude/` directory must exist in your project (created by Claude Code on first use)
+- Run or re-run `install.sh` to create the symlinks
+- Symlinks are recreated automatically when re-running `install.sh` (sync mode)
+
+### Manual Setup
+
+If you installed dot-agents before this feature, re-run the installer to add Claude Code integration:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
+```
+
+### Cleanup
+
+Running `install.sh --uninstall` removes the symlinks along with the rest of dot-agents. Only symlinks pointing to `.agents/skills/` are removed—your own `.claude/skills/` content is preserved.
