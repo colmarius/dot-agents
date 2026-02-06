@@ -8,6 +8,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- Skill registry (`REGISTRY.json`) for machine-readable skill discovery
+- `generate-registry.sh` script to auto-generate registry from SKILL.md frontmatter
+- Optional `triggers`, `keywords`, and `invocation` frontmatter fields for skills
+- Registry documentation in `docs/skills.md`
+
 ## [0.1.1] - 2026-02-04
 
 ### Added

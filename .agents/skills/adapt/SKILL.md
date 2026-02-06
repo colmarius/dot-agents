@@ -1,6 +1,9 @@
 ---
 name: adapt
 description: "Analyze project and fill in AGENTS.md. Use when adapting dot-agents to a new project, after initial installation."
+triggers: run adapt, adapt the project, analyze project
+keywords: project analysis, tech stack detection, configuration
+invocation: "Run adapt"
 ---
 
 # Adapt Skill
