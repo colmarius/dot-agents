@@ -17,6 +17,7 @@ Get productive with dot-agents in 5 minutes.
 
 ## 1. Install
 
+**cmd:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 ```
@@ -48,6 +49,7 @@ your-project/
 
 ### Verify Installation
 
+**cmd:**
 ```bash
 ls -la .agents/
 cat AGENTS.md | head -20
@@ -55,6 +57,7 @@ cat AGENTS.md | head -20
 
 ## 2. Adapt AGENTS.md
 
+**prompt:**
 ```text
 Run adapt
 ```
@@ -65,6 +68,7 @@ This analyzes your project and fills in the AGENTS.md template with your tech st
 
 Before building, research the problem space:
 
+**prompt:**
 ```text
 Research authentication patterns for Express.js APIs
 ```
@@ -75,6 +79,7 @@ Findings are saved to `.agents/research/` for reference.
 
 Turn research into a product requirements document:
 
+**prompt:**
 ```text
 Create a PRD for user authentication based on .agents/research/authentication-patterns.md
 ```
@@ -85,6 +90,7 @@ PRDs go to `.agents/prds/` with acceptance criteria.
 
 Convert PRD into implementation tasks:
 
+**prompt:**
 ```text
 Create a plan from .agents/prds/user-authentication.md
 ```
@@ -95,6 +101,7 @@ Plans use Ralph-ready task format with scope, dependencies, and acceptance crite
 
 Run autonomous implementation:
 
+**prompt:**
 ```text
 Run ralph on .agents/plans/in-progress/user-authentication.md
 ```
