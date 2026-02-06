@@ -32,6 +32,7 @@ dot-agents/
 │   │   └── REGISTRY.json        # Machine-readable skill index (auto-generated)
 │   ├── scripts/
 │   │   ├── sync.sh              # Sync from upstream GitHub
+│   │   ├── sync-local.sh        # Sync from local repo (dev)
 │   │   ├── post-sync.sh         # Post-sync Claude Code integration verification
 │   │   └── generate-registry.sh # Generate REGISTRY.json from SKILL.md frontmatter
 │   ├── plans/                   # Implementation plans
