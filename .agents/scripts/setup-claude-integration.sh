@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# post-sync.sh - Verify and complete Claude Code integration after syncing
+# setup-claude-integration.sh - Set up Claude Code skill discovery
 #
-# This script should be run after syncing dot-agents files to ensure
-# Claude Code skill discovery is properly set up. It mirrors the setup
-# that install.sh performs in the setup_claude_code_integration() function.
+# Creates symlinks from .claude/skills/ to .agents/skills/ so that
+# dot-agents skills appear in Claude Code's native / menu.
+# Called by sync scripts after syncing, or run standalone.
 
 # Colors (only if terminal supports them)
 if [[ -t 1 ]]; then
@@ -25,9 +25,9 @@ log_error() { echo -e "${RED}[ERROR]${NC} $1" >&2; }
 
 usage() {
     cat <<EOF
-Usage: post-sync.sh [OPTIONS]
+Usage: setup-claude-integration.sh [OPTIONS]
 
-Verify and complete Claude Code integration after syncing dot-agents.
+Set up Claude Code skill discovery via .claude/skills/ symlinks.
 
 This ensures that:
   - .claude/skills/ symlinks are created for skill discovery
@@ -40,11 +40,11 @@ Options:
   --help       Show this help message
 
 Examples:
-  # After syncing, verify integration
-  .agents/scripts/post-sync.sh
+  # Set up Claude Code integration
+  .agents/scripts/setup-claude-integration.sh
 
   # Preview changes first
-  .agents/scripts/post-sync.sh --dry-run
+  .agents/scripts/setup-claude-integration.sh --dry-run
 EOF
 }
 

@@ -129,9 +129,9 @@ _main() {
     set -e
 
     if [[ $rc -eq 0 ]]; then
-        # Run post-sync to ensure Claude Code integration is complete
-        if [[ -f ".agents/scripts/post-sync.sh" ]]; then
-            .agents/scripts/post-sync.sh --quiet
+        # Run post-sync integrations
+        if [[ -f ".agents/scripts/setup-claude-integration.sh" ]]; then
+            bash .agents/scripts/setup-claude-integration.sh --quiet
         fi
     else
         exit $rc

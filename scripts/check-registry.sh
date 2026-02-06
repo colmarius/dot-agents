@@ -30,10 +30,14 @@ strip_timestamp() {
     sed '/"generated":/d'
 }
 
-# Save current registry
+# Save current registry and guarantee restoration via trap
 current=$(cat "$REGISTRY_FILE")
+restore_registry() {
+    echo "$current" > "$REGISTRY_FILE"
+}
+trap restore_registry EXIT
 
-# Regenerate (this overwrites the file)
+# Regenerate (this overwrites the file; trap ensures restoration)
 bash "$GENERATE_SCRIPT" >/dev/null
 
 # Compare (ignoring the generated timestamp which changes each run)
@@ -45,12 +49,7 @@ regenerated_stripped=$(echo "$regenerated" | strip_timestamp)
 if [[ "$current_stripped" != "$regenerated_stripped" ]]; then
     echo "REGISTRY.json is out of date. Run:" >&2
     echo "  .agents/scripts/generate-registry.sh" >&2
-    # Restore the original so git diff shows clearly
-    echo "$current" > "$REGISTRY_FILE"
     exit 1
 fi
-
-# Restore original (preserve committed timestamp)
-echo "$current" > "$REGISTRY_FILE"
 
 echo "REGISTRY.json is up to date."

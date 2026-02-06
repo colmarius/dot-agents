@@ -3,7 +3,7 @@
 load '../test_helper/bats-support/load'
 load '../test_helper/bats-assert/load'
 
-POST_SYNC_SCRIPT="$BATS_TEST_DIRNAME/../../.agents/scripts/post-sync.sh"
+SCRIPT="$BATS_TEST_DIRNAME/../../.agents/scripts/setup-claude-integration.sh"
 
 setup() {
     TEST_DIR="$(mktemp -d)"
@@ -37,9 +37,9 @@ teardown() {
 }
 
 @test "--help shows usage" {
-    run bash "$POST_SYNC_SCRIPT" --help
+    run bash "$SCRIPT" --help
     assert_success
-    assert_output --partial "Usage: post-sync.sh"
+    assert_output --partial "Usage: setup-claude-integration.sh"
     assert_output --partial "--dry-run"
     assert_output --partial "--quiet"
 }
@@ -47,7 +47,7 @@ teardown() {
 @test "creates symlinks when .claude/ exists" {
     mkdir -p .claude
 
-    run bash "$POST_SYNC_SCRIPT"
+    run bash "$SCRIPT"
     assert_success
 
     # Symlinks should exist
@@ -61,7 +61,7 @@ teardown() {
 }
 
 @test "skips when no .claude/ directory" {
-    run bash "$POST_SYNC_SCRIPT"
+    run bash "$SCRIPT"
     assert_success
     assert_output --partial "No .claude/ directory"
 
@@ -71,7 +71,7 @@ teardown() {
 @test "--dry-run makes no changes" {
     mkdir -p .claude
 
-    run bash "$POST_SYNC_SCRIPT" --dry-run
+    run bash "$SCRIPT" --dry-run
     assert_success
     assert_output --partial "Would create"
 
@@ -82,7 +82,7 @@ teardown() {
 @test "--quiet suppresses informational output" {
     mkdir -p .claude
 
-    run bash "$POST_SYNC_SCRIPT" --quiet
+    run bash "$SCRIPT" --quiet
     assert_success
 
     # Should not contain informational messages
@@ -91,7 +91,7 @@ teardown() {
 }
 
 @test "--quiet suppresses skip message when no .claude/" {
-    run bash "$POST_SYNC_SCRIPT" --quiet
+    run bash "$SCRIPT" --quiet
     assert_success
     assert_output ""
 }
@@ -99,7 +99,7 @@ teardown() {
 @test "creates .gitignore with dot-agents header" {
     mkdir -p .claude
 
-    bash "$POST_SYNC_SCRIPT"
+    bash "$SCRIPT"
 
     [ -f ".claude/skills/.gitignore" ]
     run cat ".claude/skills/.gitignore"
@@ -116,7 +116,7 @@ teardown() {
     mkdir -p .agents/skills/my-custom
     echo "# Upstream version" > .agents/skills/my-custom/SKILL.md
 
-    run bash "$POST_SYNC_SCRIPT"
+    run bash "$SCRIPT"
     assert_success
     assert_output --partial "not a symlink"
 
@@ -131,7 +131,7 @@ teardown() {
     # Create a symlink that points to a non-existent skill
     ln -sf "../../../.agents/skills/old-skill/SKILL.md" .claude/skills/old-skill/SKILL.md
 
-    run bash "$POST_SYNC_SCRIPT"
+    run bash "$SCRIPT"
     assert_success
 
     # Stale symlink should be removed
@@ -142,7 +142,7 @@ teardown() {
 @test "symlinks use correct relative path" {
     mkdir -p .claude
 
-    bash "$POST_SYNC_SCRIPT"
+    bash "$SCRIPT"
 
     local target
     target="$(readlink .claude/skills/adapt/SKILL.md)"
@@ -152,11 +152,11 @@ teardown() {
 @test "is idempotent (running twice produces same result)" {
     mkdir -p .claude
 
-    bash "$POST_SYNC_SCRIPT"
+    bash "$SCRIPT"
     [ -L ".claude/skills/adapt/SKILL.md" ]
 
     # Run again
-    run bash "$POST_SYNC_SCRIPT"
+    run bash "$SCRIPT"
     assert_success
     [ -L ".claude/skills/adapt/SKILL.md" ]
 

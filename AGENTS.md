@@ -33,7 +33,7 @@ dot-agents/
 │   ├── scripts/
 │   │   ├── sync.sh              # Sync from upstream GitHub
 │   │   ├── sync-local.sh        # Sync from local repo (dev)
-│   │   ├── post-sync.sh         # Post-sync Claude Code integration verification
+│   │   ├── setup-claude-integration.sh # Claude Code skill discovery setup
 │   │   └── generate-registry.sh # Generate REGISTRY.json from SKILL.md frontmatter
 │   ├── plans/                   # Implementation plans
 │   ├── prds/                    # Product requirements documents
@@ -44,7 +44,7 @@ dot-agents/
 ├── scripts/                     # Development scripts
 │   └── check-registry.sh        # Verify REGISTRY.json is up-to-date
 └── test/                        # Bats integration tests
-    ├── integration/             # install.bats, sync.bats, generate-registry.bats, post-sync.bats
+    ├── integration/             # install.bats, sync.bats, generate-registry.bats, setup-claude-integration.bats
     ├── fixtures/                # Test fixtures (sample-archive.tar.gz)
     ├── mocks/                   # Mock curl for offline testing
     └── test_helper/             # Bats support libraries
@@ -78,7 +78,7 @@ When `.claude/` exists, `install.sh` creates symlinks so skills appear in Claude
 .claude/skills/<skill>/SKILL.md → ../../../.agents/skills/<skill>/SKILL.md
 ```
 
-After syncing, `post-sync.sh` is called automatically to ensure symlinks are in place.
+After syncing, `setup-claude-integration.sh` runs automatically to create symlinks.
 
 ## Plan Management
 

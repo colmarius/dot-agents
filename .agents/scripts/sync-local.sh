@@ -61,7 +61,6 @@ Arguments:
 
 Options:
   --dry-run     Show what would be changed without making changes
-  --force       Overwrite all files without prompting
   --yes         Skip confirmation prompts
   --version     Show version and installation info
   --help        Show this help message
@@ -76,8 +75,8 @@ Examples:
   # Preview changes
   .agents/scripts/sync-local.sh --dry-run
 
-  # Force update
-  .agents/scripts/sync-local.sh --force
+  # Skip confirmation
+  .agents/scripts/sync-local.sh --yes
 EOF
 }
 
@@ -98,10 +97,6 @@ _main() {
                 ;;
             --dry-run)
                 dry_run=true
-                shift
-                ;;
-            --force)
-                yes=true
                 shift
                 ;;
             --yes)
@@ -204,10 +199,10 @@ _main() {
 }
 METADATA
 
-    # Run post-sync to ensure Claude Code integration is complete
-    if [[ -f ".agents/scripts/post-sync.sh" ]]; then
-        log_info "Completing Claude Code integration..."
-        bash .agents/scripts/post-sync.sh --quiet
+    # Run post-sync integrations
+    if [[ -f ".agents/scripts/setup-claude-integration.sh" ]]; then
+        log_info "Running post-sync integrations..."
+        bash .agents/scripts/setup-claude-integration.sh --quiet
     fi
 
     echo ""

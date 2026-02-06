@@ -14,7 +14,7 @@ SCRIPTS=(
     install.sh
     .agents/scripts/sync.sh
     .agents/scripts/sync-local.sh
-    .agents/scripts/post-sync.sh
+    .agents/scripts/setup-claude-integration.sh
     .agents/scripts/generate-registry.sh
     scripts/check-registry.sh
     scripts/lint.sh
