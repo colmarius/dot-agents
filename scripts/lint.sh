@@ -13,6 +13,7 @@ cd "$ROOT_DIR"
 SCRIPTS=(
     install.sh
     .agents/scripts/sync.sh
+    .agents/scripts/post-sync.sh
     .agents/scripts/generate-registry.sh
     scripts/check-registry.sh
     scripts/lint.sh
