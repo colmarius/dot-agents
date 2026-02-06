@@ -413,3 +413,163 @@ teardown() {
     # Should NOT report core skills (they're from upstream)
     refute_output --partial "Custom skills preserved:"
 }
+
+# ===== Task 6: Claude Code native skill discovery tests =====
+
+@test "install creates .claude/skills/ symlinks when .claude/ exists" {
+    # Create .claude/ directory (simulates Claude Code project)
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Should report Claude Code integration
+    assert_output --partial "Claude Code"
+    assert_output --partial "skill(s) available in / menu"
+
+    # Symlinks should exist
+    [ -L ".claude/skills/adapt/SKILL.md" ]
+    [ -L ".claude/skills/ralph/SKILL.md" ]
+    [ -L ".claude/skills/research/SKILL.md" ]
+    [ -L ".claude/skills/tmux/SKILL.md" ]
+
+    # Symlinks should resolve to actual content
+    [ -s ".claude/skills/adapt/SKILL.md" ]
+}
+
+@test "install skips .claude/skills/ when no .claude/ directory" {
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Should NOT mention Claude Code
+    refute_output --partial "Claude Code"
+
+    # .claude/skills/ should not exist
+    [ ! -d ".claude/skills" ]
+}
+
+@test ".claude/skills/.gitignore is created with skill entries" {
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # .gitignore should exist
+    [ -f ".claude/skills/.gitignore" ]
+
+    # Should contain dot-agents header
+    run cat ".claude/skills/.gitignore"
+    assert_output --partial "dot-agents"
+    assert_output --partial "adapt/"
+}
+
+@test "symlinks resolve correctly through relative path" {
+    mkdir -p .claude
+
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Read the symlink target
+    local target
+    target="$(readlink .claude/skills/adapt/SKILL.md)"
+
+    # Should use relative path going up 3 levels
+    [ "$target" = "../../../.agents/skills/adapt/SKILL.md" ]
+
+    # Content should be readable through symlink
+    run cat ".claude/skills/adapt/SKILL.md"
+    assert_success
+    assert_output --partial "adapt"
+}
+
+@test "sync recreates .claude/skills/ symlinks" {
+    mkdir -p .claude
+
+    # First install
+    bash "$INSTALL_SCRIPT" --yes
+    [ -L ".claude/skills/adapt/SKILL.md" ]
+
+    # Remove a symlink manually
+    rm .claude/skills/adapt/SKILL.md
+
+    # Re-install (sync) should recreate it
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    [ -L ".claude/skills/adapt/SKILL.md" ]
+}
+
+@test "--uninstall removes .claude/skills/ symlinks" {
+    mkdir -p .claude
+
+    # Install
+    bash "$INSTALL_SCRIPT" --yes
+    [ -L ".claude/skills/adapt/SKILL.md" ]
+
+    # Uninstall
+    run bash "$INSTALL_SCRIPT" --uninstall --yes
+    assert_success
+
+    # Symlinks should be removed
+    [ ! -L ".claude/skills/adapt/SKILL.md" ]
+    [ ! -f ".claude/skills/.gitignore" ]
+}
+
+@test "--uninstall preserves non-dot-agents .claude/skills/" {
+    mkdir -p .claude
+
+    # Install
+    bash "$INSTALL_SCRIPT" --yes
+
+    # Create a user-owned skill (not a symlink)
+    mkdir -p .claude/skills/my-custom-skill
+    echo "# My Custom" > .claude/skills/my-custom-skill/SKILL.md
+
+    # Uninstall
+    run bash "$INSTALL_SCRIPT" --uninstall --yes
+    assert_success
+
+    # User's custom skill should be preserved
+    [ -f ".claude/skills/my-custom-skill/SKILL.md" ]
+}
+
+@test "install skips existing non-symlink .claude/skills/ files" {
+    mkdir -p .claude/skills/adapt
+
+    # Create a user-owned file (not a symlink)
+    echo "# User's adapt skill" > .claude/skills/adapt/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Should warn about skipping
+    assert_output --partial "SKIP"
+    assert_output --partial "not a symlink"
+
+    # User's file should be preserved (not overwritten with symlink)
+    [ ! -L ".claude/skills/adapt/SKILL.md" ]
+    run cat ".claude/skills/adapt/SKILL.md"
+    assert_output "# User's adapt skill"
+}
+
+@test "fresh install with .claude/ shows /adapt hint in next steps" {
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial "/adapt"
+    assert_output --partial "skills are now in the / menu"
+}
+
+@test "--dry-run shows Claude Code integration plan" {
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --dry-run
+    assert_success
+
+    assert_output --partial "Claude Code"
+    assert_output --partial "CREATE"
+    assert_output --partial ".claude/skills/"
+
+    # Should not create any files
+    [ ! -d ".claude/skills" ]
+}

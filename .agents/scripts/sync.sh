@@ -123,7 +123,19 @@ _main() {
     echo ""
 
     # Fetch and execute upstream install.sh with passthrough flags
-    exec bash <(curl -fsSL "$install_url") --ref "$ref" "$@"
+    set +e
+    bash <(curl -fsSL "$install_url") --ref "$ref" "$@"
+    local rc=$?
+    set -e
+
+    if [[ $rc -eq 0 ]]; then
+        # Run post-sync integrations
+        if [[ -f ".agents/scripts/setup-claude-integration.sh" ]]; then
+            bash .agents/scripts/setup-claude-integration.sh --quiet
+        fi
+    else
+        exit $rc
+    fi
 }
 
 # Only run if script is executed, not sourced

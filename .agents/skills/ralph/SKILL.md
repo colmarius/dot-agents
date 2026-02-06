@@ -1,6 +1,9 @@
 ---
 name: ralph
-description: Autonomous multi-iteration feature implementation using handoff loops. Use when asked to "run ralph", "execute autonomously", "implement this plan autonomously", or for hands-free feature development from structured plans.
+description: "Autonomous multi-iteration feature implementation using handoff loops. Use when asked to run ralph, execute autonomously, implement this plan autonomously, or for hands-free feature development from structured plans."
+triggers: run ralph, execute autonomously, implement plan, hands-free
+keywords: autonomous execution, planning, task management, implementation
+invocation: "Run ralph on [plan.md]"
 ---
 
 # Ralph Autonomous Agent

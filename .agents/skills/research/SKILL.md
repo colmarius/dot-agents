@@ -1,6 +1,9 @@
 ---
 name: research
-description: Deep research on technical topics, libraries, APIs, or concepts. Use when asked to research, investigate, explore deeply, or gather comprehensive information on a topic. Saves learnings to .agents/research/.
+description: "Deep research on technical topics, libraries, APIs, or concepts. Use when asked to research, investigate, explore deeply, or gather comprehensive information on a topic. Saves learnings to .agents/research/."
+triggers: research, investigate, explore, deep dive
+keywords: web search, documentation, analysis, learning
+invocation: "Research [topic]"
 ---
 
 # Research Skill

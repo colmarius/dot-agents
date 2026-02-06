@@ -55,6 +55,10 @@ ls -la .agents/
 cat AGENTS.md | head -20
 ```
 
+## Agent Support
+
+dot-agents was built for [Amp](https://ampcode.com) and works with any AI coding agent. If you're using **Claude Code**, skills automatically appear in the `/` slash command menu (e.g., `/adapt`, `/research`) when a `.claude/` directory exists. See [Claude Code Native Discovery](./docs/skills.md#claude-code-native-discovery) for details.
+
 ## 2. Adapt AGENTS.md
 
 **prompt:**

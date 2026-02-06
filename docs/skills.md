@@ -80,7 +80,10 @@ Create a new skill by adding a directory under `.agents/skills/`:
 ```markdown
 ---
 name: my-skill
-description: Brief description for skill discovery
+description: "Brief description for skill discovery"
+triggers: deploy, push to production, release
+keywords: deployment, CI/CD, infrastructure
+invocation: "Deploy [target]"
 ---
 
 # My Skill
@@ -88,10 +91,117 @@ description: Brief description for skill discovery
 Instructions for the agent when this skill is loaded...
 ```
 
-The `name` and `description` in the frontmatter are used for skill discovery. The agent matches user requests against skill descriptions to determine which skill to load.
+| Field | Required | Purpose |
+|-------|----------|---------|
+| `name` | Yes | Skill identifier (kebab-case) |
+| `description` | Yes | When to use; agents match this against user input |
+| `triggers` | No | Comma-separated phrases that should activate this skill |
+| `keywords` | No | Comma-separated domain tags for search/categorization |
+| `invocation` | No | How to invoke (shown in documentation and UIs) |
+
+The `name` and `description` are used for skill discovery. The agent matches user requests against skill descriptions to determine which skill to load.
+
+The optional `triggers`, `keywords`, and `invocation` fields provide structured metadata for programmatic discovery. These are used by `generate-registry.sh` to build `REGISTRY.json`.
 
 **Invocation:** Skills are loaded via natural language matching. If your description mentions "deploy" or "deployment", saying "help me deploy" will load your skill.
 
 ### Preserving Custom Skills
 
 Custom skills in `.agents/skills/` are preserved during `sync.sh` updates. Only upstream skills (adapt, ralph, research, tmux) are updated—your custom skills remain untouched.
+
+## Skill Registry
+
+The skill registry (`REGISTRY.json`) provides a machine-readable index of all available skills. It enables programmatic skill discovery by any agent system without walking the filesystem.
+
+### Location
+
+```
+.agents/skills/REGISTRY.json
+```
+
+### Generating the Registry
+
+After adding or modifying skills, regenerate the registry:
+
+```bash
+.agents/scripts/generate-registry.sh
+```
+
+The script scans all `.agents/skills/*/SKILL.md` files, extracts frontmatter, and writes `REGISTRY.json`.
+
+### Registry Format
+
+```json
+{
+  "version": "1.0",
+  "generated": "2026-02-06T12:00:00Z",
+  "skills": [
+    {
+      "id": "my-skill",
+      "name": "my-skill",
+      "description": "Brief description...",
+      "triggers": ["deploy", "push to production"],
+      "keywords": ["deployment", "CI/CD"],
+      "path": ".agents/skills/my-skill/SKILL.md",
+      "invocation": "Deploy [target]"
+    }
+  ]
+}
+```
+
+### Using the Registry
+
+Agent systems can parse `REGISTRY.json` to discover skills programmatically:
+
+```python
+import json
+
+with open(".agents/skills/REGISTRY.json") as f:
+    registry = json.load(f)
+
+for skill in registry["skills"]:
+    print(f"{skill['name']}: {skill['description']}")
+```
+
+The registry is agent-system agnostic—it works with Claude Code, ampcode, Cursor, or any tool that reads JSON.
+
+## Claude Code Native Discovery
+
+When `install.sh` detects a `.claude/` directory in your project, it automatically creates symlinks so dot-agents skills appear in Claude Code's `/` slash command menu.
+
+### How It Works
+
+Claude Code discovers skills in `.claude/skills/*/SKILL.md`. Since dot-agents installs skills to `.agents/skills/`, the installer bridges the gap by creating symlinks:
+
+```
+.claude/skills/adapt/SKILL.md    → ../../../.agents/skills/adapt/SKILL.md
+.claude/skills/research/SKILL.md → ../../../.agents/skills/research/SKILL.md
+```
+
+These symlinks are gitignored (via `.claude/skills/.gitignore`) so they don't pollute your repository.
+
+### What This Enables
+
+| Before | After |
+|--------|-------|
+| Skills only work via natural language ("Run adapt") | Also invocable via `/adapt` in Claude Code |
+| Skills don't appear in `/` menu | Skills listed in `/` menu with descriptions |
+| Requires AGENTS.md context injection | Native Claude Code skill discovery |
+
+### Requirements
+
+- A `.claude/` directory must exist in your project (created by Claude Code on first use)
+- Run or re-run `install.sh` to create the symlinks
+- Symlinks are recreated automatically when re-running `install.sh` (sync mode)
+
+### Manual Setup
+
+If you installed dot-agents before this feature, re-run the installer to add Claude Code integration:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
+```
+
+### Cleanup
+
+Running `install.sh --uninstall` removes the symlinks along with the rest of dot-agents. Only symlinks pointing to `.agents/skills/` are removed—your own `.claude/skills/` content is preserved.

@@ -1,6 +1,9 @@
 ---
 name: tmux
-description: Instructions for using tmux to spawn multiple processes, inspect them, and capture their output. Use when running servers, long-running tasks, or background processes.
+description: "Instructions for using tmux to spawn multiple processes, inspect them, and capture their output. Use when running servers, long-running tasks, or background processes."
+triggers: background process, server, tmux, long-running
+keywords: background processes, process management, logging
+invocation: "tmux (auto-loaded when needed)"
 ---
 
 # tmux

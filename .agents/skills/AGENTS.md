@@ -16,13 +16,26 @@ Each skill is a folder containing:
 ```markdown
 ---
 name: skill-name
-description: "Brief description. Use when [context]. Triggers on: keyword1, keyword2."
+description: "Brief description. Use when [context]."
+triggers: keyword1, keyword2, keyword phrase
+keywords: domain, tags, for categorization
+invocation: "Run skill-name [args]"
 ---
 
 # Skill Title
 
 [Main content with workflows, patterns, examples]
 ```
+
+## Frontmatter Fields
+
+| Field | Required | Purpose |
+|-------|----------|---------|
+| `name` | Yes | Skill identifier (kebab-case) |
+| `description` | Yes | When to use; agents match this against user input |
+| `triggers` | No | Comma-separated phrases that activate this skill |
+| `keywords` | No | Comma-separated domain tags for categorization |
+| `invocation` | No | How to invoke (for docs and UIs) |
 
 ## Description Best Practices
 
@@ -32,7 +45,6 @@ The description determines when the skill gets loaded:
 |---------|---------|---------|
 | What it does | First sentence | "Database migrations and data transformations." |
 | Use when | Context triggers | "Use when creating migrations, working with schema changes" |
-| Triggers on | Keyword phrases | "Triggers on: migrate, schema change, transform data" |
 
 **Constraints:**
 
@@ -40,6 +52,16 @@ The description determines when the skill gets loaded:
 - Use kebab-case for skill names
 - Start with action verb or noun describing capability
 - **Always quote description values** - Required for YAML parsing when values contain colons (`:`)
+
+## Registry
+
+Running `generate-registry.sh` builds `REGISTRY.json` from all SKILL.md frontmatter:
+
+```bash
+.agents/scripts/generate-registry.sh
+```
+
+Regenerate after adding or modifying skills. The registry enables programmatic skill discovery by any agent system.
 
 ## Writing Good Skills
 

@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "generated": "2026-02-06T14:54:07Z",
+  "description": "Machine-readable skill registry for programmatic discovery. Auto-generated from SKILL.md frontmatter by generate-registry.sh.",
+  "skills": [
+    {
+      "id": "adapt",
+      "name": "adapt",
+      "description": "Analyze project and fill in AGENTS.md. Use when adapting dot-agents to a new project, after initial installation.",
+      "triggers": ["run adapt", "adapt the project", "analyze project"],
+      "keywords": ["project analysis", "tech stack detection", "configuration"],
+      "path": ".agents/skills/adapt/SKILL.md",
+      "invocation": "Run adapt"
+    },
+    {
+      "id": "ralph",
+      "name": "ralph",
+      "description": "Autonomous multi-iteration feature implementation using handoff loops. Use when asked to run ralph, execute autonomously, implement this plan autonomously, or for hands-free feature development from structured plans.",
+      "triggers": ["run ralph", "execute autonomously", "implement plan", "hands-free"],
+      "keywords": ["autonomous execution", "planning", "task management", "implementation"],
+      "path": ".agents/skills/ralph/SKILL.md",
+      "invocation": "Run ralph on [plan.md]"
+    },
+    {
+      "id": "research",
+      "name": "research",
+      "description": "Deep research on technical topics, libraries, APIs, or concepts. Use when asked to research, investigate, explore deeply, or gather comprehensive information on a topic. Saves learnings to .agents/research/.",
+      "triggers": ["research", "investigate", "explore", "deep dive"],
+      "keywords": ["web search", "documentation", "analysis", "learning"],
+      "path": ".agents/skills/research/SKILL.md",
+      "invocation": "Research [topic]"
+    },
+    {
+      "id": "tmux",
+      "name": "tmux",
+      "description": "Instructions for using tmux to spawn multiple processes, inspect them, and capture their output. Use when running servers, long-running tasks, or background processes.",
+      "triggers": ["background process", "server", "tmux", "long-running"],
+      "keywords": ["background processes", "process management", "logging"],
+      "path": ".agents/skills/tmux/SKILL.md",
+      "invocation": "tmux (auto-loaded when needed)"
+    }
+  ]
+}

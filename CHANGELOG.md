@@ -8,6 +8,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- Skill registry (`REGISTRY.json`) for machine-readable skill discovery
+- `generate-registry.sh` script to auto-generate registry from SKILL.md frontmatter
+- Optional `triggers`, `keywords`, and `invocation` frontmatter fields for skills
+- Claude Code native skill discovery: `install.sh` creates `.claude/skills/` symlinks when `.claude/` directory is detected
+- Skills now appear in Claude Code's `/` slash command menu automatically
+- `--uninstall` cleans up Claude Code skill symlinks
+- Registry and Claude Code discovery documentation in `docs/skills.md`
+
 ## [0.1.1] - 2026-02-04
 
 ### Added

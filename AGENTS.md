@@ -29,14 +29,22 @@ dot-agents/
 ├── install.sh                   # Main installation script
 ├── .agents/
 │   ├── skills/                  # Agent skills (adapt, ralph, research, tmux)
+│   │   └── REGISTRY.json        # Machine-readable skill index (auto-generated)
+│   ├── scripts/
+│   │   ├── sync.sh              # Sync from upstream GitHub
+│   │   ├── sync-local.sh        # Sync from local repo (dev)
+│   │   ├── setup-claude-integration.sh # Claude Code skill discovery setup
+│   │   └── generate-registry.sh # Generate REGISTRY.json from SKILL.md frontmatter
 │   ├── plans/                   # Implementation plans
 │   ├── prds/                    # Product requirements documents
 │   └── research/                # Research and reference material
 ├── docs/                        # Full documentation
+│   └── prds/                    # Development PRDs (not synced to consumers)
 ├── site/                        # Landing page source
 ├── scripts/                     # Development scripts
+│   └── check-registry.sh        # Verify REGISTRY.json is up-to-date
 └── test/                        # Bats integration tests
-    ├── integration/             # install.bats, sync.bats
+    ├── integration/             # install.bats, sync.bats, generate-registry.bats, setup-claude-integration.bats
     ├── fixtures/                # Test fixtures (sample-archive.tar.gz)
     ├── mocks/                   # Mock curl for offline testing
     └── test_helper/             # Bats support libraries
@@ -51,6 +59,26 @@ dot-agents/
 | `Run ralph on [plan.md]` | Autonomous execution of plan tasks |
 
 Skills are loaded via natural language. See each skill's SKILL.md in `.agents/skills/` for details.
+
+### Skill Registry
+
+`REGISTRY.json` provides a machine-readable index of all skills. Regenerate after adding/modifying skills:
+
+```bash
+.agents/scripts/generate-registry.sh
+```
+
+Verify it's up-to-date: `./scripts/check-registry.sh`
+
+### Claude Code Integration
+
+When `.claude/` exists, `install.sh` creates symlinks so skills appear in Claude Code's `/` menu:
+
+```
+.claude/skills/<skill>/SKILL.md → ../../../.agents/skills/<skill>/SKILL.md
+```
+
+After syncing, `setup-claude-integration.sh` runs automatically to create symlinks.
 
 ## Plan Management
 
@@ -101,6 +129,12 @@ Plans in `.agents/plans/` follow this workflow:
 
 # Rebuild test fixture after changes to .agents/ or AGENTS.template.md
 ./scripts/build-test-fixture.sh
+
+# Regenerate skill registry
+.agents/scripts/generate-registry.sh
+
+# Verify registry is up-to-date
+./scripts/check-registry.sh
 
 # Serve docs locally
 ./scripts/serve-docs.sh [port]
@@ -154,6 +188,7 @@ After making changes:
 2. **Update README.md** - Reflect user-facing changes
 3. **Update plan status** - Move completed plans to `completed/`
 4. **Rebuild test fixture** - Run `./scripts/build-test-fixture.sh` if `.agents/` or `AGENTS.template.md` changed
+5. **Regenerate registry** - Run `.agents/scripts/generate-registry.sh` if SKILL.md frontmatter changed
 
 ## Conventions
 

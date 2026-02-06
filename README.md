@@ -20,6 +20,15 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 - **[Full Docs](./docs/README.md)** — Concepts, skills reference
 - **[Website](https://dot-agents.dev)** — Landing page (source: [site/](./site/))
 
+## Agent Support
+
+dot-agents works with any AI coding agent that reads markdown instructions. It was originally developed for [Amp](https://ampcode.com) and has first-class support for:
+
+- **[Amp](https://ampcode.com)** — Skills load via natural language (e.g., `Run adapt`, `Run ralph on [plan]`)
+- **[Claude Code](https://claude.ai/claude-code)** — Skills auto-integrate with the native `/` menu when `.claude/` exists ([details](./docs/skills.md#claude-code-native-discovery))
+
+The skill registry (`REGISTRY.json`) is agent-agnostic and works with Cursor, Windsurf, or any tool that reads JSON. See [Skills Reference](./docs/skills.md) for more.
+
 ## Next Steps
 
 Then:
