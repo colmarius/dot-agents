@@ -656,7 +656,7 @@ teardown() {
     [ ! -d ".agents/.dot-agents-backup" ]
 }
 
-@test "sync preserves legacy singular reference directory ignore" {
+@test "sync drops deprecated singular reference ignore but preserves content" {
     bash "$INSTALL_SCRIPT" --yes
     mkdir -p .agents/reference/legacy-repo
     echo "legacy" > .agents/reference/legacy-repo/file.txt
@@ -664,10 +664,14 @@ teardown() {
     run bash "$INSTALL_SCRIPT" --yes
     assert_success
 
+    # Sync never deletes user files; the legacy checkout stays on disk.
     [ -f ".agents/reference/legacy-repo/file.txt" ]
+
+    # The deprecated singular path is no longer ignored; only references/ is.
     run cat .agents/.gitignore
-    assert_output --partial "reference/"
-    assert_output --partial "references/*"
+    refute_line "reference/"
+    assert_line "references/*"
+    assert_line "!references/.gitkeep"
 }
 
 # ===== Task 1: .gitignore entry tests =====

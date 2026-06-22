@@ -21,13 +21,13 @@ Fresh installs no longer create:
 .agents/skills/ralph/
 ```
 
-Existing legacy plan and PRD documents, `.agents/research/`, and legacy `.agents/reference/` content are preserved on sync. Retired Ralph support is backed up and removed so stale guidance does not conflict with the new workflow. This includes `.agents/skills/ralph`, `.agents/plans/AGENTS.md`, `.agents/prds/AGENTS.md`, and old plan/PRD templates. Any `.agents/skills/ralph` directory is treated as retired upstream content, even if it was locally edited; restore it from `.agents/.dot-agents-backup/` and rename it only if you intentionally want to keep a custom skill with that behavior.
+Existing legacy plan and PRD documents and `.agents/research/` content are preserved on sync. Retired Ralph support is backed up and removed so stale guidance does not conflict with the new workflow. This includes `.agents/skills/ralph`, `.agents/plans/AGENTS.md`, `.agents/prds/AGENTS.md`, and old plan/PRD templates. Any `.agents/skills/ralph` directory is treated as retired upstream content, even if it was locally edited; restore it from `.agents/.dot-agents-backup/` and rename it only if you intentionally want to keep a custom skill with that behavior.
 
 v0.3.0 does not ship a Ralph compatibility layer, alias, or stub skill. Pin to `v0.2.0` only if you need the old runner workflow for an existing project.
 
 Use `--diff` before syncing to preview pending installs, updates, removals, and conflicts without modifying files; it exits non-zero when any change is pending. Use `--write-conflicts` to write conflicts beside the original: Markdown conflicts use `file.dot-agents.md`, while other files use `file.ext.dot-agents.new`.
 
-The preferred external-reference path is now `.agents/references/`. Existing `.agents/reference/` checkouts remain ignored so large local clones are not accidentally committed. Rename them manually when convenient.
+External reference checkouts now live under `.agents/references/`. The deprecated singular `.agents/reference/` path is no longer ignored, so rename any existing `.agents/reference/` checkout to `.agents/references/` to keep large local clones out of version control.
 
 ## Migrate One Legacy Plan
 

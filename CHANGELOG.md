@@ -23,6 +23,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **BREAKING:** Removed the `ralph` skill from core installs. Sync backs up and removes retired upstream `ralph` skill directories.
 - Fresh installs no longer create legacy `.agents/plans/` or `.agents/prds/` directories.
 - Sync backs up and removes retired legacy guidance/templates such as `.agents/prds/AGENTS.md` and old plan/PRD templates.
+- Dropped support for the deprecated singular `.agents/reference/` path. External reference checkouts now live under `.agents/references/`; rename any existing `.agents/reference/` checkout, which is no longer gitignored.
 
 ### Added
 

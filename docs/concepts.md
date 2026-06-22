@@ -44,7 +44,7 @@ dot-agents does not assume a specific execution runtime. The work item is the co
 
 ## Legacy Content
 
-Older dot-agents installs used `.agents/plans/` and `.agents/prds/`. v0.3.0 preserves legacy plan and PRD documents as user content but no longer creates those paths on fresh install. See [migration guide](./migration-v1.md) for how to move active work into `.agents/work/`.
+Older dot-agents installs used `.agents/plans/` and `.agents/prds/`. v0.3.0 preserves legacy plan and PRD documents as user content but no longer creates those paths on fresh install. See [migration guide](./migration-v0.3.md) for how to move active work into `.agents/work/`.
 
 ## Glossary
 
