@@ -9,6 +9,7 @@
 
 - [Workflow Overview](./concepts.md#workflow)
 - [Glossary](./concepts.md#glossary)
+- [v0.3 Migration](./migration-v1.md)
 
 ## Reference
 

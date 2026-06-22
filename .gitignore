@@ -1,3 +1,4 @@
 # External reference repositories
-.agents/reference/*
-!.agents/reference/.gitkeep
+.agents/reference/
+.agents/references/*
+!.agents/references/.gitkeep

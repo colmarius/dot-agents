@@ -3,21 +3,57 @@
 ## Workflow
 
 ```text
-Research → PRD → Plan → Execute
+Work Item → Research/PRD as needed → Plan → Handoff Prompt → Implement → Record Progress
 ```
 
-1. **Research:** Investigate problem space, save findings to `.agents/research/`
-2. **PRD:** Define requirements and acceptance criteria in `.agents/prds/`
-3. **Plan:** Break PRD into executable tasks with Ralph-ready format
-4. **Execute:** Ralph runs tasks autonomously, commits after each
+1. **Work Item:** Create `.agents/work/<category>/<slug>/index.md` as the durable context entrypoint.
+2. **Research/PRD:** Save task-specific research and requirements beside the work item. Use `.agents/research/` only for reusable notes.
+3. **Plan:** Break work into implementation-ready tasks in `plan.md` with scope, dependencies, and acceptance criteria.
+4. **Handoff Prompt:** Ask an agent to write a paste-ready prompt for a fresh implementation thread.
+5. **Implement:** Paste the prompt into the new thread and let that agent do the scoped work.
+6. **Record Progress:** Update `progress.md`, task checkboxes, and `index.md` so future threads can resume.
+
+## Work Item Shape
+
+```text
+.agents/work/<category>/<slug>/
+├── index.md       # required landing page
+├── research.md    # optional, work-specific findings
+├── prd.md         # optional requirements
+├── plan.md        # optional implementation-ready tasks
+├── progress.md    # optional implementation log
+└── decisions/     # optional durable decisions
+```
+
+Create optional files only when they hold useful context. The required `index.md` should stay short and point to the current next action.
+
+## Handoff Prompts
+
+A handoff prompt is a paste-ready prompt for a new agent thread. It should name:
+
+- Work item path and files to read first.
+- Goal, current state, and exact implementation slice.
+- Scope limits and non-goals.
+- Required updates to `plan.md`, `progress.md`, and `index.md`.
+- Verification commands and stop conditions.
+- Expected final response shape.
+
+dot-agents does not assume a specific execution runtime. The work item is the continuity layer.
+
+## Legacy Content
+
+Older dot-agents installs used `.agents/plans/` and `.agents/prds/`. v0.3.0 preserves legacy plan and PRD documents as user content but no longer creates those paths on fresh install. See [migration guide](./migration-v1.md) for how to move active work into `.agents/work/`.
 
 ## Glossary
 
 | Term | Definition |
-|------|------------|
-| adapt | Skill that analyzes your project and fills in AGENTS.md |
-| Ralph | Autonomous execution skill that works through plans task-by-task |
-| PRD | Product Requirements Document defining what to build |
-| Plan | List of tasks in Ralph-ready format with scope, dependencies, acceptance criteria |
-| Skills | Specialized agent instructions loaded via natural language |
-| sync | Script that updates dot-agents from upstream while preserving your customizations |
+| --- | --- |
+| adapt | Skill that analyzes your project and fills in `AGENTS.md` |
+| work item | Durable folder under `.agents/work/<category>/<slug>/` for one multi-session effort |
+| task | Checkbox entry inside `plan.md` |
+| PRD | Optional product or requirements document defining what to build |
+| plan | Implementation-ready task list with scope, dependencies, and acceptance criteria |
+| handoff prompt | Paste-ready prompt for a fresh implementation thread |
+| progress log | `progress.md`, the implementation log for changes, verification, blockers, and next action |
+| skills | Specialized agent instructions loaded via natural language |
+| sync | Script that updates dot-agents from upstream while preserving user work |

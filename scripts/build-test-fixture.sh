@@ -32,29 +32,24 @@ if [[ -d "$REPO_ROOT/.agents" ]]; then
     echo "  Added: .agents/"
 fi
 
-# Add sample files for testing user content preservation
+# Add sample files for testing user content preservation and skip rules
 mkdir -p "$ARCHIVE_DIR/.agents/research"
 mkdir -p "$ARCHIVE_DIR/.agents/plans/todo"
 mkdir -p "$ARCHIVE_DIR/.agents/prds"
+mkdir -p "$ARCHIVE_DIR/.agents/work/feature/example-work"
 
 echo "# Example research" > "$ARCHIVE_DIR/.agents/research/example.md"
 echo "# Example plan" > "$ARCHIVE_DIR/.agents/plans/todo/plan-001.md"
 echo "# Example PRD" > "$ARCHIVE_DIR/.agents/prds/feature.md"
-echo "  Added: sample user content files for testing"
-
-# Add a sample skill for testing
-mkdir -p "$ARCHIVE_DIR/.agents/skills/sample-skill"
-cat > "$ARCHIVE_DIR/.agents/skills/sample-skill/SKILL.md" << 'EOF'
----
-name: sample-skill
-description: A sample skill for testing
----
-
-# Sample Skill
-
-This is a sample skill used for testing the installation process.
+echo "# Example work item" > "$ARCHIVE_DIR/.agents/work/feature/example-work/index.md"
+cat > "$ARCHIVE_DIR/.agents/.dot-agents.json" <<'EOF'
+{
+  "upstream": "https://github.com/example/bogus-dot-agents",
+  "ref": "bogus-archive-metadata",
+  "installedAt": "2000-01-01T00:00:00Z"
+}
 EOF
-echo "  Added: sample-skill for testing"
+echo "  Added: sample user content files for testing"
 
 # Create the archive
 tar -czf "$FIXTURES_DIR/sample-archive.tar.gz" -C "$TMP_DIR" dot-agents-main

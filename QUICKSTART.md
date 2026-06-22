@@ -17,106 +17,110 @@ Get productive with dot-agents in 5 minutes.
 
 ## 1. Install
 
-**cmd:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 ```
 
 ### What Gets Installed
 
-After running the install command, you'll have:
-
-```
+```text
 your-project/
-├── AGENTS.md              # Template - customize for your project
+├── AGENTS.md
 └── .agents/
-    ├── plans/
-    │   ├── todo/
-    │   ├── in-progress/
-    │   └── completed/
-    ├── prds/
-    │   └── TEMPLATE.md
+    ├── work/
+    │   └── AGENTS.md
     ├── research/
-    ├── reference/         # gitignored - for external repos
+    ├── references/
     ├── scripts/
     │   └── sync.sh
     └── skills/
         ├── adapt/
-        ├── ralph/
+        ├── agent-work/
+        ├── feature-planning/
         ├── research/
         └── tmux/
 ```
 
-If the project already has a `.claude/` directory, dot-agents also links skills into `.claude/skills/` so Claude Code can discover them as project skills and invoke them with slash commands such as `/adapt`.
+If the project already has a `.claude/` directory, dot-agents also links skills into `.claude/skills/` so Claude Code can discover them as project skills.
 
 ### Verify Installation
 
-**cmd:**
 ```bash
 ls -la .agents/
 cat AGENTS.md | head -20
 ```
 
-For Claude Code projects, you can also check:
+## 2. Adapt `AGENTS.md`
 
-**cmd:**
-```bash
-ls -la .claude/skills/
-```
+Ask your agent:
 
-## 2. Adapt AGENTS.md
-
-**prompt:**
 ```text
 Run adapt
 ```
 
-This analyzes your project and fills in the AGENTS.md template with your tech stack, commands, and conventions. You can also customize it manually.
+This analyzes your project and fills in the `AGENTS.md` template with tech stack, commands, and conventions. You can also customize it manually.
 
-## 3. Research
+## 3. Create a Work Item
 
-Before building, research the problem space:
+Ask your agent:
 
-**prompt:**
 ```text
-Research authentication patterns for Express.js APIs
+Create a new work item for user authentication.
 ```
 
-Findings are saved to `.agents/research/` for reference.
+Or run the helper directly:
 
-## 4. Create PRD
-
-Turn research into a product requirements document:
-
-**prompt:**
-```text
-Create a PRD for user authentication based on .agents/research/authentication-patterns.md
+```bash
+.agents/skills/agent-work/scripts/new-work.sh \
+  --category feature \
+  --slug user-authentication \
+  --title "User authentication"
 ```
 
-PRDs go to `.agents/prds/` with acceptance criteria.
+The work item starts at:
 
-## 5. Generate Plan
-
-Convert PRD into implementation tasks:
-
-**prompt:**
 ```text
-Create a plan from .agents/prds/user-authentication.md
+.agents/work/feature/user-authentication/index.md
 ```
 
-Plans use Ralph-ready task format with scope, dependencies, and acceptance criteria.
+## 4. Research and Plan
 
-## 6. Execute with Ralph
+Ask for work-local research:
 
-Run autonomous implementation:
-
-**prompt:**
 ```text
-Run ralph on .agents/plans/in-progress/user-authentication.md
+Research authentication patterns for this work item.
 ```
 
-Ralph iterates through tasks, commits after each, and pauses for review.
+Then ask for a plan:
 
----
+```text
+Create an implementation-ready plan in .agents/work/feature/user-authentication/plan.md.
+```
+
+Plans use tasks with scope, dependencies, and acceptance criteria.
+
+## 5. Generate a Handoff Prompt
+
+When the plan is ready, ask:
+
+```text
+Review .agents/work/feature/user-authentication and write a paste-ready handoff prompt for the next implementation thread.
+```
+
+Paste the generated prompt into a fresh agent thread. The new thread should read `index.md`, implement the requested slice, update `plan.md` checkboxes, append to `progress.md`, refresh `index.md`, and report verification results.
+
+## 6. Continue Later
+
+List active work:
+
+```bash
+.agents/skills/agent-work/scripts/list-work.sh
+```
+
+Then ask for a continuation prompt from the next action in the work item.
+
+## Legacy Plans and PRDs
+
+Older dot-agents installs used `.agents/plans/` and `.agents/prds/`. Legacy plan and PRD documents are preserved on sync, while retired Ralph guidance/templates are backed up and removed. Migrate one plan at a time into `.agents/work/<category>/<slug>/` when you need to resume it.
 
 **Next:** [Concepts](./docs/concepts.md) · [Skills Reference](./docs/skills.md) · [dot-agents.dev](https://dot-agents.dev)

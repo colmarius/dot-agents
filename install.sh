@@ -38,7 +38,7 @@ Options:
   --dry-run         Show what would happen without making changes
   --diff            Show unified diff for conflicts instead of overwriting
   --force           Overwrite conflicts (creates backup first, default on sync)
-  --write-conflicts Create .dot-agents.new files for conflicts
+  --write-conflicts Create .dot-agents.md/.dot-agents.new files for conflicts
   --ref <ref>       Git ref to install (branch, tag, commit). Default: main
   --yes             Skip confirmation prompts
   --uninstall       Remove dot-agents
@@ -51,7 +51,7 @@ Examples:
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 
   # Install specific version
-  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.2.0
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.3.0
 
   # Preview changes first
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --dry-run
@@ -190,6 +190,7 @@ do_uninstall() {
 installed_count=0
 skipped_count=0
 conflict_count=0
+pending_change_count=0
 backup_count=0
 BACKUP_DIR=""
 CLAUDE_SKILL_SYMLINKS_REMOVED=0
@@ -233,7 +234,7 @@ create_backup_dir() {
     if [[ -z "$BACKUP_DIR" ]]; then
         local timestamp
         timestamp="$(date -u +%Y-%m-%dT%H%M%SZ)"
-        BACKUP_DIR=".dot-agents-backup/${timestamp}"
+        BACKUP_DIR=".agents/.dot-agents-backup/${timestamp}"
         if [[ "$DRY_RUN" != "true" ]]; then
             mkdir -p "$BACKUP_DIR"
         fi
@@ -253,6 +254,27 @@ backup_file() {
         mkdir -p "$backup_dir"
         cp "$file" "$backup_path"
         log_info "  ${BLUE}[BACKUP]${NC} $file"
+    fi
+    backup_count=$((backup_count + 1))
+}
+
+backup_item() {
+    local path="$1"
+    create_backup_dir
+    local backup_path="${BACKUP_DIR}/${path}"
+    local backup_dir
+    backup_dir="$(dirname "$backup_path")"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "  ${BLUE}[BACKUP]${NC} $path → $backup_path"
+    else
+        mkdir -p "$backup_dir"
+        if [[ -d "$path" && ! -L "$path" ]]; then
+            cp -Rp "$path" "$backup_path"
+        else
+            cp -p "$path" "$backup_path"
+        fi
+        log_info "  ${BLUE}[BACKUP]${NC} $path"
     fi
     backup_count=$((backup_count + 1))
 }
@@ -419,8 +441,10 @@ format_version_string() {
     fi
 }
 
-# Core skills that come from upstream (sample-skill is for testing)
-CORE_SKILLS="adapt ralph research tmux sample-skill"
+# Core skills that come from upstream
+CORE_SKILLS="adapt agent-work feature-planning research tmux"
+RETIRED_CORE_SKILLS="ralph"
+RETIRED_LEGACY_GUIDANCE_FILES=".agents/plans/AGENTS.md .agents/prds/AGENTS.md .agents/plans/TEMPLATE.md .agents/prds/TEMPLATE.md"
 
 detect_custom_skills() {
     local skills_dir=".agents/skills"
@@ -437,7 +461,7 @@ detect_custom_skills() {
 
         # Skip if it's a core skill
         local is_core=false
-        for core in $CORE_SKILLS; do
+        for core in $CORE_SKILLS $RETIRED_CORE_SKILLS; do
             if [[ "$skill_name" == "$core" ]]; then
                 is_core=true
                 break
@@ -465,6 +489,53 @@ report_custom_skills() {
             log_info "  - $skill"
         done <<< "$custom_skills"
     fi
+}
+
+cleanup_retired_core_skills() {
+    local retired skill_dir
+
+    [[ -d ".agents/skills" ]] || return 0
+
+    for retired in $RETIRED_CORE_SKILLS; do
+        skill_dir=".agents/skills/$retired"
+        [[ -e "$skill_dir" || -L "$skill_dir" ]] || continue
+
+        if [[ "$DIFF_ONLY" == "true" ]]; then
+            log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill, preview only)"
+            pending_change_count=$((pending_change_count + 1))
+            continue
+        fi
+
+        backup_item "$skill_dir"
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill)"
+        else
+            rm -rf "$skill_dir"
+            log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill)"
+        fi
+    done
+}
+
+cleanup_retired_legacy_guidance() {
+    local path
+
+    for path in $RETIRED_LEGACY_GUIDANCE_FILES; do
+        [[ -e "$path" || -L "$path" ]] || continue
+
+        if [[ "$DIFF_ONLY" == "true" ]]; then
+            log_info "  ${RED}[REMOVE]${NC} $path (retired legacy guidance, preview only)"
+            pending_change_count=$((pending_change_count + 1))
+            continue
+        fi
+
+        backup_item "$path"
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_info "  ${RED}[REMOVE]${NC} $path (retired legacy guidance)"
+        else
+            rm -rf "$path"
+            log_info "  ${RED}[REMOVE]${NC} $path (retired legacy guidance)"
+        fi
+    done
 }
 
 cleanup_stale_claude_code_skill_symlinks() {
@@ -570,13 +641,19 @@ setup_claude_code_integration() {
 
 ensure_gitignore_entry() {
     local gitignore_file=".agents/.gitignore"
-    local backup_entry="../.dot-agents-backup/"
+    local backup_entry=".dot-agents-backup/"
 
-    if [[ "$DRY_RUN" == "true" ]]; then
+    if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
         if [[ ! -f "$gitignore_file" ]]; then
             log_info "  ${GREEN}[CREATE]${NC} $gitignore_file"
+            if [[ "$DIFF_ONLY" == "true" ]]; then
+                pending_change_count=$((pending_change_count + 1))
+            fi
         elif ! grep -qxF "$backup_entry" "$gitignore_file" 2>/dev/null; then
             log_info "  ${GREEN}[UPDATE]${NC} $gitignore_file (add backup entry)"
+            if [[ "$DIFF_ONLY" == "true" ]]; then
+                pending_change_count=$((pending_change_count + 1))
+            fi
         fi
         return 0
     fi
@@ -599,6 +676,13 @@ install_file() {
     dest_dir="$(dirname "$dest")"
 
     if [[ ! -e "$dest" ]]; then
+        if [[ "$DIFF_ONLY" == "true" ]]; then
+            log_install "$dest (would install)"
+            installed_count=$((installed_count + 1))
+            pending_change_count=$((pending_change_count + 1))
+            return 0
+        fi
+
         if [[ "$DRY_RUN" == "true" ]]; then
             log_install "$dest"
         else
@@ -654,6 +738,7 @@ install_file() {
         diff -u "$dest" "$src" 2>/dev/null || true
         echo ""
         conflict_count=$((conflict_count + 1))
+        pending_change_count=$((pending_change_count + 1))
         return 0
     fi
 
@@ -682,13 +767,13 @@ process_directory() {
         local rel_path="${file#$src_dir/}"
         local dest_path="${dest_dir}/${rel_path}"
 
-        # Skip *.md files in user content directories (research, plans, prds)
-        if [[ "$rel_path" == research/*.md || "$rel_path" == plans/*.md || "$rel_path" == plans/**/*.md || "$rel_path" == prds/*.md ]]; then
+        # Skip user content directories. Fresh installs get guidance files, not sample work.
+        if [[ "$rel_path" == research/*.md || "$rel_path" == research/**/*.md || "$rel_path" == work/*/*/* || "$rel_path" == plans/* || "$rel_path" == prds/* ]]; then
             continue
         fi
 
-        # Skip metadata file in diff mode (it's auto-generated and will always differ)
-        if [[ "$DIFF_ONLY" == "true" ]] && [[ "$rel_path" == ".dot-agents.json" ]]; then
+        # Metadata is generated locally by write_metadata.
+        if [[ "$rel_path" == ".dot-agents.json" ]]; then
             continue
         fi
 
@@ -763,6 +848,11 @@ main() {
         process_directory "${extracted_dir}/.agents" "./.agents"
     fi
 
+    if [[ "$IS_FRESH_INSTALL" != "true" ]]; then
+        cleanup_retired_core_skills
+        cleanup_retired_legacy_guidance
+    fi
+
     # Ensure .agents/.gitignore includes backup directory
     ensure_gitignore_entry
 
@@ -781,6 +871,9 @@ main() {
     log_info "  Installed: ${installed_count}"
     log_info "  Skipped:   ${skipped_count}"
     log_info "  Conflicts: ${conflict_count}"
+    if [[ "$DIFF_ONLY" == "true" ]]; then
+        log_info "  Pending changes: ${pending_change_count}"
+    fi
 
     if [[ $backup_count -gt 0 ]]; then
         log_info "  Backed up: ${backup_count}"
@@ -802,8 +895,8 @@ main() {
         fi
     fi
 
-    # In diff mode, exit 1 if conflicts exist
-    if [[ "$DIFF_ONLY" == "true" ]] && [[ $conflict_count -gt 0 ]]; then
+    # In diff mode, exit 1 if any change would be applied.
+    if [[ "$DIFF_ONLY" == "true" ]] && [[ $pending_change_count -gt 0 ]]; then
         return 1
     fi
 

@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>dot-agents — AI-ready agent workspace</title>
-  <meta name="description" content="One-command setup for AI agent workflows in any project. Structured plans, PRDs, and autonomous execution.">
+  <meta name="description" content="One-command setup for durable AI agent work items, planning, research, and paste-ready handoff prompts.">
   <link rel="canonical" href="https://dot-agents.dev/">
   
   <!-- OpenGraph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://dot-agents.dev/">
   <meta property="og:title" content="dot-agents — AI-ready agent workspace">
-  <meta property="og:description" content="One-command setup for AI agent workflows in any project. Structured plans, PRDs, and autonomous execution.">
+  <meta property="og:description" content="One-command setup for durable AI agent work items, planning, research, and paste-ready handoff prompts.">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="dot-agents — AI-ready agent workspace">
-  <meta name="twitter:description" content="One-command setup for AI agent workflows in any project. Structured plans, PRDs, and autonomous execution.">
+  <meta name="twitter:description" content="One-command setup for durable AI agent work items, planning, research, and paste-ready handoff prompts.">
   
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
@@ -41,7 +41,7 @@
     <main>
       <section class="hero">
         <h1>Ship faster with <span class="highlight">structured AI workflows</span></h1>
-        <p class="hero-desc">One command to set up PRDs, plans, and an execution loop—so you can start building, not just planning.</p>
+        <p class="hero-desc">One command to set up durable work items, research, plans, and handoff prompts—so context survives across agent threads.</p>
       </section>
 
       <section id="install" class="install">
@@ -61,7 +61,14 @@
         <p class="install-hint">Then point your agent at a real problem and iterate.</p>
         <details class="install-details">
           <summary>Pin a version</summary>
-          <code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.2.0</code>
+          <code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.3.0</code>
+        </details>
+        <p class="install-hint">Current release: <a href="https://github.com/colmarius/dot-agents/releases/tag/v0.3.0">v0.3.0</a>. Older releases are available on GitHub.</p>
+        <details class="install-details">
+          <summary>Older releases</summary>
+          <ul>
+            <li><a href="https://github.com/colmarius/dot-agents/tree/v0.2.0">v0.2.0 docs and source</a></li>
+          </ul>
         </details>
       </section>
 
@@ -71,10 +78,10 @@
           <pre><code>your-project/
 ├── AGENTS.md           <span class="tree-comment"># Customize for your project</span>
 └── .agents/
-    ├── plans/          <span class="tree-comment"># todo → in-progress → completed</span>
-    ├── prds/           <span class="tree-comment"># Product requirements</span>
-    ├── research/       <span class="tree-comment"># Discoveries and context</span>
-    └── skills/         <span class="tree-comment"># adapt, ralph, research, tmux</span></code></pre>
+    ├── work/           <span class="tree-comment"># durable work items</span>
+    ├── research/       <span class="tree-comment"># reusable findings</span>
+    ├── references/     <span class="tree-comment"># local reference repos</span>
+    └── skills/         <span class="tree-comment"># adapt, agent-work, planning, research, tmux</span></code></pre>
         </div>
         <p class="install-hint">Using Claude Code? If <code>.claude/</code> already exists, install/sync links these skills into <code>.claude/skills/</code> for project skill discovery.</p>
       </section>
@@ -84,22 +91,22 @@
           <div class="feature-card">
             <div class="feature-icon">⚡</div>
             <h3>Instant Setup</h3>
-            <p>One command creates .agents/ with plans, PRDs, skills, and research directories.</p>
+            <p>One command creates .agents/ with work-item guidance, reusable research, references, and skills.</p>
           </div>
           <div class="feature-card">
             <div class="feature-icon">📋</div>
-            <h3>Structured Plans</h3>
-            <p>Task format with dependencies, scopes, and acceptance criteria for autonomous execution.</p>
+            <h3>Durable Work Items</h3>
+            <p>Keep research, requirements, plans, progress, decisions, and next actions together.</p>
           </div>
           <div class="feature-card">
             <div class="feature-icon">🤖</div>
-            <h3>Autonomous Execution <span class="term">(<a href="https://github.com/colmarius/dot-agents/blob/main/docs/concepts.md#glossary">Ralph</a>)</span></h3>
-            <p>Multi-iteration execution with handoff between agent threads.</p>
+            <h3>Handoff Prompts</h3>
+            <p>Generate paste-ready prompts for fresh implementation threads with clear scope and verification.</p>
           </div>
           <div class="feature-card">
             <div class="feature-icon">🔬</div>
             <h3>Built-in Research</h3>
-            <p>Save discoveries to .agents/research/ for persistent project knowledge.</p>
+            <p>Save work-local findings beside the task and reusable knowledge in .agents/research/.</p>
           </div>
         </div>
       </section>
@@ -110,16 +117,16 @@
           <div class="step">
             <div class="step-num">1</div>
             <div class="step-content">
-              <strong>Research</strong>
-              <span>Deep dive into requirements and constraints</span>
+              <strong>Work item</strong>
+              <span>Create durable context under .agents/work/</span>
             </div>
           </div>
           <div class="step-arrow">→</div>
           <div class="step">
             <div class="step-num">2</div>
             <div class="step-content">
-              <strong>PRD</strong>
-              <span>Define features and acceptance criteria</span>
+              <strong>Research/PRD</strong>
+              <span>Capture findings and requirements as needed</span>
             </div>
           </div>
           <div class="step-arrow">→</div>
@@ -127,15 +134,15 @@
             <div class="step-num">3</div>
             <div class="step-content">
               <strong>Plan</strong>
-              <span>Break down into executable tasks</span>
+              <span>Break work into implementation-ready tasks</span>
             </div>
           </div>
           <div class="step-arrow">→</div>
           <div class="step">
             <div class="step-num">4</div>
             <div class="step-content">
-              <strong>Execute</strong>
-              <span>Ralph runs autonomously</span>
+              <strong>Handoff</strong>
+              <span>Paste a scoped prompt into a fresh thread</span>
             </div>
           </div>
         </div>
@@ -161,22 +168,22 @@
           <div class="qs-step">
             <div class="qs-num">3</div>
             <div class="qs-content">
-              <strong>Research</strong>
-              <code>Research [topic]</code>
+              <strong>Work item</strong>
+              <code>Create a new work item for [feature]</code>
             </div>
           </div>
           <div class="qs-step">
             <div class="qs-num">4</div>
             <div class="qs-content">
-              <strong>PRD</strong>
-              <code>Create PRD for [feature]</code>
+              <strong>Plan</strong>
+              <code>Create/refine a plan for [work item]</code>
             </div>
           </div>
           <div class="qs-step">
             <div class="qs-num">5</div>
             <div class="qs-content">
-              <strong>Execute</strong>
-              <code>Run ralph on [plan]</code>
+              <strong>Handoff</strong>
+              <code>Write a handoff prompt for [work item]</code>
             </div>
           </div>
         </div>
