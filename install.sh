@@ -269,7 +269,11 @@ backup_file() {
         log_info "  ${BLUE}[BACKUP]${NC} $file → $backup_path"
     else
         mkdir -p "$backup_dir"
-        cp "$file" "$backup_path"
+        if [[ -L "$file" ]]; then
+            cp -Pp "$file" "$backup_path"
+        else
+            cp -p "$file" "$backup_path"
+        fi
         log_info "  ${BLUE}[BACKUP]${NC} $file"
     fi
     backup_count=$((backup_count + 1))
@@ -375,44 +379,60 @@ log_info() { echo -e "$1"; }
 
 INTERACTIVE_SKIP_ALL=false
 INTERACTIVE_OVERWRITE_ALL=false
+PROMPT_ACTION=""
 
 prompt_conflict() {
     local src="$1"
     local dest="$2"
+    local response=""
 
     if [[ "$INTERACTIVE_SKIP_ALL" == "true" ]]; then
-        echo "skip"
+        PROMPT_ACTION="skip"
         return
     fi
     if [[ "$INTERACTIVE_OVERWRITE_ALL" == "true" ]]; then
-        echo "overwrite"
+        PROMPT_ACTION="overwrite"
         return
     fi
 
-    echo ""
-    echo -e "${YELLOW}CONFLICT:${NC} $dest differs from upstream"
+    echo "" >&2
+    echo -e "${YELLOW}CONFLICT:${NC} $dest differs from upstream" >&2
     if command -v diff >/dev/null 2>&1; then
-        echo "--- $dest (yours)"
-        echo "+++ upstream"
-        diff -u "$dest" "$src" 2>/dev/null | head -20 || true
-        echo ""
+        echo "--- $dest (yours)" >&2
+        echo "+++ upstream" >&2
+        diff -u "$dest" "$src" 2>/dev/null | head -20 >&2 || true
+        echo "" >&2
     fi
-    echo -n "[k]eep / [o]verwrite / [n]ew file / [s]kip all / [O]verwrite all? "
-    read -r response
+
+    echo -n "[k]eep / [o]verwrite / [n]ew file / [s]kip all / [O]verwrite all? " >&2
+    if [[ -n "${DOT_AGENTS_INTERACTIVE_RESPONSE:-}" ]]; then
+        response="$DOT_AGENTS_INTERACTIVE_RESPONSE"
+        DOT_AGENTS_INTERACTIVE_RESPONSE=""
+    elif [[ -r /dev/tty ]]; then
+        read -r response < /dev/tty || response=""
+    else
+        echo "" >&2
+        log_info "  ${YELLOW}[SKIP]${NC} no terminal available; writing conflict file for manual review"
+        PROMPT_ACTION="new"
+        return
+    fi
 
     case "$response" in
-        k|K) echo "keep" ;;
-        o) echo "overwrite" ;;
-        n|N) echo "new" ;;
-        s|S) INTERACTIVE_SKIP_ALL=true; echo "skip" ;;
-        O) INTERACTIVE_OVERWRITE_ALL=true; echo "overwrite" ;;
-        *) echo "new" ;;
+        k|K) PROMPT_ACTION="keep" ;;
+        o) PROMPT_ACTION="overwrite" ;;
+        n|N) PROMPT_ACTION="new" ;;
+        s|S) INTERACTIVE_SKIP_ALL=true; PROMPT_ACTION="skip" ;;
+        O) INTERACTIVE_OVERWRITE_ALL=true; PROMPT_ACTION="overwrite" ;;
+        *) PROMPT_ACTION="new" ;;
     esac
 }
 
 files_identical() {
     local file1="$1"
     local file2="$2"
+
+    [[ -f "$file1" && -f "$file2" ]] || return 1
+
     if command -v md5sum >/dev/null 2>&1; then
         [[ "$(md5sum "$file1" | cut -d' ' -f1)" == "$(md5sum "$file2" | cut -d' ' -f1)" ]]
     elif command -v md5 >/dev/null 2>&1; then
@@ -700,11 +720,11 @@ ensure_gitignore_entry() {
     local gitignore_file=".agents/.gitignore"
     local backup_entry=".dot-agents-backup/"
 
-    if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
-        if [[ "$DIFF_ONLY" == "true" && "$AGENTS_GITIGNORE_PENDING" == "true" ]]; then
-            return 0
-        fi
+    if [[ "$AGENTS_GITIGNORE_PENDING" == "true" ]]; then
+        return 0
+    fi
 
+    if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
         if [[ ! -f "$gitignore_file" ]]; then
             log_info "  ${GREEN}[CREATE]${NC} $gitignore_file"
             if [[ "$DIFF_ONLY" == "true" ]]; then
@@ -736,7 +756,7 @@ install_file() {
     local dest_dir
     dest_dir="$(dirname "$dest")"
 
-    if [[ ! -e "$dest" ]]; then
+    if [[ ! -e "$dest" && ! -L "$dest" ]]; then
         if [[ "$DIFF_ONLY" == "true" ]]; then
             log_install "$dest (would install)"
             installed_count=$((installed_count + 1))
@@ -777,7 +797,8 @@ install_file() {
     # Interactive mode
     if [[ "$INTERACTIVE" == "true" ]] && [[ "$DRY_RUN" != "true" ]]; then
         local action
-        action="$(prompt_conflict "$src" "$dest")"
+        prompt_conflict "$src" "$dest"
+        action="$PROMPT_ACTION"
         case "$action" in
             keep|skip)
                 log_skip "$dest (kept yours)"
@@ -811,9 +832,12 @@ install_file() {
     else
         conflict_file="${dest}.dot-agents.new"
     fi
+    mark_agents_gitignore_pending "$dest"
 
     if [[ "$DRY_RUN" == "true" ]]; then
         log_conflict "$dest (would write ${conflict_file})"
+    elif [[ -e "$conflict_file" || -L "$conflict_file" ]]; then
+        log_conflict "$dest differs. Kept existing ${conflict_file}; remove it to regenerate."
     else
         cp -p "$src" "$conflict_file"
         log_conflict "$dest differs. Wrote ${conflict_file} for review."

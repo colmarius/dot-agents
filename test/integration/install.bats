@@ -364,6 +364,65 @@ teardown() {
     [ -f ".agents/.gitignore.dot-agents.new" ]
 }
 
+@test "--write-conflicts does not mutate conflicted .agents/.gitignore" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    printf '# Custom ignore\n' > .agents/.gitignore
+    local original_gitignore
+    original_gitignore=$(cat .agents/.gitignore)
+
+    run bash "$INSTALL_SCRIPT" --write-conflicts --yes
+    assert_success
+    assert_output --partial "CONFLICT"
+
+    [ -f ".agents/.gitignore.dot-agents.new" ]
+    run cat .agents/.gitignore
+    assert_output "$original_gitignore"
+}
+
+@test "--write-conflicts preserves an existing conflict sidecar" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
+    echo "review notes stay" > .agents/skills/research/SKILL.dot-agents.md
+
+    run bash "$INSTALL_SCRIPT" --write-conflicts --yes
+    assert_success
+    assert_output --partial "Kept existing ./.agents/skills/research/SKILL.dot-agents.md"
+
+    run cat .agents/skills/research/SKILL.dot-agents.md
+    assert_output "review notes stay"
+}
+
+@test "--interactive overwrite applies selected conflict action" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
+
+    run env DOT_AGENTS_INTERACTIVE_RESPONSE=o bash "$INSTALL_SCRIPT" --interactive --yes
+    assert_success
+    assert_output --partial "overwritten"
+    assert_output --partial "BACKUP"
+
+    run head -1 .agents/skills/research/SKILL.md
+    assert_output "---"
+    [ ! -f ".agents/skills/research/SKILL.dot-agents.md" ]
+}
+
+@test "--interactive keep preserves selected local conflict" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
+
+    run env DOT_AGENTS_INTERACTIVE_RESPONSE=k bash "$INSTALL_SCRIPT" --interactive --yes
+    assert_success
+    assert_output --partial "kept yours"
+
+    run cat .agents/skills/research/SKILL.md
+    assert_output "# Modified skill"
+    [ ! -f ".agents/skills/research/SKILL.dot-agents.md" ]
+}
+
 @test "sync defaults to force mode (overwrites with backup)" {
     # First install
     bash "$INSTALL_SCRIPT" --yes
@@ -380,6 +439,50 @@ teardown() {
     # Should create backup directory
     run find . -type d -name ".dot-agents-backup*"
     assert_output --partial ".dot-agents-backup"
+}
+
+@test "sync backs up symlinked managed files without following them" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p external
+    echo "custom skill link target" > external/research-skill.md
+    rm .agents/skills/research/SKILL.md
+    ln -s ../../../external/research-skill.md .agents/skills/research/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    assert_output --partial "force overwrite"
+    assert_output --partial "BACKUP"
+
+    [ ! -L ".agents/skills/research/SKILL.md" ]
+    local backup_link
+    backup_link=$(find .agents/.dot-agents-backup -path '*/.agents/skills/research/SKILL.md' -type l | head -1)
+    [ -n "$backup_link" ]
+
+    local target
+    target="$(readlink "$backup_link")"
+    [ "$target" = "../../../external/research-skill.md" ]
+}
+
+@test "sync backs up broken symlinked managed files without following them" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    rm .agents/skills/research/SKILL.md
+    ln -s ../../../missing-research-skill.md .agents/skills/research/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    assert_output --partial "force overwrite"
+    assert_output --partial "BACKUP"
+
+    [ ! -L ".agents/skills/research/SKILL.md" ]
+    local backup_link
+    backup_link=$(find .agents/.dot-agents-backup -path '*/.agents/skills/research/SKILL.md' -type l | head -1)
+    [ -n "$backup_link" ]
+
+    local target
+    target="$(readlink "$backup_link")"
+    [ "$target" = "../../../missing-research-skill.md" ]
 }
 
 @test "--diff shows unified diff for conflicts" {
