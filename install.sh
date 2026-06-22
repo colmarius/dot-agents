@@ -36,9 +36,9 @@ Install dot-agents into the current project.
 
 Options:
   --dry-run         Show what would happen without making changes
-  --diff            Show unified diff for conflicts instead of overwriting
+  --diff            Preview pending changes without writing; exit 1 if pending
   --force           Overwrite conflicts (creates backup first, default on sync)
-  --write-conflicts Create .dot-agents.new files for conflicts
+  --write-conflicts Create file.dot-agents.md/file.ext.dot-agents.new conflicts
   --ref <ref>       Git ref to install (branch, tag, commit). Default: main
   --yes             Skip confirmation prompts
   --uninstall       Remove dot-agents
@@ -51,10 +51,10 @@ Examples:
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 
   # Install specific version
-  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.2.0
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.3.0
 
   # Preview changes first
-  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --dry-run
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --diff
 
   # Force update (backup + overwrite)
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --force
@@ -190,9 +190,22 @@ do_uninstall() {
 installed_count=0
 skipped_count=0
 conflict_count=0
+pending_change_count=0
 backup_count=0
 BACKUP_DIR=""
 CLAUDE_SKILL_SYMLINKS_REMOVED=0
+AGENTS_GITIGNORE_PENDING=false
+
+is_agents_gitignore_path() {
+    local path="${1#./}"
+    [[ "$path" == ".agents/.gitignore" ]]
+}
+
+mark_agents_gitignore_pending() {
+    if is_agents_gitignore_path "$1"; then
+        AGENTS_GITIGNORE_PENDING=true
+    fi
+}
 
 is_dot_agents_claude_skill_symlink() {
     local path="$1"
@@ -209,6 +222,11 @@ remove_claude_code_skill_symlinks() {
 
     CLAUDE_SKILL_SYMLINKS_REMOVED=0
 
+    [[ -e "$claude_skills_dir" || -L "$claude_skills_dir" ]] || return 0
+    if [[ -L "$claude_skills_dir" ]]; then
+        log_info "${YELLOW}[SKIP]${NC} $claude_skills_dir (user-owned symlink)"
+        return 0
+    fi
     [[ -d "$claude_skills_dir" ]] || return 0
 
     for skill_link in "$claude_skills_dir"/*; do
@@ -233,7 +251,7 @@ create_backup_dir() {
     if [[ -z "$BACKUP_DIR" ]]; then
         local timestamp
         timestamp="$(date -u +%Y-%m-%dT%H%M%SZ)"
-        BACKUP_DIR=".dot-agents-backup/${timestamp}"
+        BACKUP_DIR=".agents/.dot-agents-backup/${timestamp}"
         if [[ "$DRY_RUN" != "true" ]]; then
             mkdir -p "$BACKUP_DIR"
         fi
@@ -251,8 +269,35 @@ backup_file() {
         log_info "  ${BLUE}[BACKUP]${NC} $file → $backup_path"
     else
         mkdir -p "$backup_dir"
-        cp "$file" "$backup_path"
+        if [[ -L "$file" ]]; then
+            cp -Pp "$file" "$backup_path"
+        else
+            cp -p "$file" "$backup_path"
+        fi
         log_info "  ${BLUE}[BACKUP]${NC} $file"
+    fi
+    backup_count=$((backup_count + 1))
+}
+
+backup_item() {
+    local path="$1"
+    create_backup_dir
+    local backup_path="${BACKUP_DIR}/${path}"
+    local backup_dir
+    backup_dir="$(dirname "$backup_path")"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "  ${BLUE}[BACKUP]${NC} $path → $backup_path"
+    else
+        mkdir -p "$backup_dir"
+        if [[ -d "$path" && ! -L "$path" ]]; then
+            cp -Rp "$path" "$backup_path"
+        elif [[ -L "$path" ]]; then
+            cp -Pp "$path" "$backup_path"
+        else
+            cp -p "$path" "$backup_path"
+        fi
+        log_info "  ${BLUE}[BACKUP]${NC} $path"
     fi
     backup_count=$((backup_count + 1))
 }
@@ -334,44 +379,60 @@ log_info() { echo -e "$1"; }
 
 INTERACTIVE_SKIP_ALL=false
 INTERACTIVE_OVERWRITE_ALL=false
+PROMPT_ACTION=""
 
 prompt_conflict() {
     local src="$1"
     local dest="$2"
+    local response=""
 
     if [[ "$INTERACTIVE_SKIP_ALL" == "true" ]]; then
-        echo "skip"
+        PROMPT_ACTION="skip"
         return
     fi
     if [[ "$INTERACTIVE_OVERWRITE_ALL" == "true" ]]; then
-        echo "overwrite"
+        PROMPT_ACTION="overwrite"
         return
     fi
 
-    echo ""
-    echo -e "${YELLOW}CONFLICT:${NC} $dest differs from upstream"
+    echo "" >&2
+    echo -e "${YELLOW}CONFLICT:${NC} $dest differs from upstream" >&2
     if command -v diff >/dev/null 2>&1; then
-        echo "--- $dest (yours)"
-        echo "+++ upstream"
-        diff -u "$dest" "$src" 2>/dev/null | head -20 || true
-        echo ""
+        echo "--- $dest (yours)" >&2
+        echo "+++ upstream" >&2
+        diff -u "$dest" "$src" 2>/dev/null | head -20 >&2 || true
+        echo "" >&2
     fi
-    echo -n "[k]eep / [o]verwrite / [n]ew file / [s]kip all / [O]verwrite all? "
-    read -r response
+
+    echo -n "[k]eep / [o]verwrite / [n]ew file / [s]kip all / [O]verwrite all? " >&2
+    if [[ -n "${DOT_AGENTS_INTERACTIVE_RESPONSE:-}" ]]; then
+        response="$DOT_AGENTS_INTERACTIVE_RESPONSE"
+        DOT_AGENTS_INTERACTIVE_RESPONSE=""
+    elif [[ -r /dev/tty ]]; then
+        read -r response < /dev/tty || response=""
+    else
+        echo "" >&2
+        log_info "  ${YELLOW}[SKIP]${NC} no terminal available; writing conflict file for manual review"
+        PROMPT_ACTION="new"
+        return
+    fi
 
     case "$response" in
-        k|K) echo "keep" ;;
-        o) echo "overwrite" ;;
-        n|N) echo "new" ;;
-        s|S) INTERACTIVE_SKIP_ALL=true; echo "skip" ;;
-        O) INTERACTIVE_OVERWRITE_ALL=true; echo "overwrite" ;;
-        *) echo "new" ;;
+        k|K) PROMPT_ACTION="keep" ;;
+        o) PROMPT_ACTION="overwrite" ;;
+        n|N) PROMPT_ACTION="new" ;;
+        s|S) INTERACTIVE_SKIP_ALL=true; PROMPT_ACTION="skip" ;;
+        O) INTERACTIVE_OVERWRITE_ALL=true; PROMPT_ACTION="overwrite" ;;
+        *) PROMPT_ACTION="new" ;;
     esac
 }
 
 files_identical() {
     local file1="$1"
     local file2="$2"
+
+    [[ -f "$file1" && -f "$file2" ]] || return 1
+
     if command -v md5sum >/dev/null 2>&1; then
         [[ "$(md5sum "$file1" | cut -d' ' -f1)" == "$(md5sum "$file2" | cut -d' ' -f1)" ]]
     elif command -v md5 >/dev/null 2>&1; then
@@ -419,8 +480,23 @@ format_version_string() {
     fi
 }
 
-# Core skills that come from upstream (sample-skill is for testing)
-CORE_SKILLS="adapt ralph research tmux sample-skill"
+# Core skills that come from upstream
+CORE_SKILLS="adapt agent-work feature-planning research tmux"
+RETIRED_CORE_SKILLS="ralph"
+RETIRED_LEGACY_GUIDANCE_FILES=".agents/plans/AGENTS.md .agents/prds/AGENTS.md .agents/plans/TEMPLATE.md .agents/prds/TEMPLATE.md"
+
+is_retired_core_skill() {
+    local skill_name="$1"
+    local retired
+
+    for retired in $RETIRED_CORE_SKILLS; do
+        if [[ "$skill_name" == "$retired" ]]; then
+            return 0
+        fi
+    done
+
+    return 1
+}
 
 detect_custom_skills() {
     local skills_dir=".agents/skills"
@@ -437,7 +513,7 @@ detect_custom_skills() {
 
         # Skip if it's a core skill
         local is_core=false
-        for core in $CORE_SKILLS; do
+        for core in $CORE_SKILLS $RETIRED_CORE_SKILLS; do
             if [[ "$skill_name" == "$core" ]]; then
                 is_core=true
                 break
@@ -467,11 +543,59 @@ report_custom_skills() {
     fi
 }
 
+cleanup_retired_core_skills() {
+    local retired skill_dir
+
+    [[ -d ".agents/skills" ]] || return 0
+
+    for retired in $RETIRED_CORE_SKILLS; do
+        skill_dir=".agents/skills/$retired"
+        [[ -e "$skill_dir" || -L "$skill_dir" ]] || continue
+
+        if [[ "$DIFF_ONLY" == "true" ]]; then
+            log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill, preview only)"
+            pending_change_count=$((pending_change_count + 1))
+            continue
+        fi
+
+        backup_item "$skill_dir"
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill)"
+        else
+            rm -rf "$skill_dir"
+            log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill)"
+        fi
+    done
+}
+
+cleanup_retired_legacy_guidance() {
+    local path
+
+    for path in $RETIRED_LEGACY_GUIDANCE_FILES; do
+        [[ -e "$path" || -L "$path" ]] || continue
+
+        if [[ "$DIFF_ONLY" == "true" ]]; then
+            log_info "  ${RED}[REMOVE]${NC} $path (retired legacy guidance, preview only)"
+            pending_change_count=$((pending_change_count + 1))
+            continue
+        fi
+
+        backup_item "$path"
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_info "  ${RED}[REMOVE]${NC} $path (retired legacy guidance)"
+        else
+            rm -rf "$path"
+            log_info "  ${RED}[REMOVE]${NC} $path (retired legacy guidance)"
+        fi
+    done
+}
+
 cleanup_stale_claude_code_skill_symlinks() {
     local agents_skills_dir="$1"
     local claude_skills_dir="$2"
     local skill_link skill_name
 
+    [[ ! -L "$claude_skills_dir" ]] || return 0
     [[ -d "$claude_skills_dir" ]] || return 0
 
     for skill_link in "$claude_skills_dir"/*; do
@@ -479,10 +603,15 @@ cleanup_stale_claude_code_skill_symlinks() {
         is_dot_agents_claude_skill_symlink "$skill_link" || continue
 
         skill_name="$(basename "$skill_link")"
-        [[ -f "$agents_skills_dir/$skill_name/SKILL.md" ]] && continue
+        if [[ -f "$agents_skills_dir/$skill_name/SKILL.md" ]] && ! is_retired_core_skill "$skill_name"; then
+            continue
+        fi
 
-        if [[ "$DRY_RUN" == "true" ]]; then
+        if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
             log_info "  ${RED}[REMOVE]${NC} $skill_link (stale)"
+            if [[ "$DIFF_ONLY" == "true" ]]; then
+                pending_change_count=$((pending_change_count + 1))
+            fi
         else
             rm -f "$skill_link"
             log_info "  ${RED}[REMOVE]${NC} $skill_link (stale)"
@@ -491,6 +620,7 @@ cleanup_stale_claude_code_skill_symlinks() {
 }
 
 setup_claude_code_integration() {
+    local source_agents_skills_dir="${1:-.agents/skills}"
     local agents_skills_dir=".agents/skills"
     local claude_skills_dir=".claude/skills"
     local linked=0
@@ -498,17 +628,25 @@ setup_claude_code_integration() {
     local skill_dir skill_name dest link_target existing_target
 
     [[ -d ".claude" ]] || return 0
+    if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
+        agents_skills_dir="$source_agents_skills_dir"
+    fi
     [[ -d "$agents_skills_dir" ]] || return 0
 
     log_info ""
     log_info "Detected ${BLUE}.claude/${NC} directory — linking dot-agents skills for Claude Code..."
+
+    if [[ -L "$claude_skills_dir" ]]; then
+        log_info "  ${YELLOW}[SKIP]${NC} $claude_skills_dir (user-owned symlink)"
+        return 0
+    fi
 
     if [[ ( -e "$claude_skills_dir" || -L "$claude_skills_dir" ) && ! -d "$claude_skills_dir" ]]; then
         log_info "  ${YELLOW}[SKIP]${NC} $claude_skills_dir (user-owned)"
         return 0
     fi
 
-    if [[ "$DRY_RUN" != "true" ]]; then
+    if [[ "$DRY_RUN" != "true" && "$DIFF_ONLY" != "true" ]]; then
         if ! mkdir -p "$claude_skills_dir"; then
             log_info "  ${YELLOW}[SKIP]${NC} $claude_skills_dir (could not create directory)"
             return 0
@@ -520,6 +658,10 @@ setup_claude_code_integration() {
         [[ -f "$skill_dir/SKILL.md" ]] || continue
 
         skill_name="$(basename "$skill_dir")"
+        if is_retired_core_skill "$skill_name"; then
+            continue
+        fi
+
         dest="$claude_skills_dir/$skill_name"
         link_target="../../.agents/skills/$skill_name"
 
@@ -529,9 +671,12 @@ setup_claude_code_integration() {
                 continue
             fi
             if is_dot_agents_claude_skill_symlink "$dest"; then
-                if [[ "$DRY_RUN" == "true" ]]; then
-                    log_info "  ${GREEN}[LINK]${NC} $dest → $link_target"
+                if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
+                    log_info "  ${GREEN}[LINK]${NC} $dest → $link_target (preview only)"
                     linked=$((linked + 1))
+                    if [[ "$DIFF_ONLY" == "true" ]]; then
+                        pending_change_count=$((pending_change_count + 1))
+                    fi
                     continue
                 fi
                 rm -f "$dest"
@@ -546,9 +691,12 @@ setup_claude_code_integration() {
             continue
         fi
 
-        if [[ "$DRY_RUN" == "true" ]]; then
-            log_info "  ${GREEN}[LINK]${NC} $dest → $link_target"
+        if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
+            log_info "  ${GREEN}[LINK]${NC} $dest → $link_target (preview only)"
             linked=$((linked + 1))
+            if [[ "$DIFF_ONLY" == "true" ]]; then
+                pending_change_count=$((pending_change_count + 1))
+            fi
             continue
         fi
 
@@ -570,13 +718,23 @@ setup_claude_code_integration() {
 
 ensure_gitignore_entry() {
     local gitignore_file=".agents/.gitignore"
-    local backup_entry="../.dot-agents-backup/"
+    local backup_entry=".dot-agents-backup/"
 
-    if [[ "$DRY_RUN" == "true" ]]; then
+    if [[ "$AGENTS_GITIGNORE_PENDING" == "true" ]]; then
+        return 0
+    fi
+
+    if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
         if [[ ! -f "$gitignore_file" ]]; then
             log_info "  ${GREEN}[CREATE]${NC} $gitignore_file"
+            if [[ "$DIFF_ONLY" == "true" ]]; then
+                pending_change_count=$((pending_change_count + 1))
+            fi
         elif ! grep -qxF "$backup_entry" "$gitignore_file" 2>/dev/null; then
             log_info "  ${GREEN}[UPDATE]${NC} $gitignore_file (add backup entry)"
+            if [[ "$DIFF_ONLY" == "true" ]]; then
+                pending_change_count=$((pending_change_count + 1))
+            fi
         fi
         return 0
     fi
@@ -598,7 +756,15 @@ install_file() {
     local dest_dir
     dest_dir="$(dirname "$dest")"
 
-    if [[ ! -e "$dest" ]]; then
+    if [[ ! -e "$dest" && ! -L "$dest" ]]; then
+        if [[ "$DIFF_ONLY" == "true" ]]; then
+            log_install "$dest (would install)"
+            installed_count=$((installed_count + 1))
+            pending_change_count=$((pending_change_count + 1))
+            mark_agents_gitignore_pending "$dest"
+            return 0
+        fi
+
         if [[ "$DRY_RUN" == "true" ]]; then
             log_install "$dest"
         else
@@ -631,7 +797,8 @@ install_file() {
     # Interactive mode
     if [[ "$INTERACTIVE" == "true" ]] && [[ "$DRY_RUN" != "true" ]]; then
         local action
-        action="$(prompt_conflict "$src" "$dest")"
+        prompt_conflict "$src" "$dest"
+        action="$PROMPT_ACTION"
         case "$action" in
             keep|skip)
                 log_skip "$dest (kept yours)"
@@ -654,6 +821,8 @@ install_file() {
         diff -u "$dest" "$src" 2>/dev/null || true
         echo ""
         conflict_count=$((conflict_count + 1))
+        pending_change_count=$((pending_change_count + 1))
+        mark_agents_gitignore_pending "$dest"
         return 0
     fi
 
@@ -663,9 +832,12 @@ install_file() {
     else
         conflict_file="${dest}.dot-agents.new"
     fi
+    mark_agents_gitignore_pending "$dest"
 
     if [[ "$DRY_RUN" == "true" ]]; then
         log_conflict "$dest (would write ${conflict_file})"
+    elif [[ -e "$conflict_file" || -L "$conflict_file" ]]; then
+        log_conflict "$dest differs. Kept existing ${conflict_file}; remove it to regenerate."
     else
         cp -p "$src" "$conflict_file"
         log_conflict "$dest differs. Wrote ${conflict_file} for review."
@@ -682,13 +854,13 @@ process_directory() {
         local rel_path="${file#$src_dir/}"
         local dest_path="${dest_dir}/${rel_path}"
 
-        # Skip *.md files in user content directories (research, plans, prds)
-        if [[ "$rel_path" == research/*.md || "$rel_path" == plans/*.md || "$rel_path" == plans/**/*.md || "$rel_path" == prds/*.md ]]; then
+        # Skip user content directories. Fresh installs get guidance files, not sample work.
+        if [[ "$rel_path" == research/*.md || "$rel_path" == research/**/*.md || "$rel_path" == work/*/*/* || "$rel_path" == plans/* || "$rel_path" == prds/* ]]; then
             continue
         fi
 
-        # Skip metadata file in diff mode (it's auto-generated and will always differ)
-        if [[ "$DIFF_ONLY" == "true" ]] && [[ "$rel_path" == ".dot-agents.json" ]]; then
+        # Metadata is generated locally by write_metadata.
+        if [[ "$rel_path" == ".dot-agents.json" ]]; then
             continue
         fi
 
@@ -763,13 +935,16 @@ main() {
         process_directory "${extracted_dir}/.agents" "./.agents"
     fi
 
+    if [[ "$IS_FRESH_INSTALL" != "true" ]]; then
+        cleanup_retired_core_skills
+        cleanup_retired_legacy_guidance
+    fi
+
     # Ensure .agents/.gitignore includes backup directory
     ensure_gitignore_entry
 
     # Link dot-agents skills into Claude Code's project skill directory when present.
-    if [[ "$DIFF_ONLY" != "true" ]]; then
-        setup_claude_code_integration
-    fi
+    setup_claude_code_integration "${extracted_dir}/.agents/skills"
 
     # Skip metadata write in diff-only mode
     if [[ "$DIFF_ONLY" != "true" ]]; then
@@ -781,6 +956,9 @@ main() {
     log_info "  Installed: ${installed_count}"
     log_info "  Skipped:   ${skipped_count}"
     log_info "  Conflicts: ${conflict_count}"
+    if [[ "$DIFF_ONLY" == "true" ]]; then
+        log_info "  Pending changes: ${pending_change_count}"
+    fi
 
     if [[ $backup_count -gt 0 ]]; then
         log_info "  Backed up: ${backup_count}"
@@ -802,8 +980,8 @@ main() {
         fi
     fi
 
-    # In diff mode, exit 1 if conflicts exist
-    if [[ "$DIFF_ONLY" == "true" ]] && [[ $conflict_count -gt 0 ]]; then
+    # In diff mode, exit 1 if any change would be applied.
+    if [[ "$DIFF_ONLY" == "true" ]] && [[ $pending_change_count -gt 0 ]]; then
         return 1
     fi
 
@@ -812,7 +990,7 @@ main() {
         log_info ""
         log_info "${GREEN}Next steps:${NC}"
         log_info "  1. Run 'adapt' to customize AGENTS.md for your project"
-        log_info "  2. See QUICKSTART.md for workflow guidance"
+        log_info "  2. Read the quickstart: https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/main/QUICKSTART.md"
     fi
 
     # Show sync update hint on sync (not fresh install)

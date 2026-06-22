@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>dot-agents — AI-ready agent workspace</title>
-  <meta name="description" content="One-command setup for AI agent workflows in any project. Structured plans, PRDs, and autonomous execution.">
+  <meta name="description" content="A small .agents workspace for durable AI coding work: work items, research notes, plans, and handoff prompts that carry context across threads.">
   <link rel="canonical" href="https://dot-agents.dev/">
   
   <!-- OpenGraph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://dot-agents.dev/">
   <meta property="og:title" content="dot-agents — AI-ready agent workspace">
-  <meta property="og:description" content="One-command setup for AI agent workflows in any project. Structured plans, PRDs, and autonomous execution.">
+  <meta property="og:description" content="A small .agents workspace for durable AI coding work: work items, research notes, plans, and handoff prompts that carry context across threads.">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="dot-agents — AI-ready agent workspace">
-  <meta name="twitter:description" content="One-command setup for AI agent workflows in any project. Structured plans, PRDs, and autonomous execution.">
+  <meta name="twitter:description" content="A small .agents workspace for durable AI coding work: work items, research notes, plans, and handoff prompts that carry context across threads.">
   
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
@@ -29,22 +29,23 @@
       <div class="logo">
         <span class="logo-dot">.</span>agents
       </div>
-      <p class="tagline">AI-ready workspace for any project</p>
+      <p class="tagline">Durable context for AI coding agents</p>
       <nav class="nav">
         <a href="#install">Install</a>
-        <a href="#what-you-get">What you get</a>
-        <a href="#workflow">Workflow</a>
+        <a href="#how-it-works">How it works</a>
         <a href="https://github.com/colmarius/dot-agents/blob/main/docs/README.md">Docs</a>
+        <a href="https://github.com/colmarius/dot-agents">GitHub</a>
       </nav>
     </header>
 
     <main>
       <section class="hero">
-        <h1>Ship faster with <span class="highlight">structured AI workflows</span></h1>
-        <p class="hero-desc">One command to set up PRDs, plans, and an execution loop—so you can start building, not just planning.</p>
+        <h1>Make AI coding work <span class="highlight">survive the next thread</span></h1>
+        <p class="hero-desc">dot-agents adds a small <code>.agents/</code> workspace to any repo: durable work items, research notes, plans, and handoff prompts your agents can reuse.</p>
       </section>
 
       <section id="install" class="install">
+        <p class="install-note">Run from your repo root. Fresh installs create <code>AGENTS.md</code> and <code>.agents/</code>; syncs later preserve your work items, research, and customized project instructions.</p>
         <div class="code-block">
           <div class="code-header">
             <span class="terminal-dot red"></span>
@@ -58,143 +59,70 @@
           </button>
         </div>
         <p class="install-hint">Review first: <code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | less</code></p>
-        <p class="install-hint">Then point your agent at a real problem and iterate.</p>
-        <details class="install-details">
-          <summary>Pin a version</summary>
-          <code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.2.0</code>
-        </details>
       </section>
 
       <section id="what-you-get" class="what-you-get">
-        <h2>What you get</h2>
+        <h2>What it adds</h2>
         <div class="code-block tree-block">
           <pre><code>your-project/
-├── AGENTS.md           <span class="tree-comment"># Customize for your project</span>
+├── AGENTS.md        <span class="tree-comment"># project instructions for agents</span>
 └── .agents/
-    ├── plans/          <span class="tree-comment"># todo → in-progress → completed</span>
-    ├── prds/           <span class="tree-comment"># Product requirements</span>
-    ├── research/       <span class="tree-comment"># Discoveries and context</span>
-    └── skills/         <span class="tree-comment"># adapt, ralph, research, tmux</span></code></pre>
+    ├── work/        <span class="tree-comment"># durable work items</span>
+    ├── research/    <span class="tree-comment"># reusable findings</span>
+    ├── references/  <span class="tree-comment"># local reference repos</span>
+    ├── skills/      <span class="tree-comment"># adapt, work items, planning, research</span>
+    └── scripts/     <span class="tree-comment"># sync updates safely</span></code></pre>
         </div>
-        <p class="install-hint">Using Claude Code? If <code>.claude/</code> already exists, install/sync links these skills into <code>.claude/skills/</code> for project skill discovery.</p>
+        <p class="section-intro">Use work items for multi-session or context-heavy work. Tiny one-shot edits may not need one.</p>
       </section>
 
-      <section class="features">
-        <div class="feature-grid">
-          <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3>Instant Setup</h3>
-            <p>One command creates .agents/ with plans, PRDs, skills, and research directories.</p>
+      <section id="example-work-item" class="example-work-item">
+        <h2>Example work item</h2>
+        <p class="section-intro">After asking <code>Create a new work item for user authentication</code>, future threads have a durable starting point.</p>
+        <div class="example-grid">
+          <div class="code-block tree-block">
+            <pre><code>.agents/work/feature/user-authentication/
+├── index.md      <span class="tree-comment"># status, summary, next action</span>
+└── plan.md       <span class="tree-comment"># implementation tasks, when useful</span></code></pre>
           </div>
-          <div class="feature-card">
-            <div class="feature-icon">📋</div>
-            <h3>Structured Plans</h3>
-            <p>Task format with dependencies, scopes, and acceptance criteria for autonomous execution.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🤖</div>
-            <h3>Autonomous Execution <span class="term">(<a href="https://github.com/colmarius/dot-agents/blob/main/docs/concepts.md#glossary">Ralph</a>)</span></h3>
-            <p>Multi-iteration execution with handoff between agent threads.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🔬</div>
-            <h3>Built-in Research</h3>
-            <p>Save discoveries to .agents/research/ for persistent project knowledge.</p>
+          <div class="code-block tree-block">
+            <pre><code># User authentication
+
+Status: planned
+Category: feature
+Updated: 2026-06-22
+
+## Summary
+Add auth flows and session persistence.
+
+## Next Action
+Implement Task 1 from plan.md.</code></pre>
           </div>
         </div>
+        <p class="section-intro">A new thread starts by reading <code>index.md</code>, then loads only the plan, research, or progress it needs.</p>
       </section>
 
-      <section id="workflow" class="workflow">
-        <h2>The workflow</h2>
-        <div class="workflow-steps">
-          <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-content">
-              <strong>Research</strong>
-              <span>Deep dive into requirements and constraints</span>
-            </div>
+      <section id="how-it-works" class="how-it-works">
+        <h2>How it works</h2>
+        <p class="section-intro">Use natural-language prompts to create only the context each task needs.</p>
+        <div class="command-list">
+          <div class="command-row">
+            <code>Run adapt</code>
+            <span>Adapt once by filling <code>AGENTS.md</code> with project commands, structure, and conventions.</span>
           </div>
-          <div class="step-arrow">→</div>
-          <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-content">
-              <strong>PRD</strong>
-              <span>Define features and acceptance criteria</span>
-            </div>
+          <div class="command-row">
+            <code>Create a new work item for ...</code>
+            <span>Start durable context under <code>.agents/work/&lt;category&gt;/&lt;slug&gt;/</code>.</span>
           </div>
-          <div class="step-arrow">→</div>
-          <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-content">
-              <strong>Plan</strong>
-              <span>Break down into executable tasks</span>
-            </div>
+          <div class="command-row">
+            <code>Add only needed context</code>
+            <span>Ask for research, a short requirements brief, or an implementation plan only when it helps.</span>
           </div>
-          <div class="step-arrow">→</div>
-          <div class="step">
-            <div class="step-num">4</div>
-            <div class="step-content">
-              <strong>Execute</strong>
-              <span>Ralph runs autonomously</span>
-            </div>
+          <div class="command-row">
+            <code>Write a handoff prompt for ...</code>
+            <span>Generate a scoped prompt for a fresh implementation thread that records progress as it works.</span>
           </div>
         </div>
-      </section>
-
-      <section class="quickstart">
-        <h2>Get started in 5 steps</h2>
-        <div class="quickstart-steps">
-          <div class="qs-step">
-            <div class="qs-num">1</div>
-            <div class="qs-content">
-              <strong>Install</strong>
-              <code>curl -fsSL .../install.sh | bash</code>
-            </div>
-          </div>
-          <div class="qs-step">
-            <div class="qs-num">2</div>
-            <div class="qs-content">
-              <strong>Adapt</strong>
-              <code>Run adapt</code>
-            </div>
-          </div>
-          <div class="qs-step">
-            <div class="qs-num">3</div>
-            <div class="qs-content">
-              <strong>Research</strong>
-              <code>Research [topic]</code>
-            </div>
-          </div>
-          <div class="qs-step">
-            <div class="qs-num">4</div>
-            <div class="qs-content">
-              <strong>PRD</strong>
-              <code>Create PRD for [feature]</code>
-            </div>
-          </div>
-          <div class="qs-step">
-            <div class="qs-num">5</div>
-            <div class="qs-content">
-              <strong>Execute</strong>
-              <code>Run ralph on [plan]</code>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="inspiration" id="inspiration">
-        <h2>Inspiration</h2>
-        <p class="inspiration-desc">
-          A mindset we like: <em>doing the thing is doing the thing</em> — ship, observe, iterate.
-        </p>
-        <ul class="inspiration-links">
-          <li>
-            <a href="https://registerspill.thorstenball.com/p/joy-and-curiosity-72" target="_blank" rel="noopener noreferrer">
-              Thorsten Ball — "Joy &amp; Curiosity #72"
-            </a>
-            <span class="muted">(recommended reading)</span>
-          </li>
-        </ul>
       </section>
 
       <section class="cta">

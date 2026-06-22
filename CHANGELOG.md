@@ -8,6 +8,30 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-22
+
+### Changed
+
+- **BREAKING:** Replaced the Ralph-centered `.agents/plans/` / `.agents/prds/` workflow with durable work items under `.agents/work/<category>/<slug>/`.
+- **BREAKING:** Fresh installs now ship `adapt`, `agent-work`, `feature-planning`, `research`, and `tmux` as core skills.
+- Research guidance now distinguishes work-local `research.md` from reusable `.agents/research/` notes.
+- Documentation, quickstart, and landing page now describe prompt-based implementation handoffs instead of autonomous runner execution.
+- `--diff` now exits non-zero for any pending sync change, including missing files, retired skills, retired guidance, and `.gitignore` updates.
+
+### Removed
+
+- **BREAKING:** Removed the `ralph` skill from core installs. Sync backs up and removes retired upstream `ralph` skill directories.
+- Fresh installs no longer create legacy `.agents/plans/` or `.agents/prds/` directories.
+- Sync backs up and removes retired legacy guidance/templates such as `.agents/prds/AGENTS.md` and old plan/PRD templates.
+- Dropped support for the deprecated singular `.agents/reference/` path. External reference checkouts now live under `.agents/references/`; rename any existing `.agents/reference/` checkout, which is no longer gitignored.
+
+### Added
+
+- Work-item guidance at `.agents/work/AGENTS.md`.
+- `agent-work` skill with templates and scripts for creating and listing work items.
+- `feature-planning` skill for PRDs, implementation-ready plans, plan refinement, and paste-ready new-thread prompts.
+- Legacy migration guide for moving old plans into `.agents/work/`.
+
 ## [0.2.0] - 2026-06-22
 
 ### Added
@@ -64,7 +88,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Installer skip logic now correctly includes plans/TEMPLATE.md
 - Postfix increment operators causing script exit on bash 5.3+ with `set -e` ([#1](https://github.com/colmarius/dot-agents/issues/1))
 
-[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/colmarius/dot-agents/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/colmarius/dot-agents/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/colmarius/dot-agents/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/colmarius/dot-agents/releases/tag/v0.1.0

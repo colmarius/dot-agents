@@ -2,7 +2,7 @@
 
 ## Overview
 
-dot-agents is an AI-ready `.agents/` workspace scaffold for any project. It provides plans, PRDs, research folders, and skills for agent-assisted development workflows.
+dot-agents is an AI-ready `.agents/` workspace scaffold for any project. It provides durable work items, reusable research, and skills for planning, handoff prompts, and agent-assisted development across threads.
 
 ## Tech Stack
 
@@ -12,85 +12,62 @@ dot-agents is an AI-ready `.agents/` workspace scaffold for any project. It prov
 ## Workflow
 
 ```text
-Research → PRD → Plan → Execute
+Work Item → Context as needed → Plan → Handoff Prompt → Implement → Record Progress
 ```
 
-1. **Research:** Investigate problem space, save findings to `.agents/research/`
-2. **PRD:** Define requirements and acceptance criteria in `.agents/prds/`
-3. **Plan:** Break PRD into executable tasks with Ralph-ready format
-4. **Execute:** Ralph runs tasks autonomously, commits after each
+1. **Work Item:** Create `.agents/work/<category>/<slug>/index.md` as the durable entrypoint.
+2. **Context:** Add `research.md` or `research/` for technical facts, or `prd.md` as a short requirements brief only when needed.
+3. **Plan:** Break work into implementation-ready tasks in the active plan file (`plan.md` by default, or `plans/<name>.md` for focused plans).
+4. **Handoff Prompt:** Generate a paste-ready prompt for a fresh implementation thread.
+5. **Progress:** Implementation threads update `progress.md`, task checkboxes, and `index.md`.
 
 ## Project Structure
 
 ```text
 dot-agents/
-├── AGENTS.md                    # This file - project instructions
+├── AGENTS.md                    # This file - contributor instructions
 ├── AGENTS.template.md           # Template copied to user projects
 ├── install.sh                   # Main installation script
 ├── .agents/
-│   ├── skills/                  # Agent skills (adapt, ralph, research, tmux)
-│   ├── plans/                   # Implementation plans
-│   ├── prds/                    # Product requirements documents
-│   └── research/                # Research and reference material
+│   ├── work/                    # Work-item guidance installed into projects
+│   ├── skills/                  # adapt, agent-work, feature-planning, research, tmux
+│   ├── research/                # Reusable research notes
+│   ├── references/              # External reference repos (gitignored)
+│   └── scripts/                 # sync.sh
 ├── docs/                        # Full documentation
 ├── site/                        # Landing page source
 ├── scripts/                     # Development scripts
 └── test/                        # Bats integration tests
-    ├── integration/             # install.bats, sync.bats
-    ├── fixtures/                # Test fixtures (sample-archive.tar.gz)
-    ├── mocks/                   # Mock curl for offline testing
-    └── test_helper/             # Bats support libraries
 ```
 
 ## Using Skills
 
 | Command | Effect |
-|---------|--------|
-| `Run adapt` | Analyze project and fill in AGENTS.md sections |
-| `Research [topic]` | Deep investigation, saves to `.agents/research/` |
-| `Run ralph on [plan.md]` | Autonomous execution of plan tasks |
+| --- | --- |
+| `Run adapt` | Analyze project and fill in `AGENTS.md` sections |
+| `Create a new work item for ...` | Create durable `.agents/work/` context |
+| `Research ...` | Investigate and save work-local or reusable findings |
+| `Create/refine a plan for ...` | Produce implementation-ready tasks in the active plan file |
+| `Write a handoff prompt for ...` | Produce a paste-ready prompt for a new implementation thread |
 
-Skills are loaded via natural language. See each skill's SKILL.md in `.agents/skills/` for details.
+Skills are loaded via natural language. See each skill's `SKILL.md` in `.agents/skills/` for details.
 
-## Plan Management
+## Work Item Management
 
-Plans in `.agents/plans/` follow this workflow:
+Work items live under:
 
-| Status | Location |
-|--------|----------|
-| **TODO** | `plans/todo/` |
-| **IN-PROGRESS** | `plans/in-progress/` |
-| **COMPLETED** | `plans/completed/` |
-
-**Completing plans:** When moving a plan to `completed/`, also move its corresponding `.progress.md` file if one exists.
-
-**Archive command:** When asked to "archive completed plans", delete each plan from `completed/` with its own commit. Git history preserves them.
-
-### Writing Ralph-Ready Plans
-
-```markdown
-- [ ] **Task N: Short descriptive title**
-  - Scope: `path/to/affected/files` or module name
-  - Depends on: Task M (or "none")
-  - Acceptance:
-    - Specific, verifiable criterion 1
-    - Specific, verifiable criterion 2
-  - Notes: Optional implementation hints
+```text
+.agents/work/<category>/<slug>/
 ```
 
-**Task markers:**
+Every work item has `index.md` with status, category, updated date, artifact links, next action, and open questions. Optional artifacts include `research.md`, `research/`, `prd.md`, `plan.md`, `plans/`, `progress.md`, and `decisions/` records.
 
-| Marker | Meaning |
-|--------|---------|
-| `- [ ]` | Not started |
-| `- [x]` | Completed |
-| `- [ ] (blocked)` | Blocked, needs intervention |
-| `- [ ] (manual-verify)` | Requires manual verification |
+Legacy `.agents/plans/` and `.agents/prds/` paths may exist in older installs. Preserve legacy plan and PRD documents as user content, but allow sync to retire stale Ralph guidance/templates. Migrate one plan at a time into `.agents/work/` only when requested.
 
 ## Commands
 
 ```bash
-# Run all tests (lint + BATS)
+# Run all tests (lint + Bats)
 ./scripts/test.sh
 
 # Run tests with filter
@@ -120,52 +97,45 @@ git push
 
 ### Commit Guidelines
 
-- Write clear, descriptive commit messages
-- Reference plan numbers in commits (e.g., "Plan 001: Initial setup")
-- Commit after each logical step
+- Write clear, descriptive commit messages.
+- Commit after each logical step.
+- Do not push directly to the default branch unless the repository maintainer explicitly requests it.
 
 ### Release Workflow
 
 ```bash
 # 1. Update VERSION file with new version
-echo "1.0.0" > VERSION
+echo "0.3.0" > VERSION
 
 # 2. Update CHANGELOG.md - move [Unreleased] items to new version section
 
 # 3. Commit changes
-git add -A && git commit -m "Release v1.0.0"
+git add -A && git commit -m "Release v0.3.0"
 
 # 4. Create and push release
 ./scripts/release.sh --push
 ```
 
-The release script:
-
-- Reads version from `VERSION` file
-- Extracts release notes from `CHANGELOG.md`
-- Creates git tag `vX.Y.Z`
-- Pushes tag and creates GitHub release (requires `gh` CLI)
-
 ## Maintenance
 
 After making changes:
 
-1. **Update AGENTS.md** - Keep project structure and commands current
-2. **Update README.md** - Reflect user-facing changes
-3. **Update plan status** - Move completed plans to `completed/`
-4. **Rebuild test fixture** - Run `./scripts/build-test-fixture.sh` if `.agents/` or `AGENTS.template.md` changed
+1. **Update AGENTS.md** - Keep contributor structure and commands current.
+2. **Update README.md / QUICKSTART.md / docs** - Reflect user-facing workflow changes.
+3. **Update tests** - Preserve install/sync behavior in Bats.
+4. **Rebuild test fixture** - Run `./scripts/build-test-fixture.sh` if `.agents/` or `AGENTS.template.md` changed.
 
 ## Conventions
 
-- Shell scripts use `set -euo pipefail`
-- Skills use YAML frontmatter with `name` and `description`
-- Documentation in Markdown
+- Shell scripts use `set -euo pipefail`.
+- Skills use YAML frontmatter with quoted `description` values and `Triggers on:` phrases.
+- Documentation uses Markdown with fenced code blocks.
 
 ## Architecture Notes
 
 The installer (`install.sh`) downloads a tarball from GitHub, extracts it to a temp directory, and copies:
 
-- `AGENTS.template.md` → `./AGENTS.md` (only on fresh install, skipped on sync)
-- `.agents/` contents (skills, empty directories for plans/prds/research)
+- `AGENTS.template.md` → `./AGENTS.md` on fresh install only.
+- Upstream-owned `.agents/` files such as skills, `.agents/work/AGENTS.md`, and `sync.sh`.
 
-User content in `.agents/research/`, `.agents/plans/`, and `.agents/prds/` is preserved during sync. The `AGENTS.md` file is treated as user content after initial install.
+User content under `.agents/work/<category>/<slug>/`, `.agents/research/`, and legacy plan/PRD documents is preserved during sync. Retired upstream skills and stale legacy guidance/templates may be backed up and removed during sync.

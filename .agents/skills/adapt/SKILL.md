@@ -1,6 +1,6 @@
 ---
 name: adapt
-description: "Analyze project and fill in AGENTS.md. Use when adapting dot-agents to a new project, after initial installation."
+description: "Analyzes a project and fills in AGENTS.md. Use after installing dot-agents or when project commands and conventions change. Triggers on: adapt, setup AGENTS, customize AGENTS."
 ---
 
 # Adapt Skill
@@ -28,12 +28,13 @@ Run this skill after installing dot-agents into a new project to customize the c
    - List detected tech stack
    - Extract commands from package.json scripts, Cargo.toml, Makefile, etc.
    - Note any project-specific conventions observed
+   - Keep the `.agents/work/` and handoff-prompt workflow guidance intact
 
 ## Example Output
 
 After running, AGENTS.md should have these sections filled in:
 
-```markdown
+````markdown
 ## Overview
 
 my-awesome-app - A Next.js web application with PostgreSQL backend
@@ -72,6 +73,13 @@ pnpm format
 - Components in src/components/
 - API routes in src/app/api/
 
+## Agent Work
+
+- Durable work lives in `.agents/work/<category>/<slug>/`
+- Use `.agents/research/` only for reusable findings
+- Ask for a handoff prompt before starting a fresh implementation thread
+````
+
 ## Checklist
 
 - [ ] Read package.json/Cargo.toml/go.mod for project name and scripts
@@ -80,3 +88,4 @@ pnpm format
 - [ ] Check for Makefile, Justfile, or task runners
 - [ ] Look for .eslintrc, .prettierrc, rustfmt.toml for style configs
 - [ ] Update AGENTS.md with findings
+- [ ] Preserve the dot-agents work-item workflow unless the user asks for a custom one

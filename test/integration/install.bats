@@ -55,6 +55,17 @@ teardown() {
     [ -f "AGENTS.md" ]
     [ -d ".agents" ]
     [ -d ".agents/skills" ]
+    [ -f ".agents/work/AGENTS.md" ]
+    [ -d ".agents/references" ]
+    [ -f ".agents/references/.gitkeep" ]
+    [ -f ".agents/skills/adapt/SKILL.md" ]
+    [ -f ".agents/skills/agent-work/SKILL.md" ]
+    [ -f ".agents/skills/feature-planning/SKILL.md" ]
+    [ -f ".agents/skills/research/SKILL.md" ]
+    [ -f ".agents/skills/tmux/SKILL.md" ]
+    [ ! -d ".agents/skills/ralph" ]
+    [ ! -d ".agents/plans" ]
+    [ ! -d ".agents/prds" ]
 }
 
 @test "fresh install creates .agents/.dot-agents.json with valid JSON" {
@@ -68,6 +79,8 @@ teardown() {
     run cat ".agents/.dot-agents.json"
     assert_output --partial "upstream"
     assert_output --partial "installedAt"
+    refute_output --partial "bogus-archive-metadata"
+    refute_output --partial "example/bogus-dot-agents"
 }
 
 @test "identical files are skipped on re-install" {
@@ -106,7 +119,7 @@ teardown() {
     bash "$INSTALL_SCRIPT" --yes
 
     # Modify a skill file (not AGENTS.md which is skipped on sync)
-    echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
 
     # Force re-install
     run bash "$INSTALL_SCRIPT" --force --yes
@@ -115,6 +128,8 @@ teardown() {
     # Should create backup directory
     run find . -type d -name ".dot-agents-backup*"
     assert_output --partial ".dot-agents-backup"
+    [ -d ".agents/.dot-agents-backup" ]
+    [ ! -d ".dot-agents-backup" ]
 }
 
 @test "--uninstall removes installed files" {
@@ -189,25 +204,144 @@ teardown() {
     [ -d ".agents" ]
 }
 
-@test "md files in research/plans/prds are not installed" {
+@test "user content samples are not installed" {
     run bash "$INSTALL_SCRIPT" --yes
     assert_success
 
     # Skills should be installed
-    [ -f ".agents/skills/sample-skill/SKILL.md" ]
+    [ -f ".agents/skills/agent-work/SKILL.md" ]
+    [ -f ".agents/work/AGENTS.md" ]
 
     # User content directories should NOT have md files from upstream
     [ ! -f ".agents/research/example.md" ]
+    [ ! -f ".agents/work/feature/example-work/index.md" ]
     [ ! -f ".agents/plans/todo/plan-001.md" ]
     [ ! -f ".agents/prds/feature.md" ]
+    [ ! -d ".agents/plans" ]
+    [ ! -d ".agents/prds" ]
 }
 
-@test "--write-conflicts creates .dot-agents.new files for conflicts" {
+@test "agent-work helpers create and list work items" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    run .agents/skills/agent-work/scripts/new-work.sh \
+        --category feature \
+        --slug demo-work \
+        --title "Demo work" \
+        --status planned
+    assert_success
+    assert_output ".agents/work/feature/demo-work/index.md"
+
+    [ -f ".agents/work/feature/demo-work/index.md" ]
+    [ ! -d ".agents/work/feature/demo-work/decisions" ]
+
+    run .agents/skills/agent-work/scripts/list-work.sh --status planned
+    assert_success
+    assert_output --partial "Demo work"
+    assert_output --partial "planned"
+
+    run .agents/skills/agent-work/scripts/list-work.sh --status blocked
+    assert_success
+    refute_output --partial "Demo work"
+}
+
+@test "agent-work helper rejects invalid status" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    run .agents/skills/agent-work/scripts/new-work.sh \
+        --category feature \
+        --slug invalid-status \
+        --title "Invalid status" \
+        --status unknown
+    assert_failure
+    assert_output --partial "Invalid status"
+}
+
+@test "agent-work helper rejects invalid category" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    run .agents/skills/agent-work/scripts/new-work.sh \
+        --category custom-category \
+        --slug invalid-category \
+        --title "Invalid category"
+    assert_failure
+    assert_output --partial "Invalid category"
+    assert_output --partial "Expected one of"
+}
+
+@test "sync preserves existing work item content" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/work/feature/demo-work
+    echo "# Demo Work" > .agents/work/feature/demo-work/index.md
+    echo "- [ ] Keep this task" > .agents/work/feature/demo-work/plan.md
+    echo "progress stays" > .agents/work/feature/demo-work/progress.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    run cat .agents/work/feature/demo-work/index.md
+    assert_output "# Demo Work"
+
+    run cat .agents/work/feature/demo-work/plan.md
+    assert_output "- [ ] Keep this task"
+
+    run cat .agents/work/feature/demo-work/progress.md
+    assert_output "progress stays"
+}
+
+@test "sync preserves legacy plans and PRDs as user content" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/plans/in-progress .agents/prds
+    echo "# Legacy plan" > .agents/plans/in-progress/demo.md
+    echo "# Legacy PRD" > .agents/prds/demo.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    run cat .agents/plans/in-progress/demo.md
+    assert_output "# Legacy plan"
+
+    run cat .agents/prds/demo.md
+    assert_output "# Legacy PRD"
+}
+
+@test "sync removes retired legacy guidance and templates with backup" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/plans .agents/prds
+    echo "Use Ralph for plans" > .agents/plans/AGENTS.md
+    echo "# Old plan template" > .agents/plans/TEMPLATE.md
+    echo "Use Ralph for PRDs" > .agents/prds/AGENTS.md
+    echo "# Old PRD template" > .agents/prds/TEMPLATE.md
+    echo "# Real PRD" > .agents/prds/demo.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial "retired legacy guidance"
+    assert_output --partial "BACKUP"
+
+    [ ! -e ".agents/plans/AGENTS.md" ]
+    [ ! -e ".agents/plans/TEMPLATE.md" ]
+    [ ! -e ".agents/prds/AGENTS.md" ]
+    [ ! -e ".agents/prds/TEMPLATE.md" ]
+    [ -f ".agents/prds/demo.md" ]
+
+    run find .agents/.dot-agents-backup -path '*/.agents/prds/AGENTS.md' -type f
+    assert_output --partial ".agents/prds/AGENTS.md"
+
+    run find .agents/.dot-agents-backup -path '*/.agents/plans/TEMPLATE.md' -type f
+    assert_output --partial ".agents/plans/TEMPLATE.md"
+}
+
+@test "--write-conflicts creates .dot-agents.md files for Markdown conflicts" {
     # First install
     bash "$INSTALL_SCRIPT" --yes
 
     # Modify a skill file to create conflict
-    echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
 
     # Re-install with --write-conflicts should create conflict files
     run bash "$INSTALL_SCRIPT" --write-conflicts --yes
@@ -215,7 +349,78 @@ teardown() {
     assert_output --partial "CONFLICT"
 
     # Should create conflict file for the skill
-    [ -f ".agents/skills/sample-skill/SKILL.dot-agents.md" ]
+    [ -f ".agents/skills/research/SKILL.dot-agents.md" ]
+}
+
+@test "--write-conflicts creates .dot-agents.new files for non-Markdown conflicts" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    printf '# Custom ignore\n.dot-agents-backup/\n' > .agents/.gitignore
+
+    run bash "$INSTALL_SCRIPT" --write-conflicts --yes
+    assert_success
+    assert_output --partial "CONFLICT"
+
+    [ -f ".agents/.gitignore.dot-agents.new" ]
+}
+
+@test "--write-conflicts does not mutate conflicted .agents/.gitignore" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    printf '# Custom ignore\n' > .agents/.gitignore
+    local original_gitignore
+    original_gitignore=$(cat .agents/.gitignore)
+
+    run bash "$INSTALL_SCRIPT" --write-conflicts --yes
+    assert_success
+    assert_output --partial "CONFLICT"
+
+    [ -f ".agents/.gitignore.dot-agents.new" ]
+    run cat .agents/.gitignore
+    assert_output "$original_gitignore"
+}
+
+@test "--write-conflicts preserves an existing conflict sidecar" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
+    echo "review notes stay" > .agents/skills/research/SKILL.dot-agents.md
+
+    run bash "$INSTALL_SCRIPT" --write-conflicts --yes
+    assert_success
+    assert_output --partial "Kept existing ./.agents/skills/research/SKILL.dot-agents.md"
+
+    run cat .agents/skills/research/SKILL.dot-agents.md
+    assert_output "review notes stay"
+}
+
+@test "--interactive overwrite applies selected conflict action" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
+
+    run env DOT_AGENTS_INTERACTIVE_RESPONSE=o bash "$INSTALL_SCRIPT" --interactive --yes
+    assert_success
+    assert_output --partial "overwritten"
+    assert_output --partial "BACKUP"
+
+    run head -1 .agents/skills/research/SKILL.md
+    assert_output "---"
+    [ ! -f ".agents/skills/research/SKILL.dot-agents.md" ]
+}
+
+@test "--interactive keep preserves selected local conflict" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
+
+    run env DOT_AGENTS_INTERACTIVE_RESPONSE=k bash "$INSTALL_SCRIPT" --interactive --yes
+    assert_success
+    assert_output --partial "kept yours"
+
+    run cat .agents/skills/research/SKILL.md
+    assert_output "# Modified skill"
+    [ ! -f ".agents/skills/research/SKILL.dot-agents.md" ]
 }
 
 @test "sync defaults to force mode (overwrites with backup)" {
@@ -223,7 +428,7 @@ teardown() {
     bash "$INSTALL_SCRIPT" --yes
 
     # Modify a skill file to create conflict
-    echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
 
     # Re-install (sync) should default to force mode
     run bash "$INSTALL_SCRIPT"
@@ -236,12 +441,56 @@ teardown() {
     assert_output --partial ".dot-agents-backup"
 }
 
+@test "sync backs up symlinked managed files without following them" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p external
+    echo "custom skill link target" > external/research-skill.md
+    rm .agents/skills/research/SKILL.md
+    ln -s ../../../external/research-skill.md .agents/skills/research/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    assert_output --partial "force overwrite"
+    assert_output --partial "BACKUP"
+
+    [ ! -L ".agents/skills/research/SKILL.md" ]
+    local backup_link
+    backup_link=$(find .agents/.dot-agents-backup -path '*/.agents/skills/research/SKILL.md' -type l | head -1)
+    [ -n "$backup_link" ]
+
+    local target
+    target="$(readlink "$backup_link")"
+    [ "$target" = "../../../external/research-skill.md" ]
+}
+
+@test "sync backs up broken symlinked managed files without following them" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    rm .agents/skills/research/SKILL.md
+    ln -s ../../../missing-research-skill.md .agents/skills/research/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    assert_output --partial "force overwrite"
+    assert_output --partial "BACKUP"
+
+    [ ! -L ".agents/skills/research/SKILL.md" ]
+    local backup_link
+    backup_link=$(find .agents/.dot-agents-backup -path '*/.agents/skills/research/SKILL.md' -type l | head -1)
+    [ -n "$backup_link" ]
+
+    local target
+    target="$(readlink "$backup_link")"
+    [ "$target" = "../../../missing-research-skill.md" ]
+}
+
 @test "--diff shows unified diff for conflicts" {
     # First install
     bash "$INSTALL_SCRIPT" --yes
 
     # Modify a skill file to create conflict
-    echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
 
     # --diff should show diff output
     run bash "$INSTALL_SCRIPT" --diff
@@ -251,7 +500,7 @@ teardown() {
     assert_output --partial "+++"  # Diff header
 
     # Should NOT create conflict files
-    [ ! -f ".agents/skills/sample-skill/SKILL.dot-agents.md" ]
+    [ ! -f ".agents/skills/research/SKILL.dot-agents.md" ]
 }
 
 @test "--diff exits 0 when no conflicts" {
@@ -273,7 +522,7 @@ teardown() {
     original_meta=$(cat .agents/.dot-agents.json)
 
     # Modify a skill file
-    echo "# Modified skill" > .agents/skills/sample-skill/SKILL.md
+    echo "# Modified skill" > .agents/skills/research/SKILL.md
 
     # --diff should not update metadata
     run bash "$INSTALL_SCRIPT" --diff
@@ -282,6 +531,147 @@ teardown() {
     # Metadata should be unchanged
     run cat .agents/.dot-agents.json
     assert_output "$original_meta"
+}
+
+@test "--diff exits 1 when core files are missing without installing them" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    rm -rf .agents/skills/agent-work
+
+    local original_meta
+    original_meta=$(cat .agents/.dot-agents.json)
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "would install"
+    assert_output --partial "Pending changes:"
+
+    [ ! -d ".agents/skills/agent-work" ]
+    [ ! -d ".agents/.dot-agents-backup" ]
+
+    run cat .agents/.dot-agents.json
+    assert_output "$original_meta"
+}
+
+@test "--diff exits 1 for retired Ralph without removing it" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/skills/ralph
+    echo "# Legacy Ralph" > .agents/skills/ralph/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "retired core skill, preview only"
+    assert_output --partial "Pending changes:"
+
+    [ -f ".agents/skills/ralph/SKILL.md" ]
+    [ ! -d ".agents/.dot-agents-backup" ]
+}
+
+@test "--diff exits 1 for retired legacy guidance without removing it" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/prds
+    echo "Use Ralph" > .agents/prds/AGENTS.md
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "retired legacy guidance, preview only"
+    assert_output --partial "Pending changes:"
+
+    [ -f ".agents/prds/AGENTS.md" ]
+    [ ! -d ".agents/.dot-agents-backup" ]
+}
+
+@test "--diff counts .agents/.gitignore once when the file is missing" {
+    bash "$INSTALL_SCRIPT" --yes
+    rm .agents/.gitignore
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "./.agents/.gitignore (would install)"
+    assert_output --partial "Pending changes: 1"
+}
+
+@test "--diff exits 1 for pending Claude Code skill links without creating them" {
+    bash "$INSTALL_SCRIPT" --yes
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "Claude Code skills linked"
+    assert_output --partial ".claude/skills/agent-work"
+    assert_output --partial "Pending changes:"
+
+    [ ! -e ".claude/skills" ]
+}
+
+@test "--diff previews Claude Code skill links on fresh install without creating them" {
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "Claude Code skills linked"
+    assert_output --partial ".claude/skills/agent-work"
+    assert_output --partial "Pending changes:"
+
+    [ ! -e ".claude/skills" ]
+    [ ! -d ".agents" ]
+}
+
+@test "--dry-run previews Claude Code skill links on fresh install without creating them" {
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --dry-run
+    assert_success
+    assert_output --partial "Claude Code skills linked"
+    assert_output --partial ".claude/skills/agent-work"
+
+    [ ! -e ".claude/skills" ]
+    [ ! -d ".agents" ]
+}
+
+@test "--diff exits 1 for stale retired Ralph Claude Code symlink without removing it" {
+    mkdir -p .claude
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/skills/ralph
+    echo "# Legacy Ralph" > .agents/skills/ralph/SKILL.md
+    ln -s ../../.agents/skills/ralph .claude/skills/ralph
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial ".claude/skills/ralph (stale)"
+    assert_output --partial "Pending changes:"
+
+    [ -L ".claude/skills/ralph" ]
+}
+
+@test "clean sync does not create backup for generated metadata" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    [ ! -d ".agents/.dot-agents-backup" ]
+}
+
+@test "sync drops deprecated singular reference ignore but preserves content" {
+    bash "$INSTALL_SCRIPT" --yes
+    mkdir -p .agents/reference/legacy-repo
+    echo "legacy" > .agents/reference/legacy-repo/file.txt
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    # Sync never deletes user files; the legacy checkout stays on disk.
+    [ -f ".agents/reference/legacy-repo/file.txt" ]
+
+    # The deprecated singular path is no longer ignored; only references/ is.
+    run cat .agents/.gitignore
+    refute_line "reference/"
+    assert_line "references/*"
+    assert_line "!references/.gitkeep"
 }
 
 # ===== Task 1: .gitignore entry tests =====
@@ -293,7 +683,7 @@ teardown() {
     # .gitignore should exist and contain backup entry
     [ -f ".agents/.gitignore" ]
     run cat ".agents/.gitignore"
-    assert_output --partial "../.dot-agents-backup/"
+    assert_output --partial ".dot-agents-backup/"
 }
 
 @test "sync overwrites .agents/.gitignore and adds backup entry" {
@@ -311,7 +701,7 @@ teardown() {
 
     # Should contain backup entry (custom content overwritten by upstream)
     run cat ".agents/.gitignore"
-    assert_output --partial "../.dot-agents-backup/"
+    assert_output --partial ".dot-agents-backup/"
 }
 
 # ===== Task 2: Post-install guidance tests =====
@@ -323,7 +713,7 @@ teardown() {
     # Should show next steps
     assert_output --partial "Next steps:"
     assert_output --partial "Run 'adapt'"
-    assert_output --partial "QUICKSTART.md"
+    assert_output --partial "https://github.com/colmarius/dot-agents/blob/main/QUICKSTART.md"
 }
 
 @test "sync does not show next steps guidance" {
@@ -425,7 +815,8 @@ teardown() {
     assert_output --partial "Claude Code skills linked"
 
     [ -L ".claude/skills/adapt" ]
-    [ -L ".claude/skills/ralph" ]
+    [ -L ".claude/skills/agent-work" ]
+    [ -L ".claude/skills/feature-planning" ]
     [ -L ".claude/skills/research" ]
     [ -L ".claude/skills/tmux" ]
 
@@ -434,7 +825,7 @@ teardown() {
     [ "$target" = "../../.agents/skills/adapt" ]
 
     # Directory symlinks expose supporting skill files, not just SKILL.md.
-    [ -f ".claude/skills/ralph/references/progress-format.md" ]
+    [ -f ".claude/skills/agent-work/assets/plan-template.md" ]
 }
 
 @test "install does not create .claude when absent" {
@@ -454,6 +845,20 @@ teardown() {
     assert_output --partial ".claude/skills (user-owned)"
     run cat .claude/skills
     assert_output "user file"
+}
+
+@test "install skips Claude Code integration when .claude/skills is user-owned symlink" {
+    mkdir -p .claude external-skills
+    ln -s ../external-skills .claude/skills
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial ".claude/skills (user-owned symlink)"
+    [ -L ".claude/skills" ]
+
+    run find external-skills -mindepth 1 -maxdepth 1 -print
+    assert_output ""
 }
 
 @test "install preserves existing Claude Code user skill directory" {
@@ -497,6 +902,76 @@ teardown() {
     [ ! -L ".claude/skills/old-skill" ]
 }
 
+@test "sync preserves symlinked Claude Code skills directory" {
+    mkdir -p .claude external-skills
+    ln -s ../external-skills .claude/skills
+
+    bash "$INSTALL_SCRIPT" --yes
+    ln -s ../../.agents/skills/old-skill external-skills/old-skill
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial ".claude/skills (user-owned symlink)"
+    [ -L ".claude/skills" ]
+    [ -L "external-skills/old-skill" ]
+}
+
+@test "sync removes retired Ralph Claude Code skill symlink" {
+    mkdir -p .claude
+
+    bash "$INSTALL_SCRIPT" --yes
+    mkdir -p .agents/skills/ralph
+    echo "# Legacy Ralph" > .agents/skills/ralph/SKILL.md
+    ln -s ../../.agents/skills/ralph .claude/skills/ralph
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    [ ! -L ".claude/skills/ralph" ]
+}
+
+@test "sync removes retired ralph core skill with backup" {
+    bash "$INSTALL_SCRIPT" --yes
+    mkdir -p .agents/skills/ralph
+    echo "# Legacy Ralph" > .agents/skills/ralph/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial "retired core skill"
+    assert_output --partial "BACKUP"
+    [ ! -d ".agents/skills/ralph" ]
+
+    run find .agents/.dot-agents-backup -path '*/.agents/skills/ralph/SKILL.md' -type f
+    assert_output --partial ".agents/skills/ralph/SKILL.md"
+
+    local backup_file
+    backup_file=$(find .agents/.dot-agents-backup -path '*/.agents/skills/ralph/SKILL.md' -type f | head -1)
+    run cat "$backup_file"
+    assert_output "# Legacy Ralph"
+}
+
+@test "sync backs up symlinked retired ralph core skill without following it" {
+    bash "$INSTALL_SCRIPT" --yes
+    ln -s ../missing-ralph .agents/skills/ralph
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial "retired core skill"
+    assert_output --partial "BACKUP"
+    [ ! -L ".agents/skills/ralph" ]
+
+    local backup_link
+    backup_link=$(find .agents/.dot-agents-backup -path '*/.agents/skills/ralph' -type l | head -1)
+    [ -n "$backup_link" ]
+
+    local target
+    target="$(readlink "$backup_link")"
+    [ "$target" = "../missing-ralph" ]
+}
+
 @test "--uninstall removes only dot-agents Claude Code skill symlinks" {
     mkdir -p .claude
 
@@ -508,6 +983,22 @@ teardown() {
     assert_success
 
     [ ! -L ".claude/skills/adapt" ]
-    [ ! -L ".claude/skills/ralph" ]
+    [ ! -L ".claude/skills/agent-work" ]
+    [ ! -L ".claude/skills/feature-planning" ]
     [ -f ".claude/skills/my-custom-skill/SKILL.md" ]
+}
+
+@test "--uninstall preserves symlinked Claude Code skills directory" {
+    mkdir -p .claude external-skills
+    ln -s ../external-skills .claude/skills
+
+    bash "$INSTALL_SCRIPT" --yes
+    ln -s ../../.agents/skills/adapt external-skills/adapt
+
+    run bash "$INSTALL_SCRIPT" --uninstall --yes
+    assert_success
+
+    assert_output --partial ".claude/skills (user-owned symlink)"
+    [ -L ".claude/skills" ]
+    [ -L "external-skills/adapt" ]
 }

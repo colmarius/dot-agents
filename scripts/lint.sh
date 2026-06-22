@@ -13,7 +13,11 @@ cd "$ROOT_DIR"
 SCRIPTS=(
     install.sh
     .agents/scripts/sync.sh
+    .agents/skills/agent-work/scripts/list-work.sh
+    .agents/skills/agent-work/scripts/new-work.sh
+    scripts/build-test-fixture.sh
     scripts/lint.sh
+    scripts/serve-docs.sh
     scripts/test.sh
     test/mocks/curl
 )

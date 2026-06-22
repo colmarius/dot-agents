@@ -9,12 +9,13 @@
 
 - [Workflow Overview](./concepts.md#workflow)
 - [Glossary](./concepts.md#glossary)
+- [v0.3 Migration](./migration-v0.3.md)
 
 ## Reference
 
 - [Skills](./skills.md)
 - [Claude Code Project Skill Discovery](./skills.md#claude-code-project-skill-discovery)
-- [AGENTS.md Template](../AGENTS.md)
+- [AGENTS.md Template](../AGENTS.template.md)
 
 ## For Contributors
 

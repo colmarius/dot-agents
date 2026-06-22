@@ -1,139 +1,129 @@
 ---
 name: research
-description: Deep research on technical topics, libraries, APIs, or concepts. Use when asked to research, investigate, explore deeply, or gather comprehensive information on a topic. Saves learnings to .agents/research/.
+description: "Researches technical questions with authoritative sources and saves work-local or reusable findings. Use for docs, comparisons, APIs, and architecture references. Triggers on: research, investigate, compare, gather references."
 ---
 
 # Research Skill
 
-Conducts deep research on technical topics, saving findings for future reference.
-
-## Capabilities
-
-- Web search for documentation, articles, and examples
-- Deep analysis using Oracle for complex reasoning
-- Cross-reference multiple sources
-- Save structured learnings to `.agents/research/`
+Research a technical question, synthesize reliable evidence, and save findings either work-locally or as reusable notes in `.agents/research/`.
 
 ## Workflow
 
-### 1. Clarify Scope
+### 0. Check Existing Context
 
-Before starting, confirm:
+Before doing new research:
 
-- **Topic**: What exactly needs researching?
-- **Depth**: Quick overview or comprehensive deep-dive?
-- **Focus**: Implementation details, best practices, comparisons, or concepts?
+- If the work belongs to an active work item, read `.agents/work/<category>/<work-slug>/index.md` and prefer work-local `research.md` or `research/` for task-specific findings.
+- Search `.agents/research/` for an existing reusable topic note.
+- Check repo docs, attached files, and skill `references/` first.
+- If an existing note already answers the question, update it only when stale or incomplete.
 
-### 2. Research Phase
+### 1. Define the Research Brief
 
-Use these tools in combination:
+Capture these before researching:
 
-| Tool | Use For |
-|------|---------|
-| `web_search` | Find documentation, articles, tutorials |
-| `read_web_page` | Extract detailed content from URLs |
-| `oracle` | Deep analysis, synthesizing findings, reasoning about trade-offs |
-| `librarian` | Explore open-source implementations |
-| `gh` (via Bash) | Fetch repo content, issues, PRs, releases when you have a direct GitHub URL |
+- **Question**: What exact question must be answered?
+- **Depth**: Default to a targeted answer unless a deep-dive is explicitly requested.
+- **Focus**: Implementation details, comparisons, best practices, or conceptual overview.
 
-> **Note:** `librarian` accesses GitHub repositories (public repos and private repos you've authorized). For local codebase searches, use `finder` or `Grep` instead. Use `gh` CLI for targeted queries like `gh repo view`, `gh issue list`, or `gh release list`.
+If the request is ambiguous but actionable, state assumptions and proceed. Ask follow-up questions only when ambiguity would materially change the recommendation.
 
-**Research strategy:**
+### 2. Gather Evidence
 
-1. Start with `web_search` to find authoritative sources
-2. Use `read_web_page` to extract key information
-3. Consult `oracle` for analysis and synthesis
-4. Use `librarian` to find real-world implementations
+Use the smallest toolset that can answer the question.
 
-### 3. Document Findings
+| Tool | Use for |
+| --- | --- |
+| Web search | Find authoritative sources when local docs are insufficient |
+| Web page reading | Extract relevant details from specific URLs |
+| Oracle or another reasoning model | Synthesize trade-offs after evidence is gathered |
+| Repository search | Inspect local implementations and patterns |
+| GitHub tooling | Inspect issues, PRs, releases, or external repository examples |
 
-Save research to `.agents/research/[topic-slug].md`:
+Guidelines:
+
+1. Prefer local docs and existing research before external search.
+2. Prefer official docs, specs, release notes, and maintainer-authored sources.
+3. Use community posts only to fill gaps in official guidance.
+4. Target 2-5 high-quality sources instead of broad source dumps.
+5. Use deeper reasoning after collecting evidence, not as a substitute for evidence.
+6. If the user asks for latest or recent information, force a fresh fetch when your tools support it.
+
+### 3. Synthesize Recommendation
+
+Produce:
+
+1. The best current recommendation.
+2. Key trade-offs.
+3. Confidence level and uncertainty.
+4. Unresolved risks or follow-up validations.
+
+### 4. Save or Update Findings
+
+Use work-local `.agents/work/<category>/<work-slug>/research.md` when:
+
+- The research mainly supports one implementation task or work item.
+- The findings explain task-specific constraints, alternatives, or plan decisions.
+- A future agent should find the research beside `plan.md`, `prd.md`, or `progress.md`.
+
+Use work-local `.agents/work/<category>/<work-slug>/research/<topic-slug>.md` when one work item needs multiple focused research notes.
+
+Create or update `.agents/research/<topic-slug>.md` when:
+
+- Findings are likely to be reused across unrelated work.
+- The topic needs multiple sources or non-obvious trade-offs.
+- The user explicitly asks to document reusable research.
+
+If work-local findings later become broadly reusable, add a concise promoted synthesis to `.agents/research/` and link between the files.
+
+Use this template:
 
 ```markdown
 # Research: [Topic Name]
 
 **Date:** YYYY-MM-DD
-**Status:** Draft | Complete
-**Tags:** [relevant, tags]
+**Status:** draft | complete
+**Question:** [What was researched]
 
-## Summary
+## Recommendation
 
-[2-3 sentence overview of key findings]
+[Best current answer in 2-4 sentences]
 
-## Key Learnings
+## Key Findings
 
-- Learning 1
-- Learning 2
-- Learning 3
+- Finding 1
+- Finding 2
+- Finding 3
 
-## Details
+## Evidence
 
-### [Subtopic 1]
+### [Source or Subtopic]
 
-[Detailed findings]
-
-### [Subtopic 2]
-
-[Detailed findings]
+[Relevant facts only]
 
 ## Sources
 
-- [Source Title](url) - Brief description of what was learned
-- [Source Title](url) - Brief description
+- [Source Title](url) — What this source established
 
 ## Open Questions
 
-- [ ] Question that needs further research
-- [ ] Another question
-
-## Related Research
-
-- [[other-topic.md]] - How it relates
+- [ ] Include only unresolved questions that materially affect the answer
 ```
 
-### 4. Synthesize & Report
+Status definitions:
+
+- `draft`: Useful findings exist, but material questions remain.
+- `complete`: Evidence is sufficient to answer the stated question with confidence.
+
+### 5. Report Back
 
 Provide the user with:
 
-1. **Executive summary** (3-5 bullet points)
-2. **Recommendations** based on findings
-3. **Link to saved research file**
+1. A concise summary.
+2. A clear recommendation.
+3. Link to the saved research file, if saved.
+4. Explicit unknowns or open questions.
 
-## File Naming Convention
+## Definition Of Done
 
-Use kebab-case slugs: `.agents/research/[topic-slug].md`
-
-Examples:
-
-- `react-server-components.md`
-- `firebase-auth-patterns.md`
-- `zod-vs-yup-comparison.md`
-
-## Deep Research Mode
-
-For comprehensive research, use Oracle with focused prompts:
-
-```text
-task: "Analyze [topic] considering:
-- Current best practices
-- Common pitfalls
-- Performance implications
-- Security considerations"
-```
-
-## Quick Reference
-
-**Start research:**
-
-```text
-Research [topic] - [specific focus]
-```
-
-**Check existing research:**
-
-```bash
-ls -la .agents/research/
-```
-
-**Update existing research:**
-Add new sections or update status from Draft to Complete.
+Research is complete when the question has a clear answer or recommendation, supporting evidence is cited, reusable findings are saved when warranted, and the user receives the summary plus any saved file path.
