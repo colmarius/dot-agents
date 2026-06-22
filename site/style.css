@@ -125,6 +125,16 @@ header {
   margin: 0 auto;
 }
 
+.hero-desc code {
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+}
+
 /* Install section */
 .install {
   margin: 1rem 0 3rem;
@@ -244,31 +254,22 @@ header {
   border: 1px solid var(--border);
 }
 
-.install-details {
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
+.section-intro {
+  max-width: 640px;
+  margin: 0 auto 1.25rem;
   color: var(--text-muted);
+  font-size: 0.9375rem;
   text-align: center;
 }
 
-.install-details summary {
-  cursor: pointer;
-  color: var(--accent);
-}
-
-.install-details summary:hover {
-  text-decoration: underline;
-}
-
-.install-details code {
-  display: block;
-  margin-top: 0.5rem;
+.section-intro code {
   font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
+  color: var(--text);
   background: var(--bg-secondary);
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
   border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.15rem 0.35rem;
 }
 
 /* What you get */
@@ -297,320 +298,57 @@ header {
   color: var(--text-muted);
 }
 
-/* Features */
-.features {
+/* How it works */
+.how-it-works {
   margin: 3rem 0;
+  text-align: center;
 }
 
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.feature-card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition:
-    transform var(--t-med) var(--ease-out),
-    border-color var(--t-med) var(--ease-out),
-    box-shadow var(--t-med) var(--ease-out),
-    background var(--t-med) var(--ease-out);
-}
-
-.feature-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(0, 217, 255, 0.25);
-  box-shadow: 0 0 0 1px rgba(0, 217, 255, 0.08), 0 16px 32px rgba(0, 0, 0, 0.35);
-  background: linear-gradient(180deg, rgba(0, 217, 255, 0.04), transparent 55%);
-}
-
-.feature-icon {
-  font-size: 1.5rem;
+.how-it-works h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
   margin-bottom: 0.75rem;
-  transition: transform var(--t-med) var(--ease-out);
-}
-
-.feature-card:hover .feature-icon {
-  transform: translateY(-2px);
-}
-
-.feature-card h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.feature-card p {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.feature-card .term {
-  font-size: 0.85rem;
-  font-weight: 400;
-}
-
-.feature-card .term a {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-.feature-card .term a:hover {
-  text-decoration: underline;
-}
-
-/* Workflow - Timeline/Flow style */
-.workflow {
-  margin: 4rem 0 3rem;
-  text-align: center;
-}
-
-.workflow h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
   color: var(--text-muted);
 }
 
-.workflow-steps {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  position: relative;
-  padding: 0 1rem;
-}
-
-/* Connector line behind steps (desktop) */
-.workflow-steps::before {
-  content: "";
-  position: absolute;
-  left: 4rem;
-  right: 4rem;
-  top: 6px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--border) 50%, var(--accent));
-  opacity: 0.6;
-}
-
-.step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  background: transparent;
-  border: none;
-  padding: 0;
-  position: relative;
-  z-index: 1;
-  transition: transform var(--t-med) var(--ease-out);
-}
-
-.step:hover {
-  transform: translateY(-2px);
-}
-
-.step-num {
-  width: 14px;
-  height: 14px;
-  background: var(--accent);
-  border-radius: 50%;
-  font-size: 0;
-  color: transparent;
-  box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.15), 0 0 12px rgba(0, 217, 255, 0.3);
-  flex-shrink: 0;
-  transition:
-    box-shadow var(--t-med) var(--ease-out),
-    transform var(--t-med) var(--ease-out);
-}
-
-.step:hover .step-num {
-  transform: scale(1.15);
-  box-shadow:
-    0 0 0 6px rgba(0, 217, 255, 0.18),
-    0 0 20px rgba(0, 217, 255, 0.5);
-}
-
-.step-content {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  gap: 0.25rem;
-}
-
-.step-content strong {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.step-content span {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.step-arrow {
-  display: none;
-}
-
-/* Quickstart - Terminal checklist style */
-.quickstart {
-  margin: 3rem 0;
-  text-align: center;
-  padding: 2rem 1.5rem;
-  border: 1px solid rgba(42, 42, 58, 0.6);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(0, 217, 255, 0.04) 0%, transparent 60%);
-}
-
-.quickstart h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: var(--text-muted);
-}
-
-.quickstart-steps {
+.command-list {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  max-width: 480px;
+  max-width: 720px;
   margin: 0 auto;
 }
 
-.qs-step {
-  display: flex;
-  align-items: center;
+.command-row {
+  display: grid;
+  grid-template-columns: minmax(190px, 240px) 1fr;
   gap: 1rem;
+  align-items: start;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 0.9rem 1.25rem;
-  position: relative;
+  padding: 0.95rem 1.1rem;
   text-align: left;
-  transition:
-    transform var(--t-med) var(--ease-out),
-    border-color var(--t-med) var(--ease-out),
-    box-shadow var(--t-med) var(--ease-out);
 }
 
-.qs-step:hover {
-  transform: translateY(-2px);
-  border-color: rgba(0, 217, 255, 0.3);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* Cyan accent bar on left */
-.qs-step::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 10px;
-  bottom: 10px;
-  width: 3px;
-  background: var(--accent);
-  border-radius: 999px;
-  opacity: 0.8;
-  transition: opacity var(--t-med) var(--ease-out), filter var(--t-med) var(--ease-out);
-}
-
-.qs-step:hover::before {
-  opacity: 1;
-  filter: brightness(1.2);
-}
-
-.qs-num {
-  width: auto;
-  height: auto;
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.15rem 0.6rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-.qs-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.qs-content strong {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.qs-content code {
+.command-row code {
   font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--accent);
+}
+
+.command-row span {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.command-row span code {
+  color: var(--text);
   background: var(--bg-card);
   border: 1px solid var(--border);
-  padding: 0.25rem 0.5rem;
-  border-radius: 5px;
-  display: inline-block;
-}
-
-/* Inspiration */
-.inspiration {
-  margin: 3rem 0;
-  text-align: center;
-  padding: 2rem 1.5rem;
-  border: 1px solid rgba(42, 42, 58, 0.6);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(124, 58, 237, 0.06) 0%, transparent 60%);
-}
-
-.inspiration h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: var(--text-muted);
-}
-
-.inspiration-desc {
-  max-width: 560px;
-  margin: 0 auto 1rem;
-  color: var(--text-muted);
-  font-size: 1rem;
-}
-
-.inspiration-desc em {
-  color: var(--text);
-  font-style: italic;
-}
-
-.inspiration-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.inspiration-links li {
-  font-size: 0.9375rem;
-}
-
-.inspiration-links a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color var(--t-fast);
-}
-
-.inspiration-links a:hover {
-  text-decoration: underline;
-}
-
-.muted {
-  color: var(--text-muted);
-  font-size: 0.875rem;
+  border-radius: 4px;
+  padding: 0.1rem 0.3rem;
 }
 
 /* CTA */
@@ -696,17 +434,9 @@ footer a:hover {
     font-size: 1rem;
   }
 
-  .feature-grid {
+  .command-row {
     grid-template-columns: 1fr;
-  }
-
-  .workflow-steps {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem 1rem;
-  }
-
-  .workflow-steps::before {
-    display: none;
+    gap: 0.5rem;
   }
 
   .code-block pre {
