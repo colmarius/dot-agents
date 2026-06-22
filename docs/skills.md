@@ -47,7 +47,7 @@ Turns work-item context into implementation-ready plans and paste-ready handoff 
 Use it to:
 
 - Create or refine a short requirements brief (`prd.md`) only when alignment is needed
-- Create or refine `plan.md`
+- Create or refine the active plan file
 - Validate stale assumptions before implementation
 - Generate a new-thread handoff prompt
 - Stress-test a plan when explicitly asked
@@ -62,7 +62,7 @@ Investigates technical questions using available local, web, and repository evid
 
 Research is saved:
 
-- Work-locally at `.agents/work/<category>/<slug>/research.md` when it supports one work item
+- Work-locally at `.agents/work/<category>/<slug>/research.md` or `.agents/work/<category>/<slug>/research/<topic>.md` when it supports one work item
 - Reusably at `.agents/research/<topic>.md` when it should guide future unrelated work
 
 **Invoke:** `Research authentication patterns for this work item`

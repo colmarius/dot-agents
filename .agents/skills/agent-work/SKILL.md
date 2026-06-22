@@ -7,7 +7,7 @@ description: "Creates and curates .agents/work/ work items. Use for durable inde
 
 Create and maintain work items under `.agents/work/<category>/<work-slug>/` so context, plans, progress, decisions, and handoff prompts stay together for one piece of multi-session work.
 
-A "work item" is a folder; the entries inside `plan.md` are the executable tasks.
+A "work item" is a folder; entries inside `plan.md` or focused files under `plans/` are the executable tasks.
 
 ## Workflow
 
@@ -19,13 +19,16 @@ A "work item" is a folder; the entries inside `plan.md` are the executable tasks
    - Create only `index.md` at first; do not add empty support folders.
 3. **Place artifacts deliberately**
    - Use `research.md` for findings specific to this work item.
+   - Use `research/` for multiple focused research notes specific to this work item.
    - Use `.agents/research/` for reusable cross-work findings.
    - Use `prd.md` as a short requirements brief only when alignment is needed.
-   - Use `plan.md` for implementation-ready tasks; copy `.agents/skills/agent-work/assets/plan-template.md` as a starting point.
+   - Use `plan.md` for the primary implementation-ready task plan; copy `.agents/skills/agent-work/assets/plan-template.md` as a starting point.
+   - Use `plans/` for multiple focused implementation plans when one plan file would be too large or when separate phases need independent handoffs.
    - Use `progress.md` for implementation notes, verification results, blockers, and next action.
    - Add `decisions/` only when durable decision records are worth linking.
 4. **Keep `index.md` current**
    - Update `Status:`, `Updated:`, `Artifacts`, `Next Action`, and material `Open Questions` as the work item evolves.
+   - When `plans/` exists, point `index.md` and handoff prompts to the active plan file.
    - Keep status in `index.md`; do not move work folders between status directories.
 5. **Prepare handoffs when needed**
    - Use `feature-planning` to refine a stale or ambiguous plan.
@@ -40,12 +43,12 @@ A "work item" is a folder; the entries inside `plan.md` are the executable tasks
 - Required file: `index.md`
 - Status values: `researching`, `planned`, `in-progress`, `blocked`, `completed`
 - Optional files: `research.md`, `prd.md`, `plan.md`, `progress.md`
-- Optional folders: `research/`, `decisions/`
+- Optional folders: `research/`, `plans/`, `decisions/`
 
 Status meanings:
 
 - `researching`: context exists, but no implementation-ready plan exists yet.
-- `planned`: `plan.md` exists and is ready for a handoff prompt or implementation.
+- `planned`: `plan.md` or `plans/<name>.md` exists and is ready for a handoff prompt or implementation.
 - `in-progress`: implementation has started.
 - `blocked`: progress needs input, access, or plan changes before continuing.
 - `completed`: implementation and verification are done.
@@ -69,9 +72,9 @@ Run commands from the repository root.
 .agents/skills/agent-work/scripts/list-work.sh --status blocked
 ```
 
-## Legacy Plan Migration
+## Legacy Plans
 
-Existing legacy plan and PRD documents are user content. Do not auto-migrate or delete them. Retired Ralph guidance/templates in those folders may be backed up and removed by sync.
+Existing legacy `.agents/plans/` and `.agents/prds/` documents are user content. Do not auto-migrate or delete them.
 
 When the user asks to migrate one legacy plan:
 
@@ -81,6 +84,8 @@ When the user asks to migrate one legacy plan:
 4. Copy or summarize a linked PRD into `prd.md` if still relevant.
 5. Update `index.md` with status, artifacts, next action, and open questions.
 6. Leave legacy files in place unless the user explicitly asks to delete them.
+
+Full upstream guide: [migration-v0.3](https://github.com/colmarius/dot-agents/blob/main/docs/migration-v0.3.md).
 
 ## Templates
 

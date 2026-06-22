@@ -14,11 +14,11 @@ Work Item → Context as needed → Plan → Refine → Handoff Prompt → Imple
 ```
 
 1. **Work item**: Use `agent-work` to create or locate `.agents/work/<category>/<work-slug>/`.
-2. **Context**: Add `research.md` for technical facts or `prd.md` as a short requirements brief only when needed.
-3. **Plan**: Create or update `plan.md` with scoped tasks, dependencies, and acceptance criteria.
+2. **Context**: Add `research.md` for technical facts, `research/` for multiple focused notes, or `prd.md` as a short requirements brief only when needed.
+3. **Plan**: Create or update the active plan file (`plan.md` by default, or `plans/<name>.md` for focused plans) with scoped tasks, dependencies, and acceptance criteria.
 4. **Refine**: Validate assumptions against current repo reality before implementation.
 5. **Handoff prompt**: Produce a paste-ready prompt for the next implementation thread.
-6. **Progress**: The implementation thread updates task checkboxes, `progress.md`, and `index.md`.
+6. **Progress**: The implementation thread updates active plan task checkboxes, `progress.md`, and `index.md`.
 
 ## Plan Locations
 
@@ -28,9 +28,12 @@ New plans live inside work items:
 .agents/work/<category>/<work-slug>/
 ├── index.md
 ├── research.md
+├── research/
 ├── prd.md
 ├── plan.md
-└── progress.md
+├── plans/
+├── progress.md
+└── decisions/
 ```
 
 Legacy standalone plan and PRD documents are user content. Migrate one at a time into `.agents/work/` only when requested. Retired Ralph guidance/templates may be backed up and removed by sync.
@@ -39,7 +42,7 @@ Legacy standalone plan and PRD documents are user content. Migrate one at a time
 
 Most work does not need a PRD. Create `prd.md` only when the missing context is requirements alignment: users, behavior, goals, non-goals, acceptance, rollout, or stakeholder decisions. Use the [agent-work requirements brief template](../agent-work/assets/prd-template.md).
 
-Use `research.md` for technical discovery. If acceptance criteria fit naturally in `plan.md`, skip `prd.md`.
+Use `research.md` or `research/` for technical discovery. If acceptance criteria fit naturally in the active plan file, skip `prd.md`.
 
 ## Plan Guidance
 
@@ -57,12 +60,12 @@ For larger work, prefer an early thin slice that proves the end-to-end path befo
 
 Use this before writing a handoff prompt when work is multi-phase, ambiguous, or stale.
 
-1. Read the work item's `index.md` and active `plan.md`.
+1. Read the work item's `index.md` and active plan file (`plan.md` or `plans/<name>.md` as linked from `index.md`).
 2. Read relevant `research.md`, requirements brief (`prd.md`), and decisions only as needed.
 3. Validate key assumptions against current code, dependencies, and test setup.
 4. Resolve material open questions with repo evidence where possible; ask the user only for decisions the repo cannot answer.
-5. If a planned task is already satisfied, record evidence and update the plan instead of creating no-op work.
-6. Update `plan.md`, `progress.md`, and `index.md` when refinement changes the next action or known constraints.
+5. If a planned task is already satisfied, record evidence and update the active plan file instead of creating no-op work.
+6. Update the active plan file, `progress.md`, and `index.md` when refinement changes the next action or known constraints.
 
 Skip the full pass for small, obvious changes where the plan and repo state are already aligned.
 
@@ -77,7 +80,7 @@ The prompt should include:
 3. Goal and current state.
 4. Exact task, phase, or slice to implement.
 5. Scope limits and non-goals.
-6. Artifact update contract for `plan.md`, `progress.md`, and `index.md`.
+6. Artifact update contract for the active plan file, `progress.md`, and `index.md`.
 7. Verification commands or manual checks.
 8. Stop conditions.
 9. Expected final response format.
@@ -91,7 +94,7 @@ You are continuing the work item at:
 
 Read first:
 1. .agents/work/<category>/<slug>/index.md
-2. .agents/work/<category>/<slug>/plan.md
+2. <active plan file linked from index.md: .agents/work/<category>/<slug>/plan.md or .agents/work/<category>/<slug>/plans/<name>.md>
 3. Relevant artifacts linked from index.md
 
 Goal:
@@ -109,7 +112,7 @@ Scope limits:
 - If the plan is stale, update the plan and explain why before implementing.
 
 Progress contract:
-- Update completed task checkboxes in plan.md.
+- Update completed task checkboxes in the active plan file.
 - Append or update progress.md with changes, verification, blockers, and next action.
 - Update index.md Status, Updated, Artifacts, and Next Action when they change.
 
@@ -135,9 +138,9 @@ Use this only when the user explicitly asks to stress-test, grill, or walk decis
 1. Inspect the existing PRD, plan, repo docs, and relevant code first.
 2. Ask one highest-leverage unresolved question at a time.
 3. Provide a recommended default answer and brief rationale for each question.
-4. Capture outcomes in `prd.md`, `plan.md`, or `index.md`.
+4. Capture outcomes in `prd.md`, the active plan file, or `index.md`.
 5. Exit once remaining ambiguity no longer materially changes scope, sequencing, or architecture.
 
 ## Definition Of Done
 
-Planning is done when the work item has a current `index.md`, required context artifacts, an implementation-ready `plan.md`, and either a clear next action or a paste-ready handoff prompt.
+Planning is done when the work item has a current `index.md`, required context artifacts, an implementation-ready active plan file, and either a clear next action or a paste-ready handoff prompt.

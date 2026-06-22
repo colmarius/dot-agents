@@ -20,8 +20,8 @@ Work Item → Context as needed → Plan → Handoff Prompt → Implement → Re
 ```
 
 1. **Work Item:** Create durable context in `.agents/work/<category>/<slug>/`.
-2. **Context:** Add `research.md` for technical facts or `prd.md` as a short requirements brief only when needed.
-3. **Plan:** Break work into implementation-ready tasks in `plan.md`.
+2. **Context:** Add `research.md` or `research/` for technical facts, or `prd.md` as a short requirements brief only when needed.
+3. **Plan:** Break work into implementation-ready tasks in the active plan file (`plan.md` by default, or `plans/<name>.md` for focused plans).
 4. **Handoff Prompt:** Generate a paste-ready prompt for a fresh implementation thread.
 5. **Progress:** Implementation threads update `progress.md`, task checkboxes, and `index.md`.
 
@@ -34,8 +34,13 @@ project/
 │   ├── work/                    # Durable work items
 │   │   └── <category>/<slug>/
 │   │       ├── index.md         # Required entrypoint
-│   │       ├── plan.md          # Optional implementation plan
-│   │       └── progress.md      # Optional implementation log
+│   │       ├── research.md      # Optional work-specific findings
+│   │       ├── research/        # Optional focused research notes
+│   │       ├── prd.md           # Optional requirements brief
+│   │       ├── plan.md          # Optional primary implementation plan
+│   │       ├── plans/           # Optional focused implementation plans
+│   │       ├── progress.md      # Optional implementation log
+│   │       └── decisions/       # Optional durable decisions
 │   ├── research/                # Reusable cross-work research notes
 │   ├── references/              # External repos or docs checkouts (gitignored)
 │   ├── scripts/                 # dot-agents helper scripts
@@ -55,7 +60,7 @@ project/
 | `Run adapt` | Analyze project and fill in `AGENTS.md` sections |
 | `Create a new work item for ...` | Create durable `.agents/work/` context |
 | `Research [topic]` | Investigate and save work-local or reusable findings |
-| `Create a plan for ...` | Produce implementation-ready `plan.md` tasks |
+| `Create a plan for ...` | Produce implementation-ready tasks in the active plan file |
 | `Write a handoff prompt for ...` | Produce a paste-ready prompt for a new implementation thread |
 
 Skills are loaded via natural language. See each skill's `SKILL.md` in `.agents/skills/` for details.
@@ -79,12 +84,14 @@ Updated: YYYY-MM-DD
 Use optional files only when useful:
 
 - `research.md` - work-specific investigation notes
+- `research/` - optional indexed folder for multiple focused research notes
 - `prd.md` - short requirements brief when alignment is needed
-- `plan.md` - implementation-ready task checklist
+- `plan.md` - primary implementation-ready task checklist
+- `plans/` - optional indexed folder for multiple focused plans
 - `progress.md` - implementation log, verification, blockers, and next action
 - `decisions/` - durable decision records
 
-Do not create empty support folders by default.
+Do not create empty support folders by default. Add `research/`, `plans/`, or `decisions/` only when they hold useful files.
 
 ### Task Format
 
@@ -128,7 +135,7 @@ git push
 After making changes:
 
 1. **Update AGENTS.md** - Keep project commands and conventions current.
-2. **Update work items** - Keep `index.md`, `plan.md`, and `progress.md` in sync with implementation state.
+2. **Update work items** - Keep `index.md`, the active plan file, and `progress.md` in sync with implementation state.
 3. **Update docs** - Reflect user-facing behavior changes.
 
 ## Conventions

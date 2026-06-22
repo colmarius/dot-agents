@@ -113,7 +113,7 @@ When the plan is ready, ask:
 Review .agents/work/feature/user-authentication and write a paste-ready handoff prompt for the next implementation thread.
 ```
 
-Paste the generated prompt into a fresh agent thread. The new thread should read `index.md`, implement the requested slice, update `plan.md` checkboxes, append to `progress.md`, refresh `index.md`, and report verification results.
+Paste the generated prompt into a fresh agent thread. The new thread should read `index.md`, implement the requested slice, update the active plan file, append to `progress.md`, refresh `index.md`, and report verification results.
 
 ## 6. Continue Later
 

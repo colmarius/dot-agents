@@ -12,7 +12,7 @@ Each work item lives at:
 
 Use work items for multi-session work where context, plans, progress, decisions, and handoff prompts should stay together. Keep `.agents/research/` for reusable cross-work findings.
 
-A work item is a *container of tasks*; the task checklist lives inside `plan.md`.
+A work item is a *container of tasks*; task checklists live inside `plan.md` or focused plan files under `plans/`.
 
 ## Required Entrypoint
 
@@ -30,7 +30,7 @@ Read `index.md` first when entering a work item, then load only the artifacts ne
 
 - Use `researching`, `planned`, `in-progress`, `blocked`, or `completed`:
   - `researching`: context exists, but no implementation-ready plan exists yet.
-  - `planned`: `plan.md` exists and is ready for a handoff prompt or implementation.
+  - `planned`: `plan.md` or `plans/<name>.md` exists and is ready for a handoff prompt or implementation.
   - `in-progress`: implementation has started.
   - `blocked`: progress needs input, access, or plan changes before continuing.
   - `completed`: implementation and verification are done.
@@ -43,11 +43,12 @@ Read `index.md` first when entering a work item, then load only the artifacts ne
 - `research.md`: work-local synthesis when investigation mainly supports this work item.
 - `research/`: optional indexed folder for multiple focused research notes.
 - `prd.md`: optional short requirements brief for user-facing, ambiguous, or cross-team work.
-- `plan.md`: implementation-ready task plan.
+- `plan.md`: primary implementation-ready task plan.
+- `plans/`: optional indexed folder for multiple focused implementation plans.
 - `progress.md`: running implementation log, verification notes, blockers, and next actions.
 - `decisions/`: optional one-file-per-decision records when a decision should outlive chat context.
 
-Do not create empty support folders by default. Add `research/`, `decisions/`, or other subfolders only when they hold useful files.
+Do not create empty support folders by default. Add `research/`, `plans/`, `decisions/`, or other subfolders only when they hold useful files.
 
 ## Research Placement
 
@@ -55,7 +56,7 @@ Use work-local `research.md` when findings mainly explain this work item's imple
 
 ## Planning And Progress
 
-Work-local plans live at `plan.md` and use the canonical agent-work plan contract. A new implementation thread should update task checkboxes, append to `progress.md`, and refresh `index.md` when status, artifacts, or next action changes.
+Work-local plans live at `plan.md` or under `plans/` and use the canonical agent-work plan contract. A new implementation thread should update task checkboxes, append to `progress.md`, and refresh `index.md` when status, artifacts, or next action changes. When `plans/` exists, keep `index.md` pointed at the active plan file.
 
 One active implementation thread should own a work item at a time. If `progress.md` conflicts, preserve both entries in chronological order and recompute the current `index.md` summary.
 

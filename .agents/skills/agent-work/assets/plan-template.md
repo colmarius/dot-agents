@@ -1,6 +1,6 @@
 # Plan Template
 
-Use this template when creating `.agents/work/<category>/<work-slug>/plan.md`. Plans following this format are implementation-ready and easy to hand off to a fresh agent thread.
+Use this template when creating `.agents/work/<category>/<work-slug>/plan.md` or a focused plan under `.agents/work/<category>/<work-slug>/plans/<name>.md`. Plans following this format are implementation-ready and easy to hand off to a fresh agent thread.
 
 ## Template
 
@@ -78,8 +78,8 @@ Split a task if it cannot be described in 2-3 sentences or cannot be reviewed in
 
 Before asking for an implementation handoff prompt, confirm:
 
-- [ ] The plan lives at `.agents/work/<category>/<work-slug>/plan.md`.
-- [ ] `index.md` links the active plan and has the correct `Status:`.
+- [ ] The plan lives at `.agents/work/<category>/<work-slug>/plan.md` or `.agents/work/<category>/<work-slug>/plans/<name>.md`.
+- [ ] `index.md` links the active plan file and has the correct `Status:`.
 - [ ] Every task has `Scope`, `Depends on`, and verifiable `Acceptance`.
 - [ ] The next task or phase is clear.
 - [ ] External blockers and human-only steps are explicit.

@@ -16,8 +16,8 @@ Work Item → Context as needed → Plan → Handoff Prompt → Implement → Re
 ```
 
 1. **Work Item:** Create `.agents/work/<category>/<slug>/index.md` as the durable entrypoint.
-2. **Context:** Add `research.md` for technical facts or `prd.md` as a short requirements brief only when needed.
-3. **Plan:** Break work into implementation-ready tasks in `plan.md`.
+2. **Context:** Add `research.md` or `research/` for technical facts, or `prd.md` as a short requirements brief only when needed.
+3. **Plan:** Break work into implementation-ready tasks in the active plan file (`plan.md` by default, or `plans/<name>.md` for focused plans).
 4. **Handoff Prompt:** Generate a paste-ready prompt for a fresh implementation thread.
 5. **Progress:** Implementation threads update `progress.md`, task checkboxes, and `index.md`.
 
@@ -47,7 +47,7 @@ dot-agents/
 | `Run adapt` | Analyze project and fill in `AGENTS.md` sections |
 | `Create a new work item for ...` | Create durable `.agents/work/` context |
 | `Research ...` | Investigate and save work-local or reusable findings |
-| `Create/refine a plan for ...` | Produce implementation-ready `plan.md` tasks |
+| `Create/refine a plan for ...` | Produce implementation-ready tasks in the active plan file |
 | `Write a handoff prompt for ...` | Produce a paste-ready prompt for a new implementation thread |
 
 Skills are loaded via natural language. See each skill's `SKILL.md` in `.agents/skills/` for details.
@@ -60,7 +60,7 @@ Work items live under:
 .agents/work/<category>/<slug>/
 ```
 
-Every work item has `index.md` with status, category, updated date, artifact links, next action, and open questions. Optional files include `research.md`, `prd.md`, `plan.md`, `progress.md`, and `decisions/` records.
+Every work item has `index.md` with status, category, updated date, artifact links, next action, and open questions. Optional artifacts include `research.md`, `research/`, `prd.md`, `plan.md`, `plans/`, `progress.md`, and `decisions/` records.
 
 Legacy `.agents/plans/` and `.agents/prds/` paths may exist in older installs. Preserve legacy plan and PRD documents as user content, but allow sync to retire stale Ralph guidance/templates. Migrate one plan at a time into `.agents/work/` only when requested.
 
