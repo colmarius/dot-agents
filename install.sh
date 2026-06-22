@@ -600,6 +600,7 @@ cleanup_stale_claude_code_skill_symlinks() {
 }
 
 setup_claude_code_integration() {
+    local source_agents_skills_dir="${1:-.agents/skills}"
     local agents_skills_dir=".agents/skills"
     local claude_skills_dir=".claude/skills"
     local linked=0
@@ -607,6 +608,9 @@ setup_claude_code_integration() {
     local skill_dir skill_name dest link_target existing_target
 
     [[ -d ".claude" ]] || return 0
+    if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
+        agents_skills_dir="$source_agents_skills_dir"
+    fi
     [[ -d "$agents_skills_dir" ]] || return 0
 
     log_info ""
@@ -916,7 +920,7 @@ main() {
     ensure_gitignore_entry
 
     # Link dot-agents skills into Claude Code's project skill directory when present.
-    setup_claude_code_integration
+    setup_claude_code_integration "${extracted_dir}/.agents/skills"
 
     # Skip metadata write in diff-only mode
     if [[ "$DIFF_ONLY" != "true" ]]; then
@@ -962,7 +966,7 @@ main() {
         log_info ""
         log_info "${GREEN}Next steps:${NC}"
         log_info "  1. Run 'adapt' to customize AGENTS.md for your project"
-        log_info "  2. See QUICKSTART.md for workflow guidance"
+        log_info "  2. Read the quickstart: https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/main/QUICKSTART.md"
     fi
 
     # Show sync update hint on sync (not fresh install)

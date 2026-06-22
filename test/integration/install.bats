@@ -503,6 +503,31 @@ teardown() {
     [ ! -e ".claude/skills" ]
 }
 
+@test "--diff previews Claude Code skill links on fresh install without creating them" {
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "Claude Code skills linked"
+    assert_output --partial ".claude/skills/agent-work"
+    assert_output --partial "Pending changes:"
+
+    [ ! -e ".claude/skills" ]
+    [ ! -d ".agents" ]
+}
+
+@test "--dry-run previews Claude Code skill links on fresh install without creating them" {
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --dry-run
+    assert_success
+    assert_output --partial "Claude Code skills linked"
+    assert_output --partial ".claude/skills/agent-work"
+
+    [ ! -e ".claude/skills" ]
+    [ ! -d ".agents" ]
+}
+
 @test "--diff exits 1 for stale retired Ralph Claude Code symlink without removing it" {
     mkdir -p .claude
     bash "$INSTALL_SCRIPT" --yes
@@ -581,7 +606,7 @@ teardown() {
     # Should show next steps
     assert_output --partial "Next steps:"
     assert_output --partial "Run 'adapt'"
-    assert_output --partial "QUICKSTART.md"
+    assert_output --partial "https://github.com/colmarius/dot-agents/blob/main/QUICKSTART.md"
 }
 
 @test "sync does not show next steps guidance" {
