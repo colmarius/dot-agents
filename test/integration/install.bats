@@ -715,6 +715,20 @@ teardown() {
     assert_output "user file"
 }
 
+@test "install skips Claude Code integration when .claude/skills is user-owned symlink" {
+    mkdir -p .claude external-skills
+    ln -s ../external-skills .claude/skills
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial ".claude/skills (user-owned symlink)"
+    [ -L ".claude/skills" ]
+
+    run find external-skills -mindepth 1 -maxdepth 1 -print
+    assert_output ""
+}
+
 @test "install preserves existing Claude Code user skill directory" {
     mkdir -p .claude/skills/adapt
     echo "# User adapt skill" > .claude/skills/adapt/SKILL.md
@@ -754,6 +768,21 @@ teardown() {
     assert_success
 
     [ ! -L ".claude/skills/old-skill" ]
+}
+
+@test "sync preserves symlinked Claude Code skills directory" {
+    mkdir -p .claude external-skills
+    ln -s ../external-skills .claude/skills
+
+    bash "$INSTALL_SCRIPT" --yes
+    ln -s ../../.agents/skills/old-skill external-skills/old-skill
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial ".claude/skills (user-owned symlink)"
+    [ -L ".claude/skills" ]
+    [ -L "external-skills/old-skill" ]
 }
 
 @test "sync removes retired Ralph Claude Code skill symlink" {
@@ -825,4 +854,19 @@ teardown() {
     [ ! -L ".claude/skills/agent-work" ]
     [ ! -L ".claude/skills/feature-planning" ]
     [ -f ".claude/skills/my-custom-skill/SKILL.md" ]
+}
+
+@test "--uninstall preserves symlinked Claude Code skills directory" {
+    mkdir -p .claude external-skills
+    ln -s ../external-skills .claude/skills
+
+    bash "$INSTALL_SCRIPT" --yes
+    ln -s ../../.agents/skills/adapt external-skills/adapt
+
+    run bash "$INSTALL_SCRIPT" --uninstall --yes
+    assert_success
+
+    assert_output --partial ".claude/skills (user-owned symlink)"
+    [ -L ".claude/skills" ]
+    [ -L "external-skills/adapt" ]
 }

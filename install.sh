@@ -54,7 +54,7 @@ Examples:
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.3.0
 
   # Preview changes first
-  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --dry-run
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --diff
 
   # Force update (backup + overwrite)
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --force
@@ -222,6 +222,11 @@ remove_claude_code_skill_symlinks() {
 
     CLAUDE_SKILL_SYMLINKS_REMOVED=0
 
+    [[ -e "$claude_skills_dir" || -L "$claude_skills_dir" ]] || return 0
+    if [[ -L "$claude_skills_dir" ]]; then
+        log_info "${YELLOW}[SKIP]${NC} $claude_skills_dir (user-owned symlink)"
+        return 0
+    fi
     [[ -d "$claude_skills_dir" ]] || return 0
 
     for skill_link in "$claude_skills_dir"/*; do
@@ -570,6 +575,7 @@ cleanup_stale_claude_code_skill_symlinks() {
     local claude_skills_dir="$2"
     local skill_link skill_name
 
+    [[ ! -L "$claude_skills_dir" ]] || return 0
     [[ -d "$claude_skills_dir" ]] || return 0
 
     for skill_link in "$claude_skills_dir"/*; do
@@ -605,6 +611,11 @@ setup_claude_code_integration() {
 
     log_info ""
     log_info "Detected ${BLUE}.claude/${NC} directory — linking dot-agents skills for Claude Code..."
+
+    if [[ -L "$claude_skills_dir" ]]; then
+        log_info "  ${YELLOW}[SKIP]${NC} $claude_skills_dir (user-owned symlink)"
+        return 0
+    fi
 
     if [[ ( -e "$claude_skills_dir" || -L "$claude_skills_dir" ) && ! -d "$claude_skills_dir" ]]; then
         log_info "  ${YELLOW}[SKIP]${NC} $claude_skills_dir (user-owned)"
