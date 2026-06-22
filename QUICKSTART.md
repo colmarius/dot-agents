@@ -47,12 +47,21 @@ your-project/
         └── tmux/
 ```
 
+If the project already has a `.claude/` directory, dot-agents also links skills into `.claude/skills/` so Claude Code can discover them as project skills and invoke them with slash commands such as `/adapt`.
+
 ### Verify Installation
 
 **cmd:**
 ```bash
 ls -la .agents/
 cat AGENTS.md | head -20
+```
+
+For Claude Code projects, you can also check:
+
+**cmd:**
+```bash
+ls -la .claude/skills/
 ```
 
 ## 2. Adapt AGENTS.md

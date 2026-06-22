@@ -13,6 +13,7 @@
 ## Reference
 
 - [Skills](./skills.md)
+- [Claude Code Project Skill Discovery](./skills.md#claude-code-project-skill-discovery)
 - [AGENTS.md Template](../AGENTS.md)
 
 ## For Contributors
