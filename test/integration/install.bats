@@ -413,3 +413,101 @@ teardown() {
     # Should NOT report core skills (they're from upstream)
     refute_output --partial "Custom skills preserved:"
 }
+
+# ===== Task 6: Claude Code skill discovery tests =====
+
+@test "install creates Claude Code skill directory symlinks when .claude exists" {
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial "Claude Code skills linked"
+
+    [ -L ".claude/skills/adapt" ]
+    [ -L ".claude/skills/ralph" ]
+    [ -L ".claude/skills/research" ]
+    [ -L ".claude/skills/tmux" ]
+
+    local target
+    target="$(readlink .claude/skills/adapt)"
+    [ "$target" = "../../.agents/skills/adapt" ]
+
+    # Directory symlinks expose supporting skill files, not just SKILL.md.
+    [ -f ".claude/skills/ralph/references/progress-format.md" ]
+}
+
+@test "install does not create .claude when absent" {
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    [ ! -d ".claude" ]
+}
+
+@test "install skips Claude Code integration when .claude/skills is user-owned file" {
+    mkdir -p .claude
+    echo "user file" > .claude/skills
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial ".claude/skills (user-owned)"
+    run cat .claude/skills
+    assert_output "user file"
+}
+
+@test "install preserves existing Claude Code user skill directory" {
+    mkdir -p .claude/skills/adapt
+    echo "# User adapt skill" > .claude/skills/adapt/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial "SKIP"
+    assert_output --partial ".claude/skills/adapt (user-owned)"
+
+    [ ! -L ".claude/skills/adapt" ]
+    run cat .claude/skills/adapt/SKILL.md
+    assert_output "# User adapt skill"
+}
+
+@test "install preserves existing Claude Code user symlink" {
+    mkdir -p .claude/skills
+    ln -s ../../elsewhere/adapt .claude/skills/adapt
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial "user-owned symlink"
+
+    local target
+    target="$(readlink .claude/skills/adapt)"
+    [ "$target" = "../../elsewhere/adapt" ]
+}
+
+@test "sync removes stale dot-agents Claude Code skill symlinks" {
+    mkdir -p .claude
+
+    bash "$INSTALL_SCRIPT" --yes
+    ln -s ../../.agents/skills/old-skill .claude/skills/old-skill
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    [ ! -L ".claude/skills/old-skill" ]
+}
+
+@test "--uninstall removes only dot-agents Claude Code skill symlinks" {
+    mkdir -p .claude
+
+    bash "$INSTALL_SCRIPT" --yes
+    mkdir -p .claude/skills/my-custom-skill
+    echo "# My Custom" > .claude/skills/my-custom-skill/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --uninstall --yes
+    assert_success
+
+    [ ! -L ".claude/skills/adapt" ]
+    [ ! -L ".claude/skills/ralph" ]
+    [ -f ".claude/skills/my-custom-skill/SKILL.md" ]
+}

@@ -51,7 +51,7 @@ Examples:
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 
   # Install specific version
-  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.1.1
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.2.0
 
   # Preview changes first
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --dry-run
@@ -154,6 +154,9 @@ do_uninstall() {
 
     local removed=0
 
+    remove_claude_code_skill_symlinks
+    removed=$((removed + CLAUDE_SKILL_SYMLINKS_REMOVED))
+
     # Remove AGENTS.md
     if [[ -f "AGENTS.md" ]]; then
         if [[ "$DRY_RUN" == "true" ]]; then
@@ -189,6 +192,42 @@ skipped_count=0
 conflict_count=0
 backup_count=0
 BACKUP_DIR=""
+CLAUDE_SKILL_SYMLINKS_REMOVED=0
+
+is_dot_agents_claude_skill_symlink() {
+    local path="$1"
+    local link_target
+
+    [[ -L "$path" ]] || return 1
+    link_target="$(readlink "$path" 2>/dev/null || true)"
+    [[ "$link_target" == ../../.agents/skills/* ]]
+}
+
+remove_claude_code_skill_symlinks() {
+    local claude_skills_dir=".claude/skills"
+    local skill_link
+
+    CLAUDE_SKILL_SYMLINKS_REMOVED=0
+
+    [[ -d "$claude_skills_dir" ]] || return 0
+
+    for skill_link in "$claude_skills_dir"/*; do
+        [[ -L "$skill_link" ]] || continue
+        is_dot_agents_claude_skill_symlink "$skill_link" || continue
+
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_info "${RED}[REMOVE]${NC} $skill_link"
+        else
+            rm -f "$skill_link"
+            log_info "${RED}[REMOVE]${NC} $skill_link"
+        fi
+        CLAUDE_SKILL_SYMLINKS_REMOVED=$((CLAUDE_SKILL_SYMLINKS_REMOVED + 1))
+    done
+
+    if [[ "$DRY_RUN" != "true" ]]; then
+        rmdir "$claude_skills_dir" 2>/dev/null || true
+    fi
+}
 
 create_backup_dir() {
     if [[ -z "$BACKUP_DIR" ]]; then
@@ -428,6 +467,107 @@ report_custom_skills() {
     fi
 }
 
+cleanup_stale_claude_code_skill_symlinks() {
+    local agents_skills_dir="$1"
+    local claude_skills_dir="$2"
+    local skill_link skill_name
+
+    [[ -d "$claude_skills_dir" ]] || return 0
+
+    for skill_link in "$claude_skills_dir"/*; do
+        [[ -L "$skill_link" ]] || continue
+        is_dot_agents_claude_skill_symlink "$skill_link" || continue
+
+        skill_name="$(basename "$skill_link")"
+        [[ -f "$agents_skills_dir/$skill_name/SKILL.md" ]] && continue
+
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_info "  ${RED}[REMOVE]${NC} $skill_link (stale)"
+        else
+            rm -f "$skill_link"
+            log_info "  ${RED}[REMOVE]${NC} $skill_link (stale)"
+        fi
+    done
+}
+
+setup_claude_code_integration() {
+    local agents_skills_dir=".agents/skills"
+    local claude_skills_dir=".claude/skills"
+    local linked=0
+    local skipped=0
+    local skill_dir skill_name dest link_target existing_target
+
+    [[ -d ".claude" ]] || return 0
+    [[ -d "$agents_skills_dir" ]] || return 0
+
+    log_info ""
+    log_info "Detected ${BLUE}.claude/${NC} directory — linking dot-agents skills for Claude Code..."
+
+    if [[ ( -e "$claude_skills_dir" || -L "$claude_skills_dir" ) && ! -d "$claude_skills_dir" ]]; then
+        log_info "  ${YELLOW}[SKIP]${NC} $claude_skills_dir (user-owned)"
+        return 0
+    fi
+
+    if [[ "$DRY_RUN" != "true" ]]; then
+        if ! mkdir -p "$claude_skills_dir"; then
+            log_info "  ${YELLOW}[SKIP]${NC} $claude_skills_dir (could not create directory)"
+            return 0
+        fi
+    fi
+
+    for skill_dir in "$agents_skills_dir"/*/; do
+        [[ -d "$skill_dir" ]] || continue
+        [[ -f "$skill_dir/SKILL.md" ]] || continue
+
+        skill_name="$(basename "$skill_dir")"
+        dest="$claude_skills_dir/$skill_name"
+        link_target="../../.agents/skills/$skill_name"
+
+        if [[ -L "$dest" ]]; then
+            existing_target="$(readlink "$dest" 2>/dev/null || true)"
+            if [[ "$existing_target" == "$link_target" ]]; then
+                continue
+            fi
+            if is_dot_agents_claude_skill_symlink "$dest"; then
+                if [[ "$DRY_RUN" == "true" ]]; then
+                    log_info "  ${GREEN}[LINK]${NC} $dest → $link_target"
+                    linked=$((linked + 1))
+                    continue
+                fi
+                rm -f "$dest"
+            else
+                log_info "  ${YELLOW}[SKIP]${NC} $dest (user-owned symlink)"
+                skipped=$((skipped + 1))
+                continue
+            fi
+        elif [[ -e "$dest" ]]; then
+            log_info "  ${YELLOW}[SKIP]${NC} $dest (user-owned)"
+            skipped=$((skipped + 1))
+            continue
+        fi
+
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_info "  ${GREEN}[LINK]${NC} $dest → $link_target"
+            linked=$((linked + 1))
+            continue
+        fi
+
+        if ln -s "$link_target" "$dest"; then
+            log_info "  ${GREEN}[LINK]${NC} $dest"
+            linked=$((linked + 1))
+        else
+            log_info "  ${YELLOW}[SKIP]${NC} $dest (could not create symlink)"
+            skipped=$((skipped + 1))
+        fi
+    done
+
+    cleanup_stale_claude_code_skill_symlinks "$agents_skills_dir" "$claude_skills_dir"
+
+    if [[ $linked -gt 0 || $skipped -gt 0 ]]; then
+        log_info "  Claude Code skills linked: $linked, skipped: $skipped"
+    fi
+}
+
 ensure_gitignore_entry() {
     local gitignore_file=".agents/.gitignore"
     local backup_entry="../.dot-agents-backup/"
@@ -625,6 +765,11 @@ main() {
 
     # Ensure .agents/.gitignore includes backup directory
     ensure_gitignore_entry
+
+    # Link dot-agents skills into Claude Code's project skill directory when present.
+    if [[ "$DIFF_ONLY" != "true" ]]; then
+        setup_claude_code_integration
+    fi
 
     # Skip metadata write in diff-only mode
     if [[ "$DIFF_ONLY" != "true" ]]; then

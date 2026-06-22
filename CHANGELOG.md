@@ -8,6 +8,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-22
+
+### Added
+
+- Claude Code project skill discovery: when `.claude/` exists, install/sync links dot-agents skills into `.claude/skills/` so they can appear in Claude Code's `/` menu.
+
+### Fixed
+
+- Uninstall now removes dot-agents-managed Claude Code skill symlinks while preserving user-owned Claude Code skills.
+
 ## [0.1.1] - 2026-02-04
 
 ### Added
@@ -54,6 +64,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Installer skip logic now correctly includes plans/TEMPLATE.md
 - Postfix increment operators causing script exit on bash 5.3+ with `set -e` ([#1](https://github.com/colmarius/dot-agents/issues/1))
 
-[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/colmarius/dot-agents/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/colmarius/dot-agents/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/colmarius/dot-agents/releases/tag/v0.1.0

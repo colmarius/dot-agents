@@ -95,3 +95,14 @@ The `name` and `description` in the frontmatter are used for skill discovery. Th
 ### Preserving Custom Skills
 
 Custom skills in `.agents/skills/` are preserved during `sync.sh` updates. Only upstream skills (adapt, ralph, research, tmux) are updated—your custom skills remain untouched.
+
+## Claude Code Project Skill Discovery
+
+Claude Code discovers project skills in `.claude/skills/<skill>/SKILL.md`. dot-agents keeps `.agents/skills/` as the source of truth, so when `install.sh` or `sync.sh` detects an existing `.claude/` directory it creates directory symlinks such as:
+
+```text
+.claude/skills/adapt -> ../../.agents/skills/adapt
+.claude/skills/ralph -> ../../.agents/skills/ralph
+```
+
+Directory symlinks expose the whole skill, including optional supporting files like `references/` and `scripts/`. The installer skips user-owned Claude Code skills and only removes dot-agents-managed symlinks during uninstall.

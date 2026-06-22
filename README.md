@@ -11,7 +11,7 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 Pin a version:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v1.0.0
+curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.2.0
 ```
 
 ## Documentation
@@ -19,6 +19,10 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 - **[Quickstart](./QUICKSTART.md)** — Step-by-step guide from install to autonomous execution
 - **[Full Docs](./docs/README.md)** — Concepts, skills reference
 - **[Website](https://dot-agents.dev)** — Landing page (source: [site/](./site/))
+
+## Agent Support
+
+dot-agents works with any AI coding agent that reads markdown instructions. When a project already has a `.claude/` directory, install/sync also links dot-agents skills into `.claude/skills/` so Claude Code can discover them as project skills.
 
 ## Next Steps
 
