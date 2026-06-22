@@ -5,7 +5,7 @@ description: "Creates and curates .agents/work/ work items. Use for durable inde
 
 # Agent Work
 
-Create and maintain work items under `.agents/work/<category>/<work-slug>/` so research, PRDs, plans, progress, decisions, and handoff prompts stay together for one piece of multi-session work.
+Create and maintain work items under `.agents/work/<category>/<work-slug>/` so context, plans, progress, decisions, and handoff prompts stay together for one piece of multi-session work.
 
 A "work item" is a folder; the entries inside `plan.md` are the executable tasks.
 
@@ -20,7 +20,7 @@ A "work item" is a folder; the entries inside `plan.md` are the executable tasks
 3. **Place artifacts deliberately**
    - Use `research.md` for findings specific to this work item.
    - Use `.agents/research/` for reusable cross-work findings.
-   - Use `prd.md` only when requirements need durable alignment.
+   - Use `prd.md` as a short requirements brief only when alignment is needed.
    - Use `plan.md` for implementation-ready tasks; copy `.agents/skills/agent-work/assets/plan-template.md` as a starting point.
    - Use `progress.md` for implementation notes, verification results, blockers, and next action.
    - Add `decisions/` only when durable decision records are worth linking.
@@ -85,7 +85,7 @@ When the user asks to migrate one legacy plan:
 
 - `assets/work-index-template.md`: starting point for `index.md`
 - `assets/plan-template.md`: implementation-ready `plan.md` contract
-- `assets/prd-template.md`: optional `prd.md` structure
+- `assets/prd-template.md`: optional requirements brief (`prd.md`) structure
 - `assets/work-decision-template.md`: optional decision record template
 
 ## Verification

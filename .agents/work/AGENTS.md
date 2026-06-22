@@ -10,7 +10,7 @@ Each work item lives at:
 .agents/work/<category>/<work-slug>/
 ```
 
-Use work items for multi-session work where research, requirements, plans, progress, decisions, and handoff prompts should stay together. Keep `.agents/research/` for reusable cross-work findings.
+Use work items for multi-session work where context, plans, progress, decisions, and handoff prompts should stay together. Keep `.agents/research/` for reusable cross-work findings.
 
 A work item is a *container of tasks*; the task checklist lives inside `plan.md`.
 
@@ -42,7 +42,7 @@ Read `index.md` first when entering a work item, then load only the artifacts ne
 - `index.md`: required work-item landing page and current summary.
 - `research.md`: work-local synthesis when investigation mainly supports this work item.
 - `research/`: optional indexed folder for multiple focused research notes.
-- `prd.md`: optional requirements document for user-facing, ambiguous, or cross-team work.
+- `prd.md`: optional short requirements brief for user-facing, ambiguous, or cross-team work.
 - `plan.md`: implementation-ready task plan.
 - `progress.md`: running implementation log, verification notes, blockers, and next actions.
 - `decisions/`: optional one-file-per-decision records when a decision should outlive chat context.
@@ -65,4 +65,4 @@ When preparing a new implementation thread, ask for a paste-ready handoff prompt
 
 ## Decisions
 
-Create a file under `decisions/` only when a decision would otherwise be repeated across research, PRD, plan, and chat. Link to the decision file from other artifacts instead of restating the full rationale.
+Create a file under `decisions/` only when a decision would otherwise be repeated across research, requirements brief, plan, and chat. Link to the decision file from other artifacts instead of restating the full rationale.

@@ -16,11 +16,11 @@
 ## Workflow
 
 ```text
-Work Item → Research/PRD as needed → Plan → Handoff Prompt → Implement → Record Progress
+Work Item → Context as needed → Plan → Handoff Prompt → Implement → Record Progress
 ```
 
 1. **Work Item:** Create durable context in `.agents/work/<category>/<slug>/`.
-2. **Research/PRD:** Save task-specific findings and requirements beside the work item.
+2. **Context:** Add `research.md` for technical facts or `prd.md` as a short requirements brief only when needed.
 3. **Plan:** Break work into implementation-ready tasks in `plan.md`.
 4. **Handoff Prompt:** Generate a paste-ready prompt for a fresh implementation thread.
 5. **Progress:** Implementation threads update `progress.md`, task checkboxes, and `index.md`.
@@ -79,7 +79,7 @@ Updated: YYYY-MM-DD
 Use optional files only when useful:
 
 - `research.md` - work-specific investigation notes
-- `prd.md` - requirements when alignment is needed
+- `prd.md` - short requirements brief when alignment is needed
 - `plan.md` - implementation-ready task checklist
 - `progress.md` - implementation log, verification, blockers, and next action
 - `decisions/` - durable decision records

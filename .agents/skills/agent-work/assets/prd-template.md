@@ -1,15 +1,21 @@
-# PRD Template
+# Requirements Brief Template
 
-Use this template when work needs requirements alignment before implementation. For small, scoped changes with clear acceptance criteria, create `plan.md` directly instead.
+Use this template only when work needs durable requirements alignment before planning. For small, scoped changes with clear behavior and acceptance criteria, create `plan.md` directly instead.
+
+Keep this brief. If technical discovery dominates, use `research.md` instead.
 
 ## Template
 
 ```markdown
-# [Feature Name] PRD
+# [Work Item] Requirements Brief
 
-## Problem Statement
+## Problem
 
 What problem are we solving? Why now?
+
+## Desired Outcome
+
+What should be true when this is done?
 
 ## Goals
 
@@ -31,7 +37,7 @@ What problem are we solving? Why now?
 - [ ] Requirement 1
 - [ ] Requirement 2
 
-### Nice to Have
+### Optional
 
 - [ ] Optional requirement
 
@@ -45,11 +51,6 @@ What problem are we solving? Why now?
 - Criterion 1
 - Criterion 2
 
-## Verification / Rollout
-
-- How this should be verified
-- Rollout guardrails or follow-up checks
-
 ## Open Questions
 
 - [ ] Question that materially affects scope, sequence, or architecture
@@ -57,4 +58,4 @@ What problem are we solving? Why now?
 
 ## Handoff To Planning
 
-Once the PRD is approved, create `plan.md` in the same work item using the [agent-work plan template](plan-template.md). Do not create new `.agents/plans/` files.
+Once the brief is aligned, create `plan.md` in the same work item using the [agent-work plan template](plan-template.md). Do not create new `.agents/plans/` files.

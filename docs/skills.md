@@ -42,11 +42,11 @@ Use it to create work items, list active work, place artifacts deliberately, and
 
 ## feature-planning
 
-Turns research and requirements into implementation-ready plans and paste-ready handoff prompts.
+Turns work-item context into implementation-ready plans and paste-ready handoff prompts.
 
 Use it to:
 
-- Create or refine `prd.md`
+- Create or refine a short requirements brief (`prd.md`) only when alignment is needed
 - Create or refine `plan.md`
 - Validate stale assumptions before implementation
 - Generate a new-thread handoff prompt

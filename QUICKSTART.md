@@ -83,15 +83,21 @@ The work item starts at:
 .agents/work/feature/user-authentication/index.md
 ```
 
-## 4. Research and Plan
+## 4. Add Context Only If Needed, Then Plan
 
-Ask for work-local research:
+If the unknowns are technical, ask for work-local research:
 
 ```text
 Research authentication patterns for this work item.
 ```
 
-Then ask for a plan:
+If the desired behavior is ambiguous, ask for a short requirements brief:
+
+```text
+Create a short requirements brief for this work item.
+```
+
+If the goal is already clear, skip extra context and ask for a plan:
 
 ```text
 Create an implementation-ready plan in .agents/work/feature/user-authentication/plan.md.

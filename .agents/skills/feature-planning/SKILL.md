@@ -1,25 +1,24 @@
 ---
 name: feature-planning
-description: "Turns research and PRDs into implementation-ready plans and paste-ready handoff prompts. Use for planning, plan refinement, and new-thread prompts. Triggers on: plan, PRD, feature planning, handoff prompt, stress-test design."
+description: "Turns work-item context into plans and paste-ready handoff prompts. Use for planning, requirements briefs, plan refinement, and new-thread prompts. Triggers on: plan, requirements, PRD, feature planning, handoff prompt."
 ---
 
 # Feature Planning
 
-Manage work-item planning from rough intent through PRD, implementation-ready plan, and paste-ready prompt for a fresh implementation thread.
+Manage work-item planning from rough intent through optional context, implementation-ready plan, and paste-ready prompt for a fresh implementation thread.
 
 ## Workflow Overview
 
 ```text
-Work Item → Research/PRD as needed → Plan → Refine → Handoff Prompt → Implement → Record Progress
+Work Item → Context as needed → Plan → Refine → Handoff Prompt → Implement → Record Progress
 ```
 
 1. **Work item**: Use `agent-work` to create or locate `.agents/work/<category>/<work-slug>/`.
-2. **Research**: Save task-specific findings in the work item and reusable findings in `.agents/research/`.
-3. **PRD**: Create `prd.md` only when requirements need durable alignment.
-4. **Plan**: Create or update `plan.md` with scoped tasks, dependencies, and acceptance criteria.
-5. **Refine**: Validate assumptions against current repo reality before implementation.
-6. **Handoff prompt**: Produce a paste-ready prompt for the next implementation thread.
-7. **Progress**: The implementation thread updates task checkboxes, `progress.md`, and `index.md`.
+2. **Context**: Add `research.md` for technical facts or `prd.md` as a short requirements brief only when needed.
+3. **Plan**: Create or update `plan.md` with scoped tasks, dependencies, and acceptance criteria.
+4. **Refine**: Validate assumptions against current repo reality before implementation.
+5. **Handoff prompt**: Produce a paste-ready prompt for the next implementation thread.
+6. **Progress**: The implementation thread updates task checkboxes, `progress.md`, and `index.md`.
 
 ## Plan Locations
 
@@ -36,11 +35,11 @@ New plans live inside work items:
 
 Legacy standalone plan and PRD documents are user content. Migrate one at a time into `.agents/work/` only when requested. Retired Ralph guidance/templates may be backed up and removed by sync.
 
-## PRD Guidance
+## Requirements Brief Guidance
 
-Create `prd.md` when work is user-facing, ambiguous, cross-team, or likely to span multiple sessions. Use the [agent-work PRD template](../agent-work/assets/prd-template.md).
+Most work does not need a PRD. Create `prd.md` only when the missing context is requirements alignment: users, behavior, goals, non-goals, acceptance, rollout, or stakeholder decisions. Use the [agent-work requirements brief template](../agent-work/assets/prd-template.md).
 
-Skip the PRD for small scoped fixes when the desired behavior and acceptance criteria are already clear.
+Use `research.md` for technical discovery. If acceptance criteria fit naturally in `plan.md`, skip `prd.md`.
 
 ## Plan Guidance
 
@@ -59,7 +58,7 @@ For larger work, prefer an early thin slice that proves the end-to-end path befo
 Use this before writing a handoff prompt when work is multi-phase, ambiguous, or stale.
 
 1. Read the work item's `index.md` and active `plan.md`.
-2. Read relevant `research.md`, `prd.md`, and decisions only as needed.
+2. Read relevant `research.md`, requirements brief (`prd.md`), and decisions only as needed.
 3. Validate key assumptions against current code, dependencies, and test setup.
 4. Resolve material open questions with repo evidence where possible; ask the user only for decisions the repo cannot answer.
 5. If a planned task is already satisfied, record evidence and update the plan instead of creating no-op work.
