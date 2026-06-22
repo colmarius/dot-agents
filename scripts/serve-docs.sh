@@ -9,7 +9,7 @@
 #   ./scripts/serve-docs.sh --docs   # Serve docs on port 8000
 #
 
-set -e
+set -euo pipefail
 
 PORT="8000"
 DIR="site"

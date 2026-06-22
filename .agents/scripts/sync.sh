@@ -54,9 +54,9 @@ All options are passed through to the upstream install.sh script.
 
 Options:
   --dry-run         Show what would happen without making changes
-  --diff            Show unified diff for conflicts instead of overwriting
+  --diff            Preview pending changes without writing; exit 1 if pending
   --force           Overwrite conflicts (creates backup first)
-  --write-conflicts Create .dot-agents.md/.dot-agents.new files for conflicts
+  --write-conflicts Create file.dot-agents.md/file.ext.dot-agents.new conflicts
   --interactive     Prompt for each conflict
   --yes             Skip confirmation prompts
   --version         Show version and installation info

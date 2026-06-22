@@ -352,6 +352,18 @@ teardown() {
     [ -f ".agents/skills/research/SKILL.dot-agents.md" ]
 }
 
+@test "--write-conflicts creates .dot-agents.new files for non-Markdown conflicts" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    printf '# Custom ignore\n.dot-agents-backup/\n' > .agents/.gitignore
+
+    run bash "$INSTALL_SCRIPT" --write-conflicts --yes
+    assert_success
+    assert_output --partial "CONFLICT"
+
+    [ -f ".agents/.gitignore.dot-agents.new" ]
+}
+
 @test "sync defaults to force mode (overwrites with backup)" {
     # First install
     bash "$INSTALL_SCRIPT" --yes
@@ -466,6 +478,45 @@ teardown() {
 
     [ -f ".agents/prds/AGENTS.md" ]
     [ ! -d ".agents/.dot-agents-backup" ]
+}
+
+@test "--diff counts .agents/.gitignore once when the file is missing" {
+    bash "$INSTALL_SCRIPT" --yes
+    rm .agents/.gitignore
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "./.agents/.gitignore (would install)"
+    assert_output --partial "Pending changes: 1"
+}
+
+@test "--diff exits 1 for pending Claude Code skill links without creating them" {
+    bash "$INSTALL_SCRIPT" --yes
+    mkdir -p .claude
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "Claude Code skills linked"
+    assert_output --partial ".claude/skills/agent-work"
+    assert_output --partial "Pending changes:"
+
+    [ ! -e ".claude/skills" ]
+}
+
+@test "--diff exits 1 for stale retired Ralph Claude Code symlink without removing it" {
+    mkdir -p .claude
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/skills/ralph
+    echo "# Legacy Ralph" > .agents/skills/ralph/SKILL.md
+    ln -s ../../.agents/skills/ralph .claude/skills/ralph
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial ".claude/skills/ralph (stale)"
+    assert_output --partial "Pending changes:"
+
+    [ -L ".claude/skills/ralph" ]
 }
 
 @test "clean sync does not create backup for generated metadata" {
@@ -738,6 +789,26 @@ teardown() {
     backup_file=$(find .agents/.dot-agents-backup -path '*/.agents/skills/ralph/SKILL.md' -type f | head -1)
     run cat "$backup_file"
     assert_output "# Legacy Ralph"
+}
+
+@test "sync backs up symlinked retired ralph core skill without following it" {
+    bash "$INSTALL_SCRIPT" --yes
+    ln -s ../missing-ralph .agents/skills/ralph
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    assert_output --partial "retired core skill"
+    assert_output --partial "BACKUP"
+    [ ! -L ".agents/skills/ralph" ]
+
+    local backup_link
+    backup_link=$(find .agents/.dot-agents-backup -path '*/.agents/skills/ralph' -type l | head -1)
+    [ -n "$backup_link" ]
+
+    local target
+    target="$(readlink "$backup_link")"
+    [ "$target" = "../missing-ralph" ]
 }
 
 @test "--uninstall removes only dot-agents Claude Code skill symlinks" {

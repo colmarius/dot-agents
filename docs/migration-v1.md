@@ -25,6 +25,8 @@ Existing legacy plan and PRD documents, `.agents/research/`, and legacy `.agents
 
 v0.3.0 does not ship a Ralph compatibility layer, alias, or stub skill. Pin to `v0.2.0` only if you need the old runner workflow for an existing project.
 
+Use `--diff` before syncing to preview pending installs, updates, removals, and conflicts without modifying files; it exits non-zero when any change is pending. Use `--write-conflicts` to write conflicts beside the original: Markdown conflicts use `file.dot-agents.md`, while other files use `file.ext.dot-agents.new`.
+
 The preferred external-reference path is now `.agents/references/`. Existing `.agents/reference/` checkouts remain ignored so large local clones are not accidentally committed. Rename them manually when convenient.
 
 ## Migrate One Legacy Plan

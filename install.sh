@@ -36,9 +36,9 @@ Install dot-agents into the current project.
 
 Options:
   --dry-run         Show what would happen without making changes
-  --diff            Show unified diff for conflicts instead of overwriting
+  --diff            Preview pending changes without writing; exit 1 if pending
   --force           Overwrite conflicts (creates backup first, default on sync)
-  --write-conflicts Create .dot-agents.md/.dot-agents.new files for conflicts
+  --write-conflicts Create file.dot-agents.md/file.ext.dot-agents.new conflicts
   --ref <ref>       Git ref to install (branch, tag, commit). Default: main
   --yes             Skip confirmation prompts
   --uninstall       Remove dot-agents
@@ -194,6 +194,18 @@ pending_change_count=0
 backup_count=0
 BACKUP_DIR=""
 CLAUDE_SKILL_SYMLINKS_REMOVED=0
+AGENTS_GITIGNORE_PENDING=false
+
+is_agents_gitignore_path() {
+    local path="${1#./}"
+    [[ "$path" == ".agents/.gitignore" ]]
+}
+
+mark_agents_gitignore_pending() {
+    if is_agents_gitignore_path "$1"; then
+        AGENTS_GITIGNORE_PENDING=true
+    fi
+}
 
 is_dot_agents_claude_skill_symlink() {
     local path="$1"
@@ -271,6 +283,8 @@ backup_item() {
         mkdir -p "$backup_dir"
         if [[ -d "$path" && ! -L "$path" ]]; then
             cp -Rp "$path" "$backup_path"
+        elif [[ -L "$path" ]]; then
+            cp -Pp "$path" "$backup_path"
         else
             cp -p "$path" "$backup_path"
         fi
@@ -446,6 +460,19 @@ CORE_SKILLS="adapt agent-work feature-planning research tmux"
 RETIRED_CORE_SKILLS="ralph"
 RETIRED_LEGACY_GUIDANCE_FILES=".agents/plans/AGENTS.md .agents/prds/AGENTS.md .agents/plans/TEMPLATE.md .agents/prds/TEMPLATE.md"
 
+is_retired_core_skill() {
+    local skill_name="$1"
+    local retired
+
+    for retired in $RETIRED_CORE_SKILLS; do
+        if [[ "$skill_name" == "$retired" ]]; then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
 detect_custom_skills() {
     local skills_dir=".agents/skills"
     local custom_skills=()
@@ -550,10 +577,15 @@ cleanup_stale_claude_code_skill_symlinks() {
         is_dot_agents_claude_skill_symlink "$skill_link" || continue
 
         skill_name="$(basename "$skill_link")"
-        [[ -f "$agents_skills_dir/$skill_name/SKILL.md" ]] && continue
+        if [[ -f "$agents_skills_dir/$skill_name/SKILL.md" ]] && ! is_retired_core_skill "$skill_name"; then
+            continue
+        fi
 
-        if [[ "$DRY_RUN" == "true" ]]; then
+        if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
             log_info "  ${RED}[REMOVE]${NC} $skill_link (stale)"
+            if [[ "$DIFF_ONLY" == "true" ]]; then
+                pending_change_count=$((pending_change_count + 1))
+            fi
         else
             rm -f "$skill_link"
             log_info "  ${RED}[REMOVE]${NC} $skill_link (stale)"
@@ -579,7 +611,7 @@ setup_claude_code_integration() {
         return 0
     fi
 
-    if [[ "$DRY_RUN" != "true" ]]; then
+    if [[ "$DRY_RUN" != "true" && "$DIFF_ONLY" != "true" ]]; then
         if ! mkdir -p "$claude_skills_dir"; then
             log_info "  ${YELLOW}[SKIP]${NC} $claude_skills_dir (could not create directory)"
             return 0
@@ -591,6 +623,10 @@ setup_claude_code_integration() {
         [[ -f "$skill_dir/SKILL.md" ]] || continue
 
         skill_name="$(basename "$skill_dir")"
+        if is_retired_core_skill "$skill_name"; then
+            continue
+        fi
+
         dest="$claude_skills_dir/$skill_name"
         link_target="../../.agents/skills/$skill_name"
 
@@ -600,9 +636,12 @@ setup_claude_code_integration() {
                 continue
             fi
             if is_dot_agents_claude_skill_symlink "$dest"; then
-                if [[ "$DRY_RUN" == "true" ]]; then
-                    log_info "  ${GREEN}[LINK]${NC} $dest → $link_target"
+                if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
+                    log_info "  ${GREEN}[LINK]${NC} $dest → $link_target (preview only)"
                     linked=$((linked + 1))
+                    if [[ "$DIFF_ONLY" == "true" ]]; then
+                        pending_change_count=$((pending_change_count + 1))
+                    fi
                     continue
                 fi
                 rm -f "$dest"
@@ -617,9 +656,12 @@ setup_claude_code_integration() {
             continue
         fi
 
-        if [[ "$DRY_RUN" == "true" ]]; then
-            log_info "  ${GREEN}[LINK]${NC} $dest → $link_target"
+        if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
+            log_info "  ${GREEN}[LINK]${NC} $dest → $link_target (preview only)"
             linked=$((linked + 1))
+            if [[ "$DIFF_ONLY" == "true" ]]; then
+                pending_change_count=$((pending_change_count + 1))
+            fi
             continue
         fi
 
@@ -644,6 +686,10 @@ ensure_gitignore_entry() {
     local backup_entry=".dot-agents-backup/"
 
     if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
+        if [[ "$DIFF_ONLY" == "true" && "$AGENTS_GITIGNORE_PENDING" == "true" ]]; then
+            return 0
+        fi
+
         if [[ ! -f "$gitignore_file" ]]; then
             log_info "  ${GREEN}[CREATE]${NC} $gitignore_file"
             if [[ "$DIFF_ONLY" == "true" ]]; then
@@ -680,6 +726,7 @@ install_file() {
             log_install "$dest (would install)"
             installed_count=$((installed_count + 1))
             pending_change_count=$((pending_change_count + 1))
+            mark_agents_gitignore_pending "$dest"
             return 0
         fi
 
@@ -739,6 +786,7 @@ install_file() {
         echo ""
         conflict_count=$((conflict_count + 1))
         pending_change_count=$((pending_change_count + 1))
+        mark_agents_gitignore_pending "$dest"
         return 0
     fi
 
@@ -857,9 +905,7 @@ main() {
     ensure_gitignore_entry
 
     # Link dot-agents skills into Claude Code's project skill directory when present.
-    if [[ "$DIFF_ONLY" != "true" ]]; then
-        setup_claude_code_integration
-    fi
+    setup_claude_code_integration
 
     # Skip metadata write in diff-only mode
     if [[ "$DIFF_ONLY" != "true" ]]; then

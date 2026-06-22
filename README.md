@@ -53,8 +53,8 @@ The installer copies `AGENTS.template.md` → `AGENTS.md` on fresh install only.
 | Flag | Behavior |
 | --- | --- |
 | default | Overwrite upstream-owned conflicts with backup during sync |
-| `--diff` | Preview changes without modifying files |
-| `--write-conflicts` | Create `.dot-agents.md` or `.dot-agents.new` files for manual review |
+| `--diff` | Preview pending installs, updates, removals, and conflicts without modifying files; exits 1 if any change is pending |
+| `--write-conflicts` | Create conflict files for manual review: Markdown writes `file.dot-agents.md`; other files write `file.ext.dot-agents.new` |
 | `--dry-run` | Show what would happen without changes |
 
 ## Versioning

@@ -36,6 +36,7 @@ A "work item" is a folder; the entries inside `plan.md` are the executable tasks
 
 - Canonical path: `.agents/work/<category>/<work-slug>/`
 - Category values: `feature`, `bugfix`, `tech-debt`, `docs`, `tooling`, `research`, `other`
+- Categories are intentionally closed; use `other` when none fit.
 - Required file: `index.md`
 - Status values: `researching`, `planned`, `in-progress`, `blocked`, `completed`
 - Optional files: `research.md`, `prd.md`, `plan.md`, `progress.md`
