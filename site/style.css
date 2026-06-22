@@ -3,7 +3,7 @@
   --bg-secondary: #12121a;
   --bg-card: #16161f;
   --text: #e8e8ed;
-  --text-muted: #8b8b9e;
+  --text-muted: #a0a0b4;
   --accent: #00d9ff;
   --accent-glow: rgba(0, 217, 255, 0.15);
   --border: #2a2a3a;
@@ -164,7 +164,7 @@ header {
 .terminal-dot.green { background: #27c93f; }
 
 .code-block pre {
-  padding: 1.25rem 3.5rem 1.25rem 1.25rem;
+  padding: 1.25rem 4.75rem 1.25rem 1.25rem;
   font-family: "SF Mono", "Fira Code", "Consolas", monospace;
   font-size: 0.9rem;
   line-height: 1.6;
