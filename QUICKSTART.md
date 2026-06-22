@@ -17,9 +17,13 @@ Get productive with dot-agents in 5 minutes.
 
 ## 1. Install
 
+Run the installer from the root of the repository you want to equip with dot-agents:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 ```
+
+Fresh installs create `AGENTS.md` and `.agents/`. Re-running the installer later updates dot-agents while preserving work items, research, and your customized `AGENTS.md`.
 
 ### What Gets Installed
 
@@ -60,13 +64,23 @@ Run adapt
 
 This analyzes your project and fills in the `AGENTS.md` template with tech stack, commands, and conventions. You can also customize it manually.
 
+If your agent does not auto-discover skills, tell it:
+
+```text
+Read .agents/skills/adapt/SKILL.md and follow it.
+```
+
 ## 3. Create a Work Item
+
+Use work items for multi-session or context-heavy work. For a tiny one-shot edit, you may not need one.
 
 Ask your agent:
 
 ```text
 Create a new work item for user authentication.
 ```
+
+If your agent does not auto-discover skills, tell it to read `.agents/skills/agent-work/SKILL.md` first.
 
 Or run the helper directly:
 
@@ -82,6 +96,16 @@ The work item starts at:
 ```text
 .agents/work/feature/user-authentication/index.md
 ```
+
+A minimal work item looks like:
+
+```text
+.agents/work/feature/user-authentication/
+├── index.md      # status, summary, next action
+└── plan.md       # added when you ask for a plan
+```
+
+Future threads start by reading `index.md`, then load only the plan, research, or progress they need.
 
 ## 4. Add Context Only If Needed, Then Plan
 
@@ -125,8 +149,12 @@ List active work:
 
 Then ask for a continuation prompt from the next action in the work item.
 
-## Legacy Plans and PRDs
+## Outcome
 
-Older dot-agents installs used `.agents/plans/` and `.agents/prds/`. Legacy plan and PRD documents are preserved on sync, while retired Ralph guidance/templates are backed up and removed. Migrate one plan at a time into `.agents/work/<category>/<slug>/` when you need to resume it.
+At the end of the quickstart, you have a work item with a current next action and a paste-ready prompt for a fresh implementation thread.
+
+## Upgrading from v0.2?
+
+See the [v0.3 migration guide](./docs/migration-v0.3.md) for legacy `.agents/plans/` and `.agents/prds/` projects.
 
 **Next:** [Concepts](./docs/concepts.md) · [Skills Reference](./docs/skills.md) · [dot-agents.dev](https://dot-agents.dev)

@@ -4,6 +4,8 @@ AI-ready `.agents/` workspace for any project — durable work items, reusable r
 
 ## Install
 
+Run the installer from the root of the repository you want to equip with dot-agents:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 ```
@@ -23,6 +25,8 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 ## Agent Support
 
 dot-agents works with any AI coding agent that reads Markdown instructions. When a project already has a `.claude/` directory, install/sync also links dot-agents skills into `.claude/skills/` so Claude Code can discover them as project skills.
+
+If an agent does not auto-discover skills, ask it to read the relevant `.agents/skills/<skill>/SKILL.md` file before starting that workflow.
 
 ## Next Steps
 

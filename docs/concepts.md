@@ -13,6 +13,8 @@ Work Item → Context as needed → Plan → Handoff Prompt → Implement → Re
 5. **Implement:** Paste the prompt into the new thread and let that agent do the scoped work.
 6. **Record Progress:** Update `progress.md`, active plan task checkboxes, and `index.md` so future threads can resume.
 
+Use work items for multi-session or context-heavy work. For a tiny one-shot edit, you may not need one.
+
 Context is optional. Use `research.md` when the question is "what is true?" Use `research/` when multiple focused research notes are useful. Use `prd.md` as a requirements brief when the question is "what should be true?" Skip both when the plan can state the goal and acceptance criteria clearly.
 
 ## Work Item Shape
@@ -31,6 +33,32 @@ Context is optional. Use `research.md` when the question is "what is true?" Use 
 
 Create optional files only when they hold useful context. The required `index.md` should stay short and point to the current next action.
 Create optional folders like `research/`, `plans/`, and `decisions/` only when they contain useful files.
+
+## Example Work Item
+
+```text
+.agents/work/feature/user-authentication/
+├── index.md      # status, summary, next action
+└── plan.md       # implementation tasks, when useful
+```
+
+```markdown
+# User authentication
+
+Status: planned
+Category: feature
+Updated: 2026-06-22
+
+## Summary
+
+Add auth flows and session persistence.
+
+## Next Action
+
+Implement Task 1 from plan.md.
+```
+
+New threads start by reading `index.md`, then load only the plan, research, or progress they need.
 
 ## Handoff Prompts
 

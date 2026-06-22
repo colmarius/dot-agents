@@ -45,6 +45,7 @@
       </section>
 
       <section id="install" class="install">
+        <p class="install-note">Run from your repo root. Fresh installs create <code>AGENTS.md</code> and <code>.agents/</code>; syncs later preserve your work items, research, and customized project instructions.</p>
         <div class="code-block">
           <div class="code-header">
             <span class="terminal-dot red"></span>
@@ -72,7 +73,33 @@
     ├── skills/      <span class="tree-comment"># adapt, work items, planning, research</span>
     └── scripts/     <span class="tree-comment"># sync updates safely</span></code></pre>
         </div>
-        <p class="section-intro">Re-run the installer later to update dot-agents while preserving your work items, research, and customized <code>AGENTS.md</code>.</p>
+        <p class="section-intro">Use work items for multi-session or context-heavy work. Tiny one-shot edits may not need one.</p>
+      </section>
+
+      <section id="example-work-item" class="example-work-item">
+        <h2>Example work item</h2>
+        <p class="section-intro">After asking <code>Create a new work item for user authentication</code>, future threads have a durable starting point.</p>
+        <div class="example-grid">
+          <div class="code-block tree-block">
+            <pre><code>.agents/work/feature/user-authentication/
+├── index.md      <span class="tree-comment"># status, summary, next action</span>
+└── plan.md       <span class="tree-comment"># implementation tasks, when useful</span></code></pre>
+          </div>
+          <div class="code-block tree-block">
+            <pre><code># User authentication
+
+Status: planned
+Category: feature
+Updated: 2026-06-22
+
+## Summary
+Add auth flows and session persistence.
+
+## Next Action
+Implement Task 1 from plan.md.</code></pre>
+          </div>
+        </div>
+        <p class="section-intro">A new thread starts by reading <code>index.md</code>, then loads only the plan, research, or progress it needs.</p>
       </section>
 
       <section id="how-it-works" class="how-it-works">
@@ -81,19 +108,15 @@
         <div class="command-list">
           <div class="command-row">
             <code>Run adapt</code>
-            <span>Fill in <code>AGENTS.md</code> with project commands, structure, and conventions.</span>
+            <span>Adapt once by filling <code>AGENTS.md</code> with project commands, structure, and conventions.</span>
           </div>
           <div class="command-row">
             <code>Create a new work item for ...</code>
             <span>Start durable context under <code>.agents/work/&lt;category&gt;/&lt;slug&gt;/</code>.</span>
           </div>
           <div class="command-row">
-            <code>Research ...</code>
-            <span>Capture technical facts only when they are needed.</span>
-          </div>
-          <div class="command-row">
-            <code>Create/refine a plan for ...</code>
-            <span>Turn context into implementation-ready tasks with acceptance criteria.</span>
+            <code>Add only needed context</code>
+            <span>Ask for research, a short requirements brief, or an implementation plan only when it helps.</span>
           </div>
           <div class="command-row">
             <code>Write a handoff prompt for ...</code>

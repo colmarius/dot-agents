@@ -140,8 +140,27 @@ header {
   margin: 1rem 0 3rem;
 }
 
+.install-note {
+  max-width: 640px;
+  margin: 0 auto 1rem;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  text-align: center;
+}
+
+.install-note code {
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  font-size: 0.875rem;
+  color: var(--text);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.15rem 0.35rem;
+}
+
 .code-block {
   position: relative;
+  max-width: 100%;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -179,6 +198,7 @@ header {
   font-size: 0.9rem;
   line-height: 1.6;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .code-block code {
@@ -246,12 +266,15 @@ header {
 }
 
 .install-hint code {
+  display: inline-block;
+  max-width: 100%;
   font-family: "SF Mono", "Fira Code", "Consolas", monospace;
   font-size: 0.8125rem;
   background: var(--bg-secondary);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   border: 1px solid var(--border);
+  overflow-wrap: anywhere;
 }
 
 .section-intro {
@@ -273,16 +296,25 @@ header {
 }
 
 /* What you get */
-.what-you-get {
+.what-you-get,
+.example-work-item {
   margin: 2rem 0 3rem;
   text-align: center;
 }
 
-.what-you-get h2 {
+.what-you-get h2,
+.example-work-item h2 {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
   color: var(--text-muted);
+}
+
+.example-grid {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 720px;
+  margin: 0 auto 1rem;
 }
 
 .tree-block {
@@ -441,5 +473,14 @@ footer a:hover {
 
   .code-block pre {
     font-size: 0.8rem;
+  }
+
+  .tree-comment {
+    display: none;
+  }
+
+  .tree-block pre {
+    padding: 1rem;
+    font-size: 0.75rem;
   }
 }
