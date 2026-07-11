@@ -8,6 +8,7 @@ Skills are specialized instructions that agents load for specific workflows. dot
 | --- | --- | --- |
 | [adapt](#adapt) | `Run adapt` | Analyze project, fill in `AGENTS.md` |
 | [agent-work](#agent-work) | `Create a work item` | Create and maintain `.agents/work/` context |
+| [documentation](#documentation) | `Run a documentation scan` | Discover, assess, and maintain canonical project docs |
 | [feature-planning](#feature-planning) | `Create a plan`, `write a handoff prompt` | Turn context into plans and new-thread prompts |
 | [research](#research) | `Research [topic]` | Investigate and save work-local or reusable findings |
 | [tmux](#tmux) | `tmux`, `background process` | Manage background processes |
@@ -39,6 +40,16 @@ Use it to create work items, list active work, place artifacts deliberately, and
 **Invoke:** `Create a new work item for user authentication`
 
 **Details:** [.agents/skills/agent-work/SKILL.md](../.agents/skills/agent-work/SKILL.md)
+
+## documentation
+
+Discovers the repository's existing documentation convention before proposing a location. It can scan selected topics, initialize `docs/` with approval when no canonical location exists, create only needed topic directories, verify docs against repository evidence, and promote enduring work-item decisions into canonical project documentation.
+
+Available topics include architecture, development, operations, security, runbooks, specifications, API, data, product, and contributing. Scans are read-only by default, and unsupported policy or intent is reported for confirmation rather than invented.
+
+**Invoke:** `Run a documentation scan for architecture, API, and data`
+
+**Details:** [.agents/skills/documentation/SKILL.md](../.agents/skills/documentation/SKILL.md)
 
 ## feature-planning
 

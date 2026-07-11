@@ -66,6 +66,7 @@ Verify your skill by loading it and checking:
 | ----- | ------- |
 | `adapt` | Analyze project and fill in AGENTS.md after installation |
 | `agent-work` | Create and maintain `.agents/work/` work items |
+| `documentation` | Scan, create, update, verify, and promote canonical project documentation |
 | `feature-planning` | Turn context into plans and paste-ready handoff prompts |
 | `research` | Research technical topics, saving work-local or reusable findings |
 | `tmux` | Manage background processes using tmux windows for servers and long-running tasks |

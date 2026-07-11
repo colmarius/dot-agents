@@ -60,6 +60,7 @@ teardown() {
     [ -f ".agents/references/.gitkeep" ]
     [ -f ".agents/skills/adapt/SKILL.md" ]
     [ -f ".agents/skills/agent-work/SKILL.md" ]
+    [ -f ".agents/skills/documentation/SKILL.md" ]
     [ -f ".agents/skills/feature-planning/SKILL.md" ]
     [ -f ".agents/skills/research/SKILL.md" ]
     [ -f ".agents/skills/tmux/SKILL.md" ]
@@ -816,6 +817,7 @@ teardown() {
 
     [ -L ".claude/skills/adapt" ]
     [ -L ".claude/skills/agent-work" ]
+    [ -L ".claude/skills/documentation" ]
     [ -L ".claude/skills/feature-planning" ]
     [ -L ".claude/skills/research" ]
     [ -L ".claude/skills/tmux" ]

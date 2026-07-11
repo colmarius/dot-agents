@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- `documentation` skill for discovering existing docs, scanning selected documentation topics, optionally initializing `docs/`, and promoting enduring work-item knowledge without creating empty scaffolding or unsupported claims.
+
 ## [0.3.0] - 2026-06-22
 
 ### Changed

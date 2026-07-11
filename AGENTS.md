@@ -30,7 +30,7 @@ dot-agents/
 ├── install.sh                   # Main installation script
 ├── .agents/
 │   ├── work/                    # Work-item guidance installed into projects
-│   ├── skills/                  # adapt, agent-work, feature-planning, research, tmux
+│   ├── skills/                  # adapt, agent-work, documentation, feature-planning, research, tmux
 │   ├── research/                # Reusable research notes
 │   ├── references/              # External reference repos (gitignored)
 │   └── scripts/                 # sync.sh
@@ -46,6 +46,7 @@ dot-agents/
 | --- | --- |
 | `Run adapt` | Analyze project and fill in `AGENTS.md` sections |
 | `Create a new work item for ...` | Create durable `.agents/work/` context |
+| `Run a documentation scan` | Assess selected project-documentation topics before writing |
 | `Research ...` | Investigate and save work-local or reusable findings |
 | `Create/refine a plan for ...` | Produce implementation-ready tasks in the active plan file |
 | `Write a handoff prompt for ...` | Produce a paste-ready prompt for a new implementation thread |

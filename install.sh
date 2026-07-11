@@ -481,7 +481,7 @@ format_version_string() {
 }
 
 # Core skills that come from upstream
-CORE_SKILLS="adapt agent-work feature-planning research tmux"
+CORE_SKILLS="adapt agent-work documentation feature-planning research tmux"
 RETIRED_CORE_SKILLS="ralph"
 RETIRED_LEGACY_GUIDANCE_FILES=".agents/plans/AGENTS.md .agents/prds/AGENTS.md .agents/plans/TEMPLATE.md .agents/prds/TEMPLATE.md"
 
