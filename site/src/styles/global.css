@@ -414,7 +414,16 @@ button:focus-visible {
 }
 
 .terminal-hints code {
-  overflow-wrap: anywhere;
+  display: block;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-wrap: normal;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+
+.terminal-hints code::-webkit-scrollbar {
+  display: none;
 }
 
 .install-next {
@@ -677,10 +686,6 @@ button:focus-visible {
 }
 
 @media (max-width: 900px) {
-  .terminal-hints {
-    display: none;
-  }
-
   .workflow-grid {
     grid-template-columns: repeat(2, 1fr);
   }
