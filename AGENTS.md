@@ -84,11 +84,12 @@ Legacy `.agents/plans/` and `.agents/prds/` paths may exist in older installs. P
 # Serve docs locally
 ./scripts/serve-docs.sh [port]
 
-# Develop the Astro landing page
-cd site && npm install && npm run dev
+# Install dependencies and develop the Astro landing page
+npm install
+npm run dev
 
 # Build the landing page for production
-cd site && npm run build
+npm run build
 
 # Test installation locally
 ./install.sh --dry-run

@@ -5,4 +5,4 @@
 # Astro landing page
 site/.astro/
 site/dist/
-site/node_modules/
+node_modules/

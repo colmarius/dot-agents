@@ -1,0 +1,13 @@
+{
+  "name": "dot-agents",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --root site",
+    "build": "astro build --root site",
+    "preview": "astro preview --root site"
+  },
+  "dependencies": {
+    "astro": "^7.1.6"
+  }
+}

@@ -25,7 +25,6 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 Develop the Astro landing page locally:
 
 ```bash
-cd site
 npm install
 npm run dev
 ```
