@@ -1,6 +1,6 @@
 # dot-agents
 
-AI-ready `.agents/` workspace for any project — durable work items, reusable research, execution-ready plans, browser proof, and optional handoffs across threads.
+AI-ready `.agents/` workspace for any project — durable work items, reusable research, execution-ready plans, verification evidence, and optional handoffs across threads.
 
 ## Install
 
@@ -21,6 +21,14 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 - **[Quickstart](./QUICKSTART.md)** — Install, create a work item, and generate a handoff prompt
 - **[Full Docs](./docs/README.md)** — Concepts, skills, and migration notes
 - **[Website](https://dot-agents.dev)** — Landing page (source: [site/](./site/))
+
+Develop the Astro landing page locally:
+
+```bash
+cd site
+npm install
+npm run dev
+```
 
 ## Agent Support
 

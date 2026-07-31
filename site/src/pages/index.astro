@@ -1,0 +1,348 @@
+---
+import "../styles/global.css";
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const description =
+  "A small .agents workspace for durable AI coding work: work items, research notes, execution-ready plans, verification evidence, and optional handoffs across threads.";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3eedc" />
+    <title>dot-agents — AI-ready agent workspace</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content="dot-agents — AI-ready agent workspace" />
+    <meta property="og:description" content={description} />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="dot-agents — AI-ready agent workspace" />
+    <meta name="twitter:description" content={description} />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="wordmark" href="/" aria-label="dot-agents home">
+          <img src="/favicon-32.png" width="32" height="32" alt="" />
+          <span><b>.</b>agents</span>
+        </a>
+
+        <nav class="nav" aria-label="Primary navigation">
+          <a href="#install">Install</a>
+          <a href="#workflow">Workflow</a>
+          <a href="https://with-agents.dev/posts/durable-context-coding-agents/">Field guide</a>
+          <a href="https://github.com/colmarius/dot-agents/blob/main/docs/README.md">Docs</a>
+        </nav>
+
+        <a class="header-github" href="https://github.com/colmarius/dot-agents">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.79-.26.79-.58v-2.23c-3.34.73-4.03-1.42-4.03-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.49 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23.96-.27 1.98-.4 3-.4s2.05.13 3.01.4c2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.19.69.8.58A12 12 0 0 0 24 12c0-6.63-5.37-12-12-12Z"></path>
+          </svg>
+          GitHub
+        </a>
+      </header>
+
+      <main id="main-content">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow"><span>Context protocol</span> for coding agents</p>
+            <h1 id="hero-title">Make AI coding work <em>survive the next thread.</em></h1>
+            <p class="hero-description">
+              dot-agents adds a small <code>.agents/</code> workspace to any repo: durable work items,
+              research notes, execution-ready plans, verification evidence, and optional handoffs your
+              agents can reuse.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#install">Install dot-agents <span aria-hidden="true">↓</span></a>
+              <a class="text-link" href="https://github.com/colmarius/dot-agents/blob/main/QUICKSTART.md">
+                Read the quickstart <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+            <ul class="hero-facts" aria-label="Project attributes">
+              <li>Plain files</li>
+              <li>Any repository</li>
+              <li>Agent-agnostic</li>
+            </ul>
+          </div>
+
+          <aside class="protocol-card" aria-labelledby="protocol-title">
+            <div class="card-index">
+              <span>Field note / 01</span>
+              <span class="status"><i></i> durable</span>
+            </div>
+            <h2 id="protocol-title">Context leaves the chat.</h2>
+            <ol class="context-map">
+              <li>
+                <span class="map-number">01</span>
+                <div><small>Frame the work</small><strong>Intent + next action</strong></div>
+              </li>
+              <li class="map-file">
+                <span class="map-number">02</span>
+                <div><small>Write the durable entrypoint</small><code>.agents/work/…/index.md</code></div>
+              </li>
+              <li>
+                <span class="map-number">03</span>
+                <div><small>Load only what helps</small><strong>Research · Plan · Progress</strong></div>
+              </li>
+              <li>
+                <span class="map-number">04</span>
+                <div><small>Continue with evidence</small><strong>New thread, same state</strong></div>
+              </li>
+            </ol>
+            <p class="protocol-note">The repository becomes the shared memory—not one giant chat transcript.</p>
+          </aside>
+        </section>
+
+        <section id="install" class="install-section" aria-labelledby="install-title">
+          <div class="install-intro">
+            <p class="eyebrow eyebrow-light">Start here / one command</p>
+            <h2 id="install-title">Equip the repo you already have.</h2>
+            <p>
+              Run from your repository root. Fresh installs create <code>AGENTS.md</code> and <code>.agents/</code>;
+              later syncs preserve your work and customized instructions.
+            </p>
+          </div>
+
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-label"><i></i> terminal — repo root</span>
+              <span>bash</span>
+            </div>
+            <div class="terminal-command">
+              <pre><code><span class="prompt" aria-hidden="true">$</span> <span id="install-command">curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash</span></code></pre>
+              <button class="copy-button" type="button" aria-label="Copy install command" data-copy-command>
+                <svg class="copy-icon" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
+                  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+                  <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+                </svg>
+                <svg class="check-icon" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
+                  <path d="m5 12 4 4L19 6"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+              <span id="copy-status" class="sr-only" aria-live="polite"></span>
+            </div>
+            <div class="terminal-hints">
+              <p><span>Review</span><code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | less</code></p>
+              <p><span>Pin v0.4.0</span><code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.4.0</code></p>
+            </div>
+          </div>
+        </section>
+
+        <section id="workflow" class="workflow-section section-block" aria-labelledby="workflow-title">
+          <div class="section-heading">
+            <p class="eyebrow">The working loop</p>
+            <h2 id="workflow-title">A small protocol for long-running work.</h2>
+            <p>Move only the context worth keeping into the repository, then let each thread pick up from a clear next action.</p>
+          </div>
+
+          <ol class="workflow-grid">
+            <li>
+              <span class="step-number">01</span>
+              <p class="step-label">Frame</p>
+              <h3>Open a work item</h3>
+              <p>Capture stable intent, current status, a short summary, and the next action in <code>index.md</code>.</p>
+            </li>
+            <li>
+              <span class="step-number">02</span>
+              <p class="step-label">Context</p>
+              <h3>Add what earns its place</h3>
+              <p>Research, a requirements brief, or an implementation plan are optional—not ceremony for every edit.</p>
+            </li>
+            <li>
+              <span class="step-number">03</span>
+              <p class="step-label">Execute</p>
+              <h3>Work from the repo</h3>
+              <p>Implement in the current thread by default. The durable files keep the objective and decisions visible.</p>
+            </li>
+            <li>
+              <span class="step-number">04</span>
+              <p class="step-label">Prove</p>
+              <h3>Record the evidence</h3>
+              <p>Leave observed verification and a precise next action so another thread can continue without reconstruction.</p>
+            </li>
+          </ol>
+        </section>
+
+        <section class="workspace-section section-block" aria-labelledby="workspace-title">
+          <div class="workspace-copy">
+            <p class="eyebrow">Workspace anatomy</p>
+            <h2 id="workspace-title">Your repo is the memory.</h2>
+            <p>
+              dot-agents packages durable-context practices as a compact workspace. Humans can inspect it, agents can read it,
+              and Git can show exactly how the work evolved.
+            </p>
+            <a class="text-link" href="https://with-agents.dev/posts/durable-context-coding-agents/">
+              Read the durable context field guide <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <div class="file-tree" aria-label="Files added by dot-agents">
+            <div class="file-tree-header">
+              <span>your-project/</span>
+              <span>tracked</span>
+            </div>
+            <pre><code>├── <b>AGENTS.md</b>       <span># project instructions</span>
+└── <b>.agents/</b>
+    ├── <b>work/</b>       <span># durable work items</span>
+    ├── <b>research/</b>   <span># reusable findings</span>
+    ├── <b>references/</b> <span># local reference repos</span>
+    ├── <b>skills/</b>     <span># repeatable workflows</span>
+    └── <b>scripts/</b>    <span># safe sync updates</span></code></pre>
+          </div>
+        </section>
+
+        <section class="example-section section-block" aria-labelledby="example-title">
+          <div class="section-heading section-heading-split">
+            <div>
+              <p class="eyebrow">Concrete by default</p>
+              <h2 id="example-title">One entrypoint. No archaeology.</h2>
+            </div>
+            <p>Ask <code>Create a new work item for user authentication</code>. Future threads get a durable starting point instead of a summary assembled from memory.</p>
+          </div>
+
+          <div class="example-grid">
+            <div class="example-path">
+              <span class="example-caption">Created in your repo</span>
+              <pre><code>.agents/work/feature/
+└── user-authentication/
+    ├── <b>index.md</b>
+    └── plan.md</code></pre>
+              <p>Plans are added when they help. The index is always the stable place to resume.</p>
+            </div>
+            <div class="example-document">
+              <div class="document-bar"><span>index.md</span><span>● saved</span></div>
+              <pre><code><b># User authentication</b>
+
+Status: planned
+Category: feature
+Updated: 2026-06-22
+
+<b>## Why</b>
+Users need secure access across sessions.
+
+<b>## Summary</b>
+Add auth flows and session persistence.
+
+<b>## Next Action</b>
+Implement Task 1 from plan.md.</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="commands-section section-block" aria-labelledby="commands-title">
+          <div class="commands-intro">
+            <p class="eyebrow">Natural-language controls</p>
+            <h2 id="commands-title">Prompts, not process theater.</h2>
+            <p>Ask for the workflow you need. Keep the rest out of the way.</p>
+          </div>
+
+          <div class="command-list">
+            <article>
+              <code>Run adapt</code>
+              <p>Fill <code>AGENTS.md</code> with the repository’s real commands, structure, and conventions.</p>
+            </article>
+            <article>
+              <code>Create a new work item for ...</code>
+              <p>Start durable context under <code>.agents/work/&lt;category&gt;/&lt;slug&gt;/</code>.</p>
+            </article>
+            <article>
+              <code>Research ...</code>
+              <p>Gather technical facts and save them with the work item or as reusable project knowledge.</p>
+            </article>
+            <article>
+              <code>Create a plan for ...</code>
+              <p>Turn stable context into implementation-ready tasks, then execute in the current thread.</p>
+            </article>
+            <article>
+              <code>Use agent-browser to verify ...</code>
+              <p>Load guidance from the optional external CLI and capture proof from the running UI. dot-agents installs no browser.</p>
+            </article>
+            <article>
+              <code>Write a handoff prompt for ...</code>
+              <p>Generate a scoped prompt when another thread or environment would genuinely help.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="final-cta" aria-labelledby="cta-title">
+          <p class="eyebrow eyebrow-light">Ready when the thread is not</p>
+          <h2 id="cta-title">Give the next agent a real starting point.</h2>
+          <div class="cta-actions">
+            <a class="button button-lime" href="#install">Install dot-agents <span aria-hidden="true">↑</span></a>
+            <a class="button button-outline" href="https://github.com/colmarius/dot-agents/blob/main/docs/README.md">Explore the docs <span aria-hidden="true">↗</span></a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <a class="wordmark footer-wordmark" href="/" aria-label="dot-agents home"><span><b>.</b>agents</span></a>
+        <p>Durable context for AI coding agents.</p>
+        <nav aria-label="Footer navigation">
+          <a href="https://github.com/colmarius/dot-agents/blob/main/docs/migration-v0.4.md">v0.4 migration</a>
+          <a href="https://github.com/colmarius/dot-agents/blob/main/CHANGELOG.md">Changelog</a>
+          <a href="https://ampcode.com">Made for Amp + AI agents</a>
+          <span>MIT License</span>
+        </nav>
+      </footer>
+    </div>
+
+    <script>
+      const button = document.querySelector<HTMLButtonElement>("[data-copy-command]");
+      const command = document.querySelector<HTMLElement>("#install-command");
+      const status = document.querySelector<HTMLElement>("#copy-status");
+
+      if (button && command && status) {
+        const label = button.querySelector("span");
+        let resetTimer: number | undefined;
+
+        const markCopied = () => {
+          window.clearTimeout(resetTimer);
+          button.classList.add("is-copied");
+          button.setAttribute("aria-label", "Install command copied");
+          if (label) label.textContent = "Copied";
+          status.textContent = "Install command copied.";
+
+          resetTimer = window.setTimeout(() => {
+            button.classList.remove("is-copied");
+            button.setAttribute("aria-label", "Copy install command");
+            if (label) label.textContent = "Copy";
+            status.textContent = "";
+          }, 2000);
+        };
+
+        const selectCommand = () => {
+          const selection = window.getSelection();
+          if (!selection) return;
+
+          const range = document.createRange();
+          range.selectNodeContents(command);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          button.setAttribute("aria-label", "Install command selected");
+          status.textContent = "Install command selected. Press Control or Command C to copy.";
+        };
+
+        button.addEventListener("click", () => {
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(command.textContent ?? "").then(markCopied, selectCommand);
+          } else {
+            selectCommand();
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

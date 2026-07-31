@@ -96,7 +96,7 @@ info "Tag: $TAG"
 # Files containing version references to update
 VERSION_FILES=(
     "$PROJECT_ROOT/install.sh"
-    "$PROJECT_ROOT/site/index.html"
+    "$PROJECT_ROOT/site/src/pages/index.astro"
 )
 
 # Update version references in files

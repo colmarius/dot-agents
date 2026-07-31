@@ -151,7 +151,7 @@ teardown() {
     assert_output --partial "Release 2.0.0"
 }
 
-@test "updates version references in install.sh and site/index.html" {
+@test "updates version references in install.sh and the Astro landing page" {
     # Create install.sh with old version reference
     cat > install.sh <<'EOF'
 #!/usr/bin/env bash
@@ -159,9 +159,9 @@ teardown() {
 echo "installer"
 EOF
 
-    # Create site/index.html with old version reference
-    mkdir -p site
-    cat > site/index.html <<'EOF'
+    # Create the Astro landing page with an old version reference
+    mkdir -p site/src/pages
+    cat > site/src/pages/index.astro <<'EOF'
 <code>curl ... | bash -s -- --ref v0.0.1</code>
 EOF
 
@@ -170,13 +170,13 @@ EOF
     run bash scripts/release.sh
     assert_success
     assert_output --partial "Updated version in install.sh"
-    assert_output --partial "Updated version in index.html"
+    assert_output --partial "Updated version in index.astro"
 
     # Verify files were updated
     run grep -- "--ref v1.0.0" install.sh
     assert_success
 
-    run grep -- "--ref v1.0.0" site/index.html
+    run grep -- "--ref v1.0.0" site/src/pages/index.astro
     assert_success
 }
 
