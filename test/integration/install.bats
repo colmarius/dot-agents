@@ -818,6 +818,30 @@ teardown() {
     refute_output --partial "Custom skills preserved:"
 }
 
+@test "sync backs up a custom agent-browser skill when core takes ownership" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    rm -rf .agents/skills/agent-browser
+    mkdir -p .agents/skills/agent-browser
+    echo "# Custom agent-browser skill" > .agents/skills/agent-browser/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    assert_output --partial "force overwrite"
+    assert_output --partial "BACKUP"
+    refute_output --partial "Custom skills preserved:"
+
+    run head -1 .agents/skills/agent-browser/SKILL.md
+    assert_output "---"
+
+    local backup_file
+    backup_file=$(find .agents/.dot-agents-backup -path '*/.agents/skills/agent-browser/SKILL.md' -type f | head -1)
+    [ -n "$backup_file" ]
+
+    run cat "$backup_file"
+    assert_output "# Custom agent-browser skill"
+}
+
 # ===== Task 6: Claude Code skill discovery tests =====
 
 @test "install creates Claude Code skill directory symlinks when .claude exists" {

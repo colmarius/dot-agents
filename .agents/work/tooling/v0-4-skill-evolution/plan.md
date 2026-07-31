@@ -65,6 +65,7 @@ Update the portable dot-agents workflow with the durable contracts proven in dow
 ## Verification
 
 - `./scripts/build-test-fixture.sh` rebuilt the archive at 28 KB and confirmed local reference checkouts were excluded.
-- `./scripts/test.sh` passed syntax checks, ShellCheck, skill lint for all six core skills, and all 89 Bats tests.
+- `./scripts/test.sh` passed syntax checks, ShellCheck, skill lint for all six core skills, and all 90 Bats tests.
+- CI now runs skill lint explicitly and targets `test/integration/`; the `agent-browser` ownership transition has dedicated backup-and-overwrite coverage.
 - `./scripts/release.sh --dry-run` targeted v0.4.0, extracted the expected release notes, and did not create a tag.
 - `git diff --check` passed.

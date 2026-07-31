@@ -42,5 +42,8 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install bats-core
 
+      - name: Lint skills
+        run: ./scripts/skills-lint.sh
+
       - name: Run tests
-        run: bats test/
+        run: bats test/integration/
