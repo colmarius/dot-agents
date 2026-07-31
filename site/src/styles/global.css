@@ -137,10 +137,6 @@ button:focus-visible {
   text-decoration: none;
 }
 
-.wordmark img {
-  border-radius: 6px;
-}
-
 .wordmark b {
   color: var(--accent);
 }

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="dot-agents">
+  <rect width="64" height="64" rx="14" fill="#2d6049" />
+  <path
+    d="M45.9 24.5 A16 16 0 1 0 45.9 39.5"
+    fill="none"
+    stroke="#f7f6f2"
+    stroke-width="6"
+    stroke-linecap="round"
+  />
+  <path d="M54 39.5 L43 33 L43 46 Z" fill="#f7f6f2" />
+  <circle cx="32" cy="32" r="7.5" fill="#f7f6f2" />
+</svg>
