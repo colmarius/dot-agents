@@ -485,7 +485,7 @@ button:focus-visible {
 .step-number {
   display: block;
   margin-bottom: 2.6rem;
-  color: var(--accent);
+  color: var(--ink-soft);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 700;
