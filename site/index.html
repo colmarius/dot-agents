@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>dot-agents — AI-ready agent workspace</title>
-  <meta name="description" content="A small .agents workspace for durable AI coding work: work items, research notes, plans, and handoff prompts that carry context across threads.">
+  <meta name="description" content="A small .agents workspace for durable AI coding work: work items, research notes, execution-ready plans, browser proof, and optional handoffs across threads.">
   <link rel="canonical" href="https://dot-agents.dev/">
   
   <!-- OpenGraph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://dot-agents.dev/">
   <meta property="og:title" content="dot-agents — AI-ready agent workspace">
-  <meta property="og:description" content="A small .agents workspace for durable AI coding work: work items, research notes, plans, and handoff prompts that carry context across threads.">
+  <meta property="og:description" content="A small .agents workspace for durable AI coding work: work items, research notes, execution-ready plans, browser proof, and optional handoffs across threads.">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="dot-agents — AI-ready agent workspace">
-  <meta name="twitter:description" content="A small .agents workspace for durable AI coding work: work items, research notes, plans, and handoff prompts that carry context across threads.">
+  <meta name="twitter:description" content="A small .agents workspace for durable AI coding work: work items, research notes, execution-ready plans, browser proof, and optional handoffs across threads.">
   
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
@@ -42,7 +42,7 @@
     <main>
       <section class="hero">
         <h1>Make AI coding work <span class="highlight">survive the next thread</span></h1>
-        <p class="hero-desc">dot-agents adds a small <code>.agents/</code> workspace to any repo: durable work items, research notes, plans, and handoff prompts your agents can reuse.</p>
+        <p class="hero-desc">dot-agents adds a small <code>.agents/</code> workspace to any repo: durable work items, research notes, execution-ready plans, browser proof, and optional handoffs your agents can reuse.</p>
       </section>
 
       <section id="install" class="install">
@@ -78,7 +78,7 @@
     ├── work/        <span class="tree-comment"># durable work items</span>
     ├── research/    <span class="tree-comment"># reusable findings</span>
     ├── references/  <span class="tree-comment"># local reference repos</span>
-    ├── skills/      <span class="tree-comment"># adapt, work items, planning, research</span>
+    ├── skills/      <span class="tree-comment"># adapt, browser proof, work, planning, research</span>
     └── scripts/     <span class="tree-comment"># sync updates safely</span></code></pre>
         </div>
         <p class="section-intro">Use work items for multi-session or context-heavy work. Tiny one-shot edits may not need one.</p>
@@ -99,6 +99,9 @@
 Status: planned
 Category: feature
 Updated: 2026-06-22
+
+## Why
+Users need secure access across sessions.
 
 ## Summary
 Add auth flows and session persistence.
@@ -127,8 +130,16 @@ Implement Task 1 from plan.md.</code></pre>
             <span>Ask for research, a short requirements brief, or an implementation plan only when it helps.</span>
           </div>
           <div class="command-row">
+            <code>Implement the next plan task</code>
+            <span>Work in the current thread by default and record verification evidence in durable state.</span>
+          </div>
+          <div class="command-row">
+            <code>Use agent-browser to verify ...</code>
+            <span>Load version-current browser guidance and capture proof from the running UI.</span>
+          </div>
+          <div class="command-row">
             <code>Write a handoff prompt for ...</code>
-            <span>Generate a scoped prompt for a fresh implementation thread that records progress as it works.</span>
+            <span>Generate a scoped prompt only when another thread or environment would help.</span>
           </div>
         </div>
       </section>

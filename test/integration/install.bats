@@ -59,6 +59,7 @@ teardown() {
     [ -d ".agents/references" ]
     [ -f ".agents/references/.gitkeep" ]
     [ -f ".agents/skills/adapt/SKILL.md" ]
+    [ -f ".agents/skills/agent-browser/SKILL.md" ]
     [ -f ".agents/skills/agent-work/SKILL.md" ]
     [ -f ".agents/skills/feature-planning/SKILL.md" ]
     [ -f ".agents/skills/research/SKILL.md" ]
@@ -233,6 +234,8 @@ teardown() {
     assert_output ".agents/work/feature/demo-work/index.md"
 
     [ -f ".agents/work/feature/demo-work/index.md" ]
+    run grep -F "## Why" .agents/work/feature/demo-work/index.md
+    assert_success
     [ ! -d ".agents/work/feature/demo-work/decisions" ]
 
     run .agents/skills/agent-work/scripts/list-work.sh --status planned
@@ -257,16 +260,27 @@ teardown() {
     assert_output --partial "Invalid status"
 }
 
-@test "agent-work helper rejects invalid category" {
+@test "agent-work helper accepts a custom kebab-case category" {
     bash "$INSTALL_SCRIPT" --yes
 
     run .agents/skills/agent-work/scripts/new-work.sh \
         --category custom-category \
+        --slug custom-work \
+        --title "Custom work"
+    assert_success
+    assert_output ".agents/work/custom-category/custom-work/index.md"
+}
+
+@test "agent-work helper rejects a malformed category" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    run .agents/skills/agent-work/scripts/new-work.sh \
+        --category "Bad Category" \
         --slug invalid-category \
         --title "Invalid category"
     assert_failure
     assert_output --partial "Invalid category"
-    assert_output --partial "Expected one of"
+    assert_output --partial "Use lowercase kebab-case"
 }
 
 @test "sync preserves existing work item content" {
@@ -815,6 +829,7 @@ teardown() {
     assert_output --partial "Claude Code skills linked"
 
     [ -L ".claude/skills/adapt" ]
+    [ -L ".claude/skills/agent-browser" ]
     [ -L ".claude/skills/agent-work" ]
     [ -L ".claude/skills/feature-planning" ]
     [ -L ".claude/skills/research" ]

@@ -3,15 +3,16 @@
 ## Workflow
 
 ```text
-Work Item → Context as needed → Plan → Handoff Prompt → Implement → Record Progress
+Work Item → Context as needed → Plan → Execute → Record Evidence
+                                      └─ Hand off when useful
 ```
 
 1. **Work Item:** Create `.agents/work/<category>/<slug>/index.md` as the durable context entrypoint.
 2. **Context:** Add optional context only when it helps: `research.md` or `research/` for technical facts, or `prd.md` as a short requirements brief when behavior needs alignment.
 3. **Plan:** Break work into implementation-ready tasks in the active plan file (`plan.md` by default, or `plans/<name>.md` for focused plans) with scope, dependencies, and acceptance criteria.
-4. **Handoff Prompt:** Ask an agent to write a paste-ready prompt for a fresh implementation thread.
-5. **Implement:** Paste the prompt into the new thread and let that agent do the scoped work.
-6. **Record Progress:** Update `progress.md`, active plan task checkboxes, and `index.md` so future threads can resume.
+4. **Execute:** Implement in the current thread by default. Delegate only when isolation, parallelism, durable follow-up, or another environment helps.
+5. **Record Evidence:** Update plan task checkboxes and `index.md`; keep living `progress.md` when work spans sessions or workers.
+6. **Handoff When Useful:** Generate a paste-ready prompt only when another thread will execute a bounded slice.
 
 Use work items for multi-session or context-heavy work. For a tiny one-shot edit, you may not need one.
 
@@ -23,11 +24,11 @@ Context is optional. Use `research.md` when the question is "what is true?" Use 
 .agents/work/<category>/<slug>/
 ├── index.md       # required landing page
 ├── research.md    # optional, work-specific findings
-├── research/      # optional focused research notes
+├── research/      # optional focused notes with research/index.md
 ├── prd.md         # optional requirements brief
 ├── plan.md        # optional primary implementation-ready tasks
-├── plans/         # optional focused implementation plans
-├── progress.md    # optional implementation log
+├── plans/         # optional focused plans with plans/index.md
+├── progress.md    # optional living execution summary
 └── decisions/     # optional durable decisions
 ```
 
@@ -49,6 +50,10 @@ Status: planned
 Category: feature
 Updated: 2026-06-22
 
+## Why
+
+Users need secure access across sessions.
+
 ## Summary
 
 Add auth flows and session persistence.
@@ -58,11 +63,13 @@ Add auth flows and session persistence.
 Implement Task 1 from plan.md.
 ```
 
-New threads start by reading `index.md`, then load only the plan, research, or progress they need.
+Current and future threads start by reading `index.md`, then load only the plan, research, or progress they need.
+
+`Why` preserves original intent while `Summary` changes with scope and status. Categories are open lowercase kebab-case values, so projects can use stable owners such as `platform`, `security`, or an application name instead of forcing work into `other`.
 
 ## Handoff Prompts
 
-A handoff prompt is a paste-ready prompt for a new agent thread. It should name:
+A handoff prompt is an optional paste-ready prompt for a new agent thread. It should name:
 
 - Work item path and files to read first.
 - Goal, current state, and exact implementation slice.
@@ -71,7 +78,7 @@ A handoff prompt is a paste-ready prompt for a new agent thread. It should name:
 - Verification commands and stop conditions.
 - Expected final response shape.
 
-dot-agents does not assume a specific execution runtime. The work item is the continuity layer.
+dot-agents does not assume a specific execution runtime. The work item is the continuity layer, and the coordinating thread remains responsible for integration and combined verification.
 
 ## Legacy Content
 
@@ -87,6 +94,6 @@ Older dot-agents installs used `.agents/plans/` and `.agents/prds/`. v0.3.0 pres
 | PRD | Optional short requirements brief defining what should be true |
 | plan | Implementation-ready task list with scope, dependencies, and acceptance criteria |
 | handoff prompt | Paste-ready prompt for a fresh implementation thread |
-| progress log | `progress.md`, the implementation log for changes, verification, blockers, and next action |
+| progress summary | Optional living `progress.md` for the current slice, verification evidence, blockers, and next action |
 | skills | Specialized agent instructions loaded via natural language |
 | sync | Script that updates dot-agents from upstream while preserving user work |

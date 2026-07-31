@@ -12,14 +12,15 @@ dot-agents is an AI-ready `.agents/` workspace scaffold for any project. It prov
 ## Workflow
 
 ```text
-Work Item → Context as needed → Plan → Handoff Prompt → Implement → Record Progress
+Work Item → Context as needed → Plan → Execute → Record Evidence
+                                      └─ Hand off when useful
 ```
 
 1. **Work Item:** Create `.agents/work/<category>/<slug>/index.md` as the durable entrypoint.
 2. **Context:** Add `research.md` or `research/` for technical facts, or `prd.md` as a short requirements brief only when needed.
 3. **Plan:** Break work into implementation-ready tasks in the active plan file (`plan.md` by default, or `plans/<name>.md` for focused plans).
-4. **Handoff Prompt:** Generate a paste-ready prompt for a fresh implementation thread.
-5. **Progress:** Implementation threads update `progress.md`, task checkboxes, and `index.md`.
+4. **Execute:** Implement in the current thread by default; delegate or generate a paste-ready handoff only when another worker or environment helps.
+5. **Evidence:** Update plan checkboxes, living `progress.md` when needed, and `index.md`; record observed verification results.
 
 ## Project Structure
 
@@ -30,7 +31,7 @@ dot-agents/
 ├── install.sh                   # Main installation script
 ├── .agents/
 │   ├── work/                    # Work-item guidance installed into projects
-│   ├── skills/                  # adapt, agent-work, feature-planning, research, tmux
+│   ├── skills/                  # adapt, agent-browser, agent-work, feature-planning, research, tmux
 │   ├── research/                # Reusable research notes
 │   ├── references/              # External reference repos (gitignored)
 │   └── scripts/                 # sync.sh
@@ -45,9 +46,10 @@ dot-agents/
 | Command | Effect |
 | --- | --- |
 | `Run adapt` | Analyze project and fill in `AGENTS.md` sections |
+| `Use agent-browser to verify ...` | Load current real-browser automation guidance from the installed CLI |
 | `Create a new work item for ...` | Create durable `.agents/work/` context |
 | `Research ...` | Investigate and save work-local or reusable findings |
-| `Create/refine a plan for ...` | Produce implementation-ready tasks in the active plan file |
+| `Create/refine/execute a plan for ...` | Produce implementation-ready tasks and implement in the current thread |
 | `Write a handoff prompt for ...` | Produce a paste-ready prompt for a new implementation thread |
 
 Skills are loaded via natural language. See each skill's `SKILL.md` in `.agents/skills/` for details.
@@ -60,7 +62,7 @@ Work items live under:
 .agents/work/<category>/<slug>/
 ```
 
-Every work item has `index.md` with status, category, updated date, artifact links, next action, and open questions. Optional artifacts include `research.md`, `research/`, `prd.md`, `plan.md`, `plans/`, `progress.md`, and `decisions/` records.
+Every work item has `index.md` with stable intent, current status and summary, category, updated date, artifact links, next action, and open questions. Categories are an open lowercase kebab-case namespace. Optional artifacts include `research.md`, indexed `research/`, `prd.md`, `plan.md`, indexed `plans/`, living `progress.md`, and `decisions/` records.
 
 Legacy `.agents/plans/` and `.agents/prds/` paths may exist in older installs. Preserve legacy plan and PRD documents as user content, but allow sync to retire stale Ralph guidance/templates. Migrate one plan at a time into `.agents/work/` only when requested.
 
@@ -105,12 +107,12 @@ git push
 
 ```bash
 # 1. Update VERSION file with new version
-echo "0.3.0" > VERSION
+echo "0.4.0" > VERSION
 
 # 2. Update CHANGELOG.md - move [Unreleased] items to new version section
 
 # 3. Commit changes
-git add -A && git commit -m "Release v0.3.0"
+git add -A && git commit -m "Release v0.4.0"
 
 # 4. Create and push release
 ./scripts/release.sh --push

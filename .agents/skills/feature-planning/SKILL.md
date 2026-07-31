@@ -1,24 +1,25 @@
 ---
 name: feature-planning
-description: "Turns work-item context into plans and paste-ready handoff prompts. Use for planning, requirements briefs, plan refinement, and new-thread prompts. Triggers on: plan, requirements, PRD, feature planning, handoff prompt."
+description: "Turns work-item context into execution-ready plans and optional handoff prompts. Use for requirements, planning, refinement, and stress-testing. Triggers on: plan, requirements, PRD, feature planning, handoff prompt, stress-test design."
 ---
 
 # Feature Planning
 
-Manage work-item planning from rough intent through optional context, implementation-ready plan, and paste-ready prompt for a fresh implementation thread.
+Manage work-item planning from rough intent through optional context, execution-ready plans, implementation, and explicit handoffs when another thread is useful.
 
 ## Workflow Overview
 
 ```text
-Work Item → Context as needed → Plan → Refine → Handoff Prompt → Implement → Record Progress
+Work Item → Context as needed → Plan → Refine → Execute → Record Evidence
+                                             └─ Hand off when useful
 ```
 
 1. **Work item**: Use `agent-work` to create or locate `.agents/work/<category>/<work-slug>/`.
 2. **Context**: Add `research.md` for technical facts, `research/` for multiple focused notes, or `prd.md` as a short requirements brief only when needed.
 3. **Plan**: Create or update the active plan file (`plan.md` by default, or `plans/<name>.md` for focused plans) with scoped tasks, dependencies, and acceptance criteria.
-4. **Refine**: Validate assumptions against current repo reality before implementation.
-5. **Handoff prompt**: Produce a paste-ready prompt for the next implementation thread.
-6. **Progress**: The implementation thread updates active plan task checkboxes, `progress.md`, and `index.md`.
+4. **Refine**: Validate assumptions against current repo reality before implementation or delegation.
+5. **Execute**: Implement in the current thread by default; use `agent-work` coordination when delegation helps.
+6. **Progress**: Update active plan task checkboxes, living `progress.md` when needed, and `index.md`; record observed verification evidence.
 
 ## Plan Locations
 
@@ -53,19 +54,21 @@ Use the [agent-work plan template](../agent-work/assets/plan-template.md). Keep 
 - Scope limits and verification commands are explicit when not obvious.
 - Blockers, manual steps, and risky assumptions are called out.
 - Tasks are small enough to review independently.
+- Verification is proportional to blast radius and identifies running-system or manual proof when automated checks are insufficient.
+- Deployment, migration, ordering, approval, and rollback steps are explicit when the change touches a release surface.
 
 For larger work, prefer an early thin slice that proves the end-to-end path before broad hardening.
 
 ## Pre-Implementation Refinement
 
-Use this before writing a handoff prompt when work is multi-phase, ambiguous, or stale.
+Use this before implementation or handoff when work is multi-phase, ambiguous, or stale.
 
 1. Read the work item's `index.md` and active plan file (`plan.md` or `plans/<name>.md` as linked from `index.md`).
 2. Read relevant `research.md`, requirements brief (`prd.md`), and decisions only as needed.
 3. Validate key assumptions against current code, dependencies, and test setup.
 4. Resolve material open questions with repo evidence where possible; ask the user only for decisions the repo cannot answer.
 5. If a planned task is already satisfied, record evidence and update the active plan file instead of creating no-op work.
-6. Update the active plan file, `progress.md`, and `index.md` when refinement changes the next action or known constraints.
+6. Update the active plan file, living `progress.md` when it exists, and `index.md` when refinement changes the next action or known constraints.
 
 Skip the full pass for small, obvious changes where the plan and repo state are already aligned.
 
@@ -80,7 +83,7 @@ The prompt should include:
 3. Goal and current state.
 4. Exact task, phase, or slice to implement.
 5. Scope limits and non-goals.
-6. Artifact update contract for the active plan file, `progress.md`, and `index.md`.
+6. Artifact update contract for the active plan file, living `progress.md` when needed, and `index.md`.
 7. Verification commands or manual checks.
 8. Stop conditions.
 9. Expected final response format.
@@ -113,7 +116,7 @@ Scope limits:
 
 Progress contract:
 - Update completed task checkboxes in the active plan file.
-- Append or update progress.md with changes, verification, blockers, and next action.
+- Keep progress.md current with the active slice, observed verification evidence, blockers, and next action when the work spans sessions or workers.
 - Update index.md Status, Updated, Artifacts, and Next Action when they change.
 
 Verification:
@@ -143,4 +146,4 @@ Use this only when the user explicitly asks to stress-test, grill, or walk decis
 
 ## Definition Of Done
 
-Planning is done when the work item has a current `index.md`, required context artifacts, an implementation-ready active plan file, and either a clear next action or a paste-ready handoff prompt.
+Planning is done when the work item has a current `index.md`, required context artifacts, an execution-ready active plan file, and a clear next action. Produce a paste-ready handoff prompt only when another thread will execute the work.

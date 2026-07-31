@@ -8,7 +8,8 @@ Usage:
 
 Creates .agents/work/<category>/<work-slug>/index.md from the work index template.
 Default status: researching
-Categories: feature, bugfix, tech-debt, docs, tooling, research, other
+Category: any lowercase kebab-case project, product, domain, or work type
+Common defaults: feature, bugfix, tech-debt, docs, tooling, research
 USAGE
 }
 
@@ -67,18 +68,9 @@ is_kebab_case() {
 
 if ! is_kebab_case "$category"; then
   echo "Invalid category: $category" >&2
-  echo "Expected one of: feature, bugfix, tech-debt, docs, tooling, research, other" >&2
+  echo "Use lowercase kebab-case." >&2
   exit 2
 fi
-
-case "$category" in
-  feature|bugfix|tech-debt|docs|tooling|research|other) ;;
-  *)
-    echo "Invalid category: $category" >&2
-    echo "Expected one of: feature, bugfix, tech-debt, docs, tooling, research, other" >&2
-    exit 2
-    ;;
-esac
 
 if ! is_kebab_case "$slug"; then
   echo "Invalid slug: $slug" >&2

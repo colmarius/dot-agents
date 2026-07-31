@@ -1,6 +1,6 @@
 # dot-agents
 
-AI-ready `.agents/` workspace for any project — durable work items, reusable research, planning skills, and paste-ready handoff prompts for agent-assisted development across threads.
+AI-ready `.agents/` workspace for any project — durable work items, reusable research, execution-ready plans, browser proof, and optional handoffs across threads.
 
 ## Install
 
@@ -13,7 +13,7 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 Pin a version:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.3.0
+curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.4.0
 ```
 
 ## Documentation
@@ -34,8 +34,9 @@ After install:
 
 1. Customize `AGENTS.md` for your project — run `adapt` to auto-fill or edit manually.
 2. Create a work item under `.agents/work/<category>/<slug>/`.
-3. Ask for research, a plan, or a paste-ready handoff prompt.
-4. Sync updates later with `.agents/scripts/sync.sh`.
+3. Ask for research or a plan, then implement in the current thread by default.
+4. Use `agent-browser` for real-browser proof when relevant, or create a handoff when another thread or environment helps.
+5. Sync updates later with `.agents/scripts/sync.sh`.
 
 ## Sync Behavior
 
@@ -69,7 +70,7 @@ See [CHANGELOG.md](./CHANGELOG.md) for release history.
 
 ## Credits
 
-Skills inspired by [amp-contrib](https://github.com/ampcode/amp-contrib).
+Skills inspired by [amp-contrib](https://github.com/ampcode/amp-contrib). The `agent-browser` discovery pattern follows [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser).
 
 ## License
 

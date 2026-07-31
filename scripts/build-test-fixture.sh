@@ -29,6 +29,15 @@ fi
 # Copy .agents directory
 if [[ -d "$REPO_ROOT/.agents" ]]; then
     cp -r "$REPO_ROOT/.agents" "$ARCHIVE_DIR/"
+
+    # References are local, gitignored checkouts and are not part of GitHub archives.
+    # Keep only the tracked placeholder so the fixture matches a release archive.
+    rm -rf "$ARCHIVE_DIR/.agents/references"
+    mkdir -p "$ARCHIVE_DIR/.agents/references"
+    if [[ -f "$REPO_ROOT/.agents/references/.gitkeep" ]]; then
+        cp "$REPO_ROOT/.agents/references/.gitkeep" "$ARCHIVE_DIR/.agents/references/"
+    fi
+
     echo "  Added: .agents/"
 fi
 

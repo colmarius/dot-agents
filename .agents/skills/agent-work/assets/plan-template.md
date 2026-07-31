@@ -1,6 +1,8 @@
 # Plan Template
 
-Use this template when creating `.agents/work/<category>/<work-slug>/plan.md` or a focused plan under `.agents/work/<category>/<work-slug>/plans/<name>.md`. Plans following this format are implementation-ready and easy to hand off to a fresh agent thread.
+Use this template when creating `.agents/work/<category>/<work-slug>/plan.md` or a focused plan under `.agents/work/<category>/<work-slug>/plans/<name>.md`. Plans following this format can be executed in the current thread or delegated as bounded work.
+
+Use one `plan.md` for straightforward work. When `plans/` contains multiple phase plans, add `plans/index.md`, keep task numbers unambiguous across files, and link the active phase from the work-item index.
 
 ## Template
 
@@ -47,8 +49,12 @@ Use this template when creating `.agents/work/<category>/<work-slug>/plan.md` or
 
 ## Verification
 
-- Command or manual check 1
-- Command or manual check 2
+- Focused command and observed success condition
+- Running-system or manual evidence when the risk requires it
+
+## Deployment / Migration
+
+[Include this section only when releasing the change requires deployment, migration, generated artifacts, configuration, ordering, approval gates, or rollback steps. Name exact actions and owners; documenting a step does not authorize executing it.]
 ```
 
 ## Task Format Rules
@@ -63,7 +69,7 @@ Each task must include:
 | **Acceptance** | Yes | Specific, verifiable criteria |
 | **Notes** | No | Implementation hints, commands, or risks |
 
-Split a task if it cannot be described in 2-3 sentences or cannot be reviewed independently.
+Split a task if it cannot be described in 2-3 sentences or cannot be reviewed independently. For multi-layer work, prefer an early thin end-to-end slice before follow-up hardening.
 
 ## Task Status Markers
 
@@ -74,9 +80,9 @@ Split a task if it cannot be described in 2-3 sentences or cannot be reviewed in
 | `- [ ] (blocked)` | Blocked, needs intervention |
 | `- [ ] (manual-verify)` | Requires manual verification |
 
-## Handoff-Ready Checklist
+## Execution-Ready Checklist
 
-Before asking for an implementation handoff prompt, confirm:
+Before implementing or delegating, confirm:
 
 - [ ] The plan lives at `.agents/work/<category>/<work-slug>/plan.md` or `.agents/work/<category>/<work-slug>/plans/<name>.md`.
 - [ ] `index.md` links the active plan file and has the correct `Status:`.
@@ -84,3 +90,5 @@ Before asking for an implementation handoff prompt, confirm:
 - [ ] The next task or phase is clear.
 - [ ] External blockers and human-only steps are explicit.
 - [ ] The intended verification commands are named when not obvious.
+- [ ] Verification is proportional to blast radius and identifies evidence that can prove the behavior, not only commands to run.
+- [ ] Release, migration, or rollback steps are explicit when the change touches a release surface.

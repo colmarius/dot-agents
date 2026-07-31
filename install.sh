@@ -51,7 +51,7 @@ Examples:
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 
   # Install specific version
-  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.3.0
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.4.0
 
   # Preview changes first
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --diff
@@ -481,7 +481,7 @@ format_version_string() {
 }
 
 # Core skills that come from upstream
-CORE_SKILLS="adapt agent-work feature-planning research tmux"
+CORE_SKILLS="adapt agent-browser agent-work feature-planning research tmux"
 RETIRED_CORE_SKILLS="ralph"
 RETIRED_LEGACY_GUIDANCE_FILES=".agents/plans/AGENTS.md .agents/prds/AGENTS.md .agents/plans/TEMPLATE.md .agents/prds/TEMPLATE.md"
 

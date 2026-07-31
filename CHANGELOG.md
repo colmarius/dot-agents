@@ -8,6 +8,29 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-31
+
+### Changed
+
+- **BREAKING:** Current-thread implementation is now the default workflow; paste-ready handoffs remain available when another worker or environment is useful.
+- **BREAKING:** Work-item categories are now an open lowercase kebab-case namespace instead of a closed enum.
+- New work-item indexes separate stable original intent in `Why` from the evolving `Summary`.
+- `progress.md` is now an optional living execution summary for current work, observed verification evidence, blockers, and next action.
+- Multi-note `research/` and multi-phase `plans/` folders use an `index.md` map.
+- Plans now require risk-scaled proof and conditionally document deployment, migration, ordering, approval, and rollback concerns.
+
+### Added
+
+- `agent-browser` as a sixth core skill. It discovers version-current workflows from the optional external CLI without installing browser dependencies.
+- Runner-neutral coordinated-execution guidance for bounded workers, resumable threads, reviewers, environment boundaries, integration ownership, and unattended execution.
+- Deterministic core skill metadata and relative-link lint with Bats coverage.
+- v0.4 migration guide.
+
+### Compatibility
+
+- Existing `plans/`, `progress.md`, and completed work-item paths remain valid; v0.4 requires no user-content renames or automatic deletion.
+- A pre-existing custom `agent-browser` skill now conflicts with an upstream-owned core name; preview sync with `--diff` and preserve or rename custom guidance as needed.
+
 ## [0.3.0] - 2026-06-22
 
 ### Changed
@@ -88,7 +111,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Installer skip logic now correctly includes plans/TEMPLATE.md
 - Postfix increment operators causing script exit on bash 5.3+ with `set -e` ([#1](https://github.com/colmarius/dot-agents/issues/1))
 
-[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/colmarius/dot-agents/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/colmarius/dot-agents/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/colmarius/dot-agents/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/colmarius/dot-agents/compare/v0.1.0...v0.1.1

@@ -13,7 +13,7 @@ Research a technical question, synthesize reliable evidence, and save findings e
 
 Before doing new research:
 
-- If the work belongs to an active work item, read `.agents/work/<category>/<work-slug>/index.md` and prefer work-local `research.md` or `research/` for task-specific findings.
+- If the work belongs to an active work item, read `.agents/work/<category>/<work-slug>/index.md` and prefer work-local `research.md` or `research/` for task-specific findings. Read `research/index.md` first when the folder contains multiple notes.
 - Search `.agents/research/` for an existing reusable topic note.
 - Check repo docs, attached files, and skill `references/` first.
 - If an existing note already answers the question, update it only when stale or incomplete.
@@ -66,7 +66,7 @@ Use work-local `.agents/work/<category>/<work-slug>/research.md` when:
 - The findings explain task-specific constraints, alternatives, or plan decisions.
 - A future agent should find the research beside `plan.md`, `prd.md`, or `progress.md`.
 
-Use work-local `.agents/work/<category>/<work-slug>/research/<topic-slug>.md` when one work item needs multiple focused research notes.
+Use work-local `.agents/work/<category>/<work-slug>/research/<topic-slug>.md` when one work item needs multiple focused research notes, and maintain `research/index.md` as the map.
 
 Create or update `.agents/research/<topic-slug>.md` when:
 
@@ -103,7 +103,7 @@ Use this template:
 
 ## Sources
 
-- [Source Title](url) — What this source established
+- [Source Title](https://example.com/source) — What this source established
 
 ## Open Questions
 

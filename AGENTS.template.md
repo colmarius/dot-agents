@@ -16,14 +16,15 @@
 ## Workflow
 
 ```text
-Work Item → Context as needed → Plan → Handoff Prompt → Implement → Record Progress
+Work Item → Context as needed → Plan → Execute → Record Evidence
+                                      └─ Hand off when useful
 ```
 
 1. **Work Item:** Create durable context in `.agents/work/<category>/<slug>/`.
 2. **Context:** Add `research.md` or `research/` for technical facts, or `prd.md` as a short requirements brief only when needed.
 3. **Plan:** Break work into implementation-ready tasks in the active plan file (`plan.md` by default, or `plans/<name>.md` for focused plans).
-4. **Handoff Prompt:** Generate a paste-ready prompt for a fresh implementation thread.
-5. **Progress:** Implementation threads update `progress.md`, task checkboxes, and `index.md`.
+4. **Execute:** Implement in the current thread by default; delegate or generate a paste-ready handoff only when another worker or environment helps.
+5. **Evidence:** Update plan checkboxes, living `progress.md` when needed, and `index.md`; record observed verification results.
 
 ## Project Structure
 
@@ -39,13 +40,14 @@ project/
 │   │       ├── prd.md           # Optional requirements brief
 │   │       ├── plan.md          # Optional primary implementation plan
 │   │       ├── plans/           # Optional focused implementation plans
-│   │       ├── progress.md      # Optional implementation log
+│   │       ├── progress.md      # Optional living execution summary
 │   │       └── decisions/       # Optional durable decisions
 │   ├── research/                # Reusable cross-work research notes
 │   ├── references/              # External repos or docs checkouts (gitignored)
 │   ├── scripts/                 # dot-agents helper scripts
 │   └── skills/                  # Agent skills
 │       ├── adapt/
+│       ├── agent-browser/
 │       ├── agent-work/
 │       ├── feature-planning/
 │       ├── research/
@@ -58,9 +60,10 @@ project/
 | Command | Effect |
 | --- | --- |
 | `Run adapt` | Analyze project and fill in `AGENTS.md` sections |
+| `Use agent-browser to verify ...` | Load current real-browser automation guidance from the installed CLI |
 | `Create a new work item for ...` | Create durable `.agents/work/` context |
 | `Research [topic]` | Investigate and save work-local or reusable findings |
-| `Create a plan for ...` | Produce implementation-ready tasks in the active plan file |
+| `Create/execute a plan for ...` | Produce implementation-ready tasks and implement in the current thread |
 | `Write a handoff prompt for ...` | Produce a paste-ready prompt for a new implementation thread |
 
 Skills are loaded via natural language. See each skill's `SKILL.md` in `.agents/skills/` for details.
@@ -77,18 +80,20 @@ Every work item has `index.md` with:
 
 ```markdown
 Status: researching | planned | in-progress | blocked | completed
-Category: feature | bugfix | tech-debt | docs | tooling | research | other
+Category: <lowercase-kebab-case project, product, domain, or work type>
 Updated: YYYY-MM-DD
 ```
+
+New indexes keep original intent in `Why` and evolving status in `Summary`. Categories are open; common defaults include `feature`, `bugfix`, `tech-debt`, `docs`, `tooling`, and `research`.
 
 Use optional files only when useful:
 
 - `research.md` - work-specific investigation notes
-- `research/` - optional indexed folder for multiple focused research notes
+- `research/` - optional folder with `research/index.md` for multiple focused notes
 - `prd.md` - short requirements brief when alignment is needed
 - `plan.md` - primary implementation-ready task checklist
-- `plans/` - optional indexed folder for multiple focused plans
-- `progress.md` - implementation log, verification, blockers, and next action
+- `plans/` - optional folder with `plans/index.md` for multiple focused plans
+- `progress.md` - optional living execution summary with verification evidence, blockers, and next action
 - `decisions/` - durable decision records
 
 Do not create empty support folders by default. Add `research/`, `plans/`, or `decisions/` only when they hold useful files.
@@ -135,7 +140,7 @@ git push
 After making changes:
 
 1. **Update AGENTS.md** - Keep project commands and conventions current.
-2. **Update work items** - Keep `index.md`, the active plan file, and `progress.md` in sync with implementation state.
+2. **Update work items** - Keep `index.md`, the active plan file, and living `progress.md` in sync with implementation state when needed.
 3. **Update docs** - Reflect user-facing behavior changes.
 
 ## Conventions

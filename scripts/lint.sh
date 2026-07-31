@@ -18,6 +18,7 @@ SCRIPTS=(
     scripts/build-test-fixture.sh
     scripts/lint.sh
     scripts/serve-docs.sh
+    scripts/skills-lint.sh
     scripts/test.sh
     test/mocks/curl
 )
@@ -47,3 +48,7 @@ else
     echo "    ⚠ ShellCheck not installed (brew install shellcheck)"
     exit 1
 fi
+
+echo ""
+echo "==> Skill metadata and links"
+"$SCRIPT_DIR/skills-lint.sh"

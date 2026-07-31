@@ -21,7 +21,14 @@ description: "Brief description. Use when [context]. Triggers on: keyword1, keyw
 
 # Skill Title
 
-[Main content with workflows, patterns, examples]
+## Workflow
+
+1. Step one
+2. Step two
+
+## Verification
+
+- How to confirm the workflow succeeded
 ```
 
 ## Description Best Practices
@@ -38,8 +45,10 @@ The description determines when the skill gets loaded:
 
 - Keep under 250 characters
 - Use kebab-case for skill names
+- Match the `name` to the parent directory exactly
 - Start with action verb or noun describing capability
 - **Always quote description values** - Required for YAML parsing when values contain colons (`:`)
+- Include `Triggers on:` in every description
 
 ## Writing Good Skills
 
@@ -50,6 +59,31 @@ The description determines when the skill gets loaded:
 5. **Reference patterns** - Point to existing code/files
 6. **Keep workflow skills durable** - Put reusable templates in `assets/` and runnable helpers in `scripts/`
 7. **Avoid runner-specific concepts** - Prefer work items and handoff prompts over assuming a specific agent runtime
+8. **Keep the entrypoint concise** - Move detailed background or command catalogs into `references/`
+9. **Do not create a skill for an interaction style alone** - Add an explicit opt-in mode to the closest existing skill
+
+## Where Guidance Belongs
+
+| Information | Location |
+| --- | --- |
+| Always-relevant project map, commands, and safety rules | Root `AGENTS.md` |
+| Directory-local conventions | Closest nested `AGENTS.md` |
+| Triggered multi-step procedure | Skill |
+| Deterministic invariant | Script, test, or check |
+| Current task state and evidence | Work item |
+
+Keep root guidance pointer-driven. A skill owns the procedure; a script or test owns anything that can be enforced deterministically.
+
+## Volatile External Tools
+
+Prefer a thin discovery skill when an external CLI or service changes faster than this repository:
+
+1. Detect the installed tool and version.
+2. Ask the tool or its authoritative source for current instructions.
+3. Execute the version-matched workflow.
+4. Persist commands and evidence, not copied runtime documentation.
+
+The core `agent-browser` skill follows this pattern.
 
 ## Testing Skills
 
@@ -59,12 +93,16 @@ Verify your skill by loading it and checking:
 - Instructions are clear and actionable
 - Examples cover common use cases
 - Workflows produce expected outputs
+- Referenced scripts, assets, and relative links exist
+
+In the dot-agents source repository, run `./scripts/skills-lint.sh` to validate core skill metadata and links.
 
 ## Available Skills
 
 | Skill | Purpose |
 | ----- | ------- |
 | `adapt` | Analyze project and fill in AGENTS.md after installation |
+| `agent-browser` | Discover current real-browser automation workflows from the installed CLI |
 | `agent-work` | Create and maintain `.agents/work/` work items |
 | `feature-planning` | Turn context into plans and paste-ready handoff prompts |
 | `research` | Research technical topics, saving work-local or reusable findings |

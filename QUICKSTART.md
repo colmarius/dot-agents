@@ -39,6 +39,7 @@ your-project/
     │   └── sync.sh
     └── skills/
         ├── adapt/
+        ├── agent-browser/
         ├── agent-work/
         ├── feature-planning/
         ├── research/
@@ -46,6 +47,8 @@ your-project/
 ```
 
 If the project already has a `.claude/` directory, dot-agents also links skills into `.claude/skills/` so Claude Code can discover them as project skills.
+
+`agent-browser` is a discovery skill, not a bundled browser dependency. It uses the external `agent-browser` CLI when available and asks that installed version for current workflow instructions. dot-agents does not install the CLI or Chromium automatically.
 
 ### Verify Installation
 
@@ -129,15 +132,27 @@ Create an implementation-ready plan in .agents/work/feature/user-authentication/
 
 Plans use tasks with scope, dependencies, and acceptance criteria.
 
-## 5. Generate a Handoff Prompt
+## 5. Implement or Hand Off
 
-When the plan is ready, ask:
+When the plan is ready, continue in the same thread by default:
+
+```text
+Implement the next task in .agents/work/feature/user-authentication/plan.md and record verification evidence.
+```
+
+For UI work, ask for running-system proof when the external CLI is available:
+
+```text
+Use agent-browser to verify the authentication flow and save reviewable evidence.
+```
+
+When another thread, worker, or environment would help, ask instead:
 
 ```text
 Review .agents/work/feature/user-authentication and write a paste-ready handoff prompt for the next implementation thread.
 ```
 
-Paste the generated prompt into a fresh agent thread. The new thread should read `index.md`, implement the requested slice, update the active plan file, append to `progress.md`, refresh `index.md`, and report verification results.
+The implementing thread keeps task checkboxes and `index.md` current. It creates or updates living `progress.md` only when durable execution evidence helps work resume across sessions or workers.
 
 ## 6. Continue Later
 
@@ -147,14 +162,14 @@ List active work:
 .agents/skills/agent-work/scripts/list-work.sh
 ```
 
-Then ask for a continuation prompt from the next action in the work item.
+Then continue from the exact next action, or ask for a handoff prompt if another thread will take over.
 
 ## Outcome
 
-At the end of the quickstart, you have a work item with a current next action and a paste-ready prompt for a fresh implementation thread.
+At the end of the quickstart, you have a work item with stable intent, an execution-ready plan, current verification evidence, and an exact next action.
 
-## Upgrading from v0.2?
+## Upgrading?
 
-See the [v0.3 migration guide](./docs/migration-v0.3.md) for legacy `.agents/plans/` and `.agents/prds/` projects.
+See the [v0.4 migration guide](./docs/migration-v0.4.md) for workflow and core-skill changes. Projects older than v0.3 should also read the [v0.3 migration guide](./docs/migration-v0.3.md).
 
 **Next:** [Concepts](./docs/concepts.md) · [Skills Reference](./docs/skills.md) · [dot-agents.dev](https://dot-agents.dev)

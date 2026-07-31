@@ -7,8 +7,9 @@ Skills are specialized instructions that agents load for specific workflows. dot
 | Skill | Trigger | Purpose |
 | --- | --- | --- |
 | [adapt](#adapt) | `Run adapt` | Analyze project, fill in `AGENTS.md` |
+| [agent-browser](#agent-browser) | `Use agent-browser to verify...` | Load current real-browser automation guidance |
 | [agent-work](#agent-work) | `Create a work item` | Create and maintain `.agents/work/` context |
-| [feature-planning](#feature-planning) | `Create a plan`, `write a handoff prompt` | Turn context into plans and new-thread prompts |
+| [feature-planning](#feature-planning) | `Create a plan`, `write a handoff prompt` | Turn context into execution-ready plans and optional handoffs |
 | [research](#research) | `Research [topic]` | Investigate and save work-local or reusable findings |
 | [tmux](#tmux) | `tmux`, `background process` | Manage background processes |
 
@@ -26,6 +27,23 @@ Analyzes your project and fills in `AGENTS.md` with:
 
 **Details:** [.agents/skills/adapt/SKILL.md](../.agents/skills/adapt/SKILL.md)
 
+## agent-browser
+
+Provides a small discovery workflow for the external `agent-browser` CLI. It asks the installed CLI for version-current instructions rather than copying a command catalog into dot-agents.
+
+Use it for:
+
+- Real-browser navigation and form workflows
+- Browser smoke tests and exploratory QA
+- Screenshots, traces, and other reviewable UI evidence
+- Data extraction or application-specific browser automation
+
+The CLI and browser runtime are optional external prerequisites; dot-agents does not install either automatically.
+
+**Invoke:** `Use agent-browser to verify the checkout flow`
+
+**Details:** [.agents/skills/agent-browser/SKILL.md](../.agents/skills/agent-browser/SKILL.md)
+
 ## agent-work
 
 Creates and curates durable work item folders:
@@ -34,7 +52,7 @@ Creates and curates durable work item folders:
 .agents/work/<category>/<slug>/index.md
 ```
 
-Use it to create work items, list active work, place artifacts deliberately, and migrate legacy plans when requested.
+Use it to create work items, list active work, place artifacts deliberately, coordinate bounded workers, and migrate legacy plans when requested.
 
 **Invoke:** `Create a new work item for user authentication`
 
@@ -42,14 +60,15 @@ Use it to create work items, list active work, place artifacts deliberately, and
 
 ## feature-planning
 
-Turns work-item context into implementation-ready plans and paste-ready handoff prompts.
+Turns work-item context into execution-ready plans, current-thread implementation guidance, and optional paste-ready handoff prompts.
 
 Use it to:
 
 - Create or refine a short requirements brief (`prd.md`) only when alignment is needed
 - Create or refine the active plan file
 - Validate stale assumptions before implementation
-- Generate a new-thread handoff prompt
+- Execute in the current thread by default
+- Generate a new-thread handoff prompt when another thread is useful
 - Stress-test a plan when explicitly asked
 
 **Invoke:** `Write a handoff prompt for .agents/work/feature/user-authentication`
@@ -115,6 +134,7 @@ Claude Code discovers project skills in `.claude/skills/<skill>/SKILL.md`. dot-a
 
 ```text
 .claude/skills/adapt -> ../../.agents/skills/adapt
+.claude/skills/agent-browser -> ../../.agents/skills/agent-browser
 .claude/skills/agent-work -> ../../.agents/skills/agent-work
 ```
 

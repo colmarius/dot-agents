@@ -28,7 +28,7 @@ Run this skill after installing dot-agents into a new project to customize the c
    - List detected tech stack
    - Extract commands from package.json scripts, Cargo.toml, Makefile, etc.
    - Note any project-specific conventions observed
-   - Keep the `.agents/work/` and handoff-prompt workflow guidance intact
+   - Keep the `.agents/work/` execution, coordination, and optional handoff guidance intact
 
 ## Example Output
 
@@ -77,7 +77,7 @@ pnpm format
 
 - Durable work lives in `.agents/work/<category>/<slug>/`
 - Use `.agents/research/` only for reusable findings
-- Ask for a handoff prompt before starting a fresh implementation thread
+- Implement in the current thread by default; ask for a handoff prompt when another thread is useful
 ````
 
 ## Checklist
