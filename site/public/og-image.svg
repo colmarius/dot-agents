@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">dot-agents — Make AI coding work survive the next thread</title>
+  <desc id="description">A social preview card for dot-agents on a warm background with forest green accents.</desc>
+
+  <rect width="1200" height="630" fill="#f7f6f2" />
+
+  <text x="72" y="86" fill="#202622" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700">
+    <tspan fill="#2d6049">.</tspan><tspan>agents</tspan>
+  </text>
+
+  <text x="72" y="238" fill="#202622" font-family="Helvetica, Arial, sans-serif" font-size="62" font-weight="700">
+    Make AI coding work
+  </text>
+  <text x="72" y="316" fill="#2d6049" font-family="Helvetica, Arial, sans-serif" font-size="62" font-weight="700">
+    survive the next thread.
+  </text>
+  <text x="72" y="394" fill="#606b64" font-family="Helvetica, Arial, sans-serif" font-size="27">
+    Plain files for durable AI coding work.
+  </text>
+
+  <g transform="translate(848 162) scale(4.375)">
+    <rect width="64" height="64" rx="14" fill="#2d6049" />
+    <path
+      d="M45.9 24.5 A16 16 0 1 0 45.9 39.5"
+      fill="none"
+      stroke="#f7f6f2"
+      stroke-width="6"
+      stroke-linecap="round"
+    />
+    <path d="M54 39.5 L43 33 L43 46 Z" fill="#f7f6f2" />
+    <circle cx="32" cy="32" r="7.5" fill="#f7f6f2" />
+  </g>
+
+  <path d="M72 526 H1128" stroke="#d9ded9" />
+  <text x="72" y="574" fill="#202622" font-family="Helvetica, Arial, sans-serif" font-size="21" font-weight="600">
+    dot-agents.dev
+  </text>
+  <text x="1128" y="574" fill="#606b64" font-family="Helvetica, Arial, sans-serif" font-size="18" text-anchor="end">
+    Durable context for AI coding agents
+  </text>
+</svg>

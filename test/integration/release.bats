@@ -151,7 +151,7 @@ teardown() {
     assert_output --partial "Release 2.0.0"
 }
 
-@test "updates version references in install.sh and site/index.html" {
+@test "updates static version references in install.sh" {
     # Create install.sh with old version reference
     cat > install.sh <<'EOF'
 #!/usr/bin/env bash
@@ -159,24 +159,14 @@ teardown() {
 echo "installer"
 EOF
 
-    # Create site/index.html with old version reference
-    mkdir -p site
-    cat > site/index.html <<'EOF'
-<code>curl ... | bash -s -- --ref v0.0.1</code>
-EOF
-
-    git add -A && git commit -m "Add files with version refs" --quiet
+    git add -A && git commit -m "Add file with version ref" --quiet
 
     run bash scripts/release.sh
     assert_success
     assert_output --partial "Updated version in install.sh"
-    assert_output --partial "Updated version in index.html"
 
-    # Verify files were updated
+    # Verify the static example was updated
     run grep -- "--ref v1.0.0" install.sh
-    assert_success
-
-    run grep -- "--ref v1.0.0" site/index.html
     assert_success
 }
 

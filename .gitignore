@@ -1,3 +1,8 @@
 # External reference repositories
 .agents/references/*
 !.agents/references/.gitkeep
+
+# Astro landing page
+site/.astro/
+site/dist/
+node_modules/
