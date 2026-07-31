@@ -1,7 +1,11 @@
 ---
 import "../styles/global.css";
+import versionText from "../../../VERSION?raw";
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL("/og-image.png", Astro.site);
+const version = versionText.trim();
+const releaseTag = `v${version}`;
 const description =
   "A small .agents workspace for durable AI coding work: work items, research notes, execution-ready plans, verification evidence, and optional handoffs across threads.";
 ---
@@ -20,10 +24,16 @@ const description =
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content="dot-agents — AI-ready agent workspace" />
     <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="dot-agents — Make AI coding work survive the next thread" />
 
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="dot-agents — AI-ready agent workspace" />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="dot-agents — Make AI coding work survive the next thread" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -99,7 +109,7 @@ const description =
               </div>
               <div class="terminal-hints">
                 <p><span>Review</span><code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | less</code></p>
-                <p><span>Pin v0.4.0</span><code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.4.0</code></p>
+                <p><span>Pin {releaseTag}</span><code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref {releaseTag}</code></p>
               </div>
             </div>
             <p class="install-next">Then tell your agent: <code>Run adapt</code>.</p>
@@ -221,6 +231,7 @@ Implement Task 1 from plan.md.</code></pre>
         <a class="wordmark footer-wordmark" href="/" aria-label="dot-agents home"><span><b>.</b>agents</span></a>
         <p>Durable context for AI coding agents.</p>
         <nav aria-label="Footer navigation">
+          <a href="https://github.com/colmarius/dot-agents/blob/main/QUICKSTART.md">Quickstart</a>
           <a href="https://github.com/colmarius/dot-agents/blob/main/docs/migration-v0.4.md">v0.4 migration</a>
           <a href="https://github.com/colmarius/dot-agents/blob/main/CHANGELOG.md">Changelog</a>
           <a href="https://ampcode.com">Made for Amp + AI agents</a>
