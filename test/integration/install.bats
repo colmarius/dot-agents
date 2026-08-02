@@ -67,6 +67,8 @@ teardown() {
     [ ! -d ".agents/skills/ralph" ]
     [ ! -d ".agents/plans" ]
     [ ! -d ".agents/prds" ]
+    [ ! -e ".agents/setup" ]
+    [ ! -e ".agents/resume" ]
 }
 
 @test "fresh install creates .agents/.dot-agents.json with valid JSON" {

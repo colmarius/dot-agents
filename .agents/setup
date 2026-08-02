@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+node_version="22.14.0"
+
+echo "==> Installing system dependencies"
+packages=()
+command -v bats >/dev/null 2>&1 || packages+=(bats)
+command -v shellcheck >/dev/null 2>&1 || packages+=(shellcheck)
+command -v curl >/dev/null 2>&1 || packages+=(curl)
+command -v git >/dev/null 2>&1 || packages+=(git)
+command -v tar >/dev/null 2>&1 || packages+=(tar)
+command -v xz >/dev/null 2>&1 || packages+=(xz-utils)
+command -v sha256sum >/dev/null 2>&1 || packages+=(coreutils)
+
+if ((${#packages[@]} > 0)); then
+    apt=(apt-get)
+    if ((EUID != 0)); then
+        apt=(sudo apt-get)
+    fi
+    "${apt[@]}" update
+    if ((EUID == 0)); then
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}"
+    else
+        sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}"
+    fi
+else
+    echo "    System dependencies already installed"
+fi
+
+case "$(uname -m)" in
+    x86_64) node_arch="x64" ;;
+    aarch64|arm64) node_arch="arm64" ;;
+    *)
+        echo "Unsupported architecture: $(uname -m)" >&2
+        exit 1
+        ;;
+esac
+
+node_distribution="node-v${node_version}-linux-${node_arch}"
+node_archive="${node_distribution}.tar.xz"
+node_parent="$HOME/.local/lib/nodejs"
+node_home="$node_parent/$node_distribution"
+temp_dir=""
+
+cleanup() {
+    if [[ -n "$temp_dir" && -d "$temp_dir" ]]; then
+        rm -rf -- "$temp_dir"
+    fi
+}
+trap cleanup EXIT
+
+echo "==> Installing Node.js ${node_version}"
+if [[ ! -x "$node_home/bin/node" ]] || [[ "$($node_home/bin/node --version)" != "v${node_version}" ]]; then
+    temp_dir="$(mktemp -d)"
+    release_url="https://nodejs.org/dist/v${node_version}"
+
+    curl -fsSLo "$temp_dir/$node_archive" --retry 3 --retry-delay 2 \
+        "$release_url/$node_archive"
+    curl -fsSLo "$temp_dir/SHASUMS256.txt" --retry 3 --retry-delay 2 \
+        "$release_url/SHASUMS256.txt"
+
+    checksum="$(grep " ${node_archive}\$" "$temp_dir/SHASUMS256.txt")"
+    if [[ -z "$checksum" ]]; then
+        echo "No checksum found for $node_archive" >&2
+        exit 1
+    fi
+    (cd "$temp_dir" && printf '%s\n' "$checksum" | sha256sum -c -)
+
+    mkdir -p "$node_parent"
+    rm -rf -- "$node_home"
+    tar -xJf "$temp_dir/$node_archive" -C "$node_parent"
+else
+    echo "    Node.js ${node_version} already installed"
+fi
+
+mkdir -p "$HOME/.local/bin"
+for executable in node npm npx corepack; do
+    ln -sfn "$node_home/bin/$executable" "$HOME/.local/bin/$executable"
+done
+
+profile_marker="# dot-agents orb toolchain"
+if ! grep -Fqx "$profile_marker" "$HOME/.bash_profile" 2>/dev/null; then
+    cat >> "$HOME/.bash_profile" <<'EOF'
+
+# dot-agents orb toolchain
+case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+EOF
+fi
+
+export PATH="$HOME/.local/bin:$PATH"
+hash -r
+node --version
+npm --version
+
+echo "==> Initializing test submodules"
+git -C "$repo_root" submodule update --init --recursive
+
+echo "==> Installing npm dependencies"
+cd "$repo_root"
+npm ci --no-audit --no-fund
+
+echo "==> Orb setup complete"

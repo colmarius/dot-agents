@@ -12,6 +12,8 @@ cd "$ROOT_DIR"
 # Collect all shell scripts
 SCRIPTS=(
     install.sh
+    .agents/setup
+    .agents/resume
     .agents/scripts/sync.sh
     .agents/skills/agent-work/scripts/list-work.sh
     .agents/skills/agent-work/scripts/new-work.sh

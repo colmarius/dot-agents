@@ -854,6 +854,11 @@ process_directory() {
         local rel_path="${file#$src_dir/}"
         local dest_path="${dest_dir}/${rel_path}"
 
+        # These configure this repository's Amp orb, not projects using dot-agents.
+        if [[ "$rel_path" == "setup" || "$rel_path" == "resume" ]]; then
+            continue
+        fi
+
         # Skip user content directories. Fresh installs get guidance files, not sample work.
         if [[ "$rel_path" == research/*.md || "$rel_path" == research/**/*.md || "$rel_path" == work/*/*/* || "$rel_path" == plans/* || "$rel_path" == prds/* ]]; then
             continue

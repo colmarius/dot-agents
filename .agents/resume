@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+expected_node_version="v22.14.0"
+
+if ! command -v node >/dev/null 2>&1; then
+    echo "Node.js is unavailable; run .agents/setup" >&2
+    exit 1
+fi
+
+if [[ "$(node --version)" != "$expected_node_version" ]]; then
+    echo "Node.js $expected_node_version is required; run .agents/setup" >&2
+    exit 1
+fi
+
+if [[ ! -x "$repo_root/node_modules/.bin/astro" ]]; then
+    echo "npm dependencies are unavailable; run .agents/setup" >&2
+    exit 1
+fi
+
+if [[ ! -f "$repo_root/test/test_helper/bats-support/load.bash" || ! -f "$repo_root/test/test_helper/bats-assert/load.bash" ]]; then
+    echo "Test submodules are unavailable; run .agents/setup" >&2
+    exit 1
+fi
+
+echo "Orb environment ready"
