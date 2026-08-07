@@ -43,6 +43,16 @@ teardown() {
     rm -rf "$TEST_DIR"
 }
 
+replace_in_file() {
+    local expression="$1"
+    local target="$2"
+    local temporary
+
+    temporary=$(mktemp)
+    sed "$expression" "$target" > "$temporary"
+    mv "$temporary" "$target"
+}
+
 @test "close-work help and argument validation are explicit" {
     run .agents/skills/agent-work/scripts/close-work.sh --help
     assert_success
@@ -87,7 +97,8 @@ teardown() {
 }
 
 @test "close-work rejects non-completed work and a non-empty next action" {
-    sed -i 's/Status: completed/Status: in-progress/' .agents/work/tooling/demo-work/index.md
+    replace_in_file 's/Status: completed/Status: in-progress/' \
+        .agents/work/tooling/demo-work/index.md
     git add -A
     git commit -m "Resume work" --quiet
 
@@ -96,8 +107,10 @@ teardown() {
     assert_failure
     assert_output --partial "exactly one 'Status: completed'"
 
-    sed -i 's/Status: in-progress/Status: completed/' .agents/work/tooling/demo-work/index.md
-    sed -i 's/- None\./- Await review./' .agents/work/tooling/demo-work/index.md
+    replace_in_file 's/Status: in-progress/Status: completed/' \
+        .agents/work/tooling/demo-work/index.md
+    replace_in_file 's/- None\./- Await review./' \
+        .agents/work/tooling/demo-work/index.md
     git add -A
     git commit -m "Await review" --quiet
 
