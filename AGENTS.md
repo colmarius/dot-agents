@@ -12,15 +12,16 @@ dot-agents is an AI-ready `.agents/` workspace scaffold for any project. It prov
 ## Workflow
 
 ```text
-Work Item → Context as needed → Plan → Execute → Record Evidence
-                                      └─ Hand off when useful
+Request or change
+├─ Self-contained ───────────▶ Plan and execute in this conversation ─▶ Verify and report
+└─ Continuity has value ─────▶ Work Item → Context as needed → Plan → Execute → Verify
+                                                                    ├─ Hand off when useful
+                                                                    └─ Promote → Commit snapshot → Remove
 ```
 
-1. **Work Item:** Create `.agents/work/<category>/<slug>/index.md` as the durable entrypoint.
-2. **Context:** Add `research.md` or `research/` for technical facts, or `prd.md` as a short requirements brief only when needed.
-3. **Plan:** Break work into implementation-ready tasks in the active plan file (`plan.md` by default, or `plans/<name>.md` for focused plans).
-4. **Execute:** Implement in the current thread by default; delegate or generate a paste-ready handoff only when another worker or environment helps.
-5. **Evidence:** Update plan checkboxes, living `progress.md` when needed, and `index.md`; record observed verification results.
+Keep small, self-contained planning and execution in the current conversation. Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request justifies repository context. For durable work, add context only when needed, implement in the current thread by default, and hand off only when another worker or environment genuinely helps.
+
+The canonical artifact, status, and completion contract lives in `.agents/work/AGENTS.md`.
 
 ## Project Structure
 
@@ -31,7 +32,7 @@ dot-agents/
 ├── install.sh                   # Main installation script
 ├── .agents/
 │   ├── work/                    # Work-item guidance installed into projects
-│   ├── skills/                  # adapt, agent-browser, agent-work, feature-planning, research, tmux
+│   ├── skills/                  # adapt, agent-browser, agent-work, research
 │   ├── research/                # Reusable research notes
 │   ├── references/              # External reference repos (gitignored)
 │   └── scripts/                 # sync.sh
@@ -62,7 +63,9 @@ Work items live under:
 .agents/work/<category>/<slug>/
 ```
 
-Every work item has `index.md` with stable intent, current status and summary, category, updated date, artifact links, next action, and open questions. Categories are an open lowercase kebab-case namespace. Optional artifacts include `research.md`, indexed `research/`, `prd.md`, `plan.md`, indexed `plans/`, living `progress.md`, and `decisions/` records.
+Every work item has `index.md` with stable intent, current status and summary, category, updated date, artifact links, next action, and open questions. Categories are an open lowercase kebab-case namespace. Optional artifacts include `research.md`, indexed `research/`, `prd.md`, `plan.md`, indexed `plans/`, living `progress.md`, `decisions/` records, and separately named `handoff-*.md` files.
+
+Use work items only when durable context earns its maintenance cost. Follow `.agents/work/AGENTS.md` as the source of truth for artifact ownership and lifecycle rules, including promotion, the committed final snapshot, and removal from the current tree.
 
 Legacy `.agents/plans/` and `.agents/prds/` paths may exist in older installs. Preserve legacy plan and PRD documents as user content, but allow sync to retire stale Ralph guidance/templates. Migrate one plan at a time into `.agents/work/` only when requested.
 
@@ -87,6 +90,9 @@ Legacy `.agents/plans/` and `.agents/prds/` paths may exist in older installs. P
 # Install dependencies and develop the Astro landing page
 npm install
 npm run dev
+
+# Start declared Orb services and print the authenticated portal URL
+amp orb services ensure
 
 # Build the landing page for production
 npm run build
@@ -113,15 +119,19 @@ git push
 ### Release Workflow
 
 ```bash
-# 1. Update VERSION file with new version
-echo "0.4.0" > VERSION
+# 1. Update VERSION and pinned --ref examples with the new version
+echo "0.5.0" > VERSION
 
 # 2. Update CHANGELOG.md - move [Unreleased] items to new version section
 
 # 3. Commit changes
-git add -A && git commit -m "Release v0.4.0"
+git add -A && git commit -m "Release v0.5.0"
 
-# 4. Create and push release
+# 4. Push the reviewed release commit and verify the remote branch matches
+git push origin main
+test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+
+# 5. Create and push release
 ./scripts/release.sh --push
 ```
 
@@ -148,3 +158,5 @@ The installer (`install.sh`) downloads a tarball from GitHub, extracts it to a t
 - Upstream-owned `.agents/` files such as skills, `.agents/work/AGENTS.md`, and `sync.sh`.
 
 User content under `.agents/work/<category>/<slug>/`, `.agents/research/`, and legacy plan/PRD documents is preserved during sync. Retired upstream skills and stale legacy guidance/templates may be backed up and removed during sync.
+
+Orb lifecycle hooks install and validate the pinned development environment. `.amp/services.yaml` declares the supervised Astro service; it listens on `$PORT`, and Vite accepts only Amp's `.e2b.app` and `.onamp.dev` portal host suffixes.

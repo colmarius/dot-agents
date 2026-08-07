@@ -9,6 +9,7 @@ RELEASE_SCRIPT="$BATS_TEST_DIRNAME/../../scripts/release.sh"
 setup() {
     # Create isolated test directory with git repo
     TEST_DIR="$(mktemp -d)"
+    REMOTE_DIR=""
     cd "$TEST_DIR" || exit 1
 
     # Initialize git repo
@@ -47,6 +48,17 @@ EOF
 teardown() {
     cd /
     rm -rf "$TEST_DIR"
+    if [[ -n "$REMOTE_DIR" ]]; then
+        rm -rf "$REMOTE_DIR"
+    fi
+}
+
+configure_upstream() {
+    REMOTE_DIR="$(mktemp -d)"
+    git init --bare --quiet "$REMOTE_DIR"
+    git branch -M main
+    git remote add origin "$REMOTE_DIR"
+    git push --quiet --set-upstream origin main
 }
 
 @test "--help shows usage and exits 0" {
@@ -67,6 +79,63 @@ teardown() {
     # Tag should not exist
     run git tag -l "v1.0.0"
     assert_output ""
+}
+
+@test "--push refuses release without an upstream branch" {
+    cat > install.sh <<'EOF'
+#!/usr/bin/env bash
+# Example: bash -s -- --ref v0.0.1
+EOF
+    git add install.sh
+    git commit -m "Add stale version reference" --quiet
+    local head_before
+    head_before=$(git rev-parse HEAD)
+
+    run bash scripts/release.sh --dry-run --push
+    assert_failure
+    assert_output --partial "Current branch has no configured upstream"
+
+    [ "$(git rev-parse HEAD)" = "$head_before" ]
+    run grep -- "--ref v0.0.1" install.sh
+    assert_success
+    [ -z "$(git status --porcelain=v1 --untracked-files=all)" ]
+
+    run git tag -l "v1.0.0"
+    assert_output ""
+}
+
+@test "--push refuses release when HEAD does not match upstream" {
+    configure_upstream
+    echo "Local release change" >> CHANGELOG.md
+    cat > install.sh <<'EOF'
+#!/usr/bin/env bash
+# Example: bash -s -- --ref v0.0.1
+EOF
+    git add CHANGELOG.md install.sh
+    git commit -m "Local release change" --quiet
+    local head_before
+    head_before=$(git rev-parse HEAD)
+
+    run bash scripts/release.sh --dry-run --push
+    assert_failure
+    assert_output --partial "HEAD does not match upstream branch origin/main"
+
+    [ "$(git rev-parse HEAD)" = "$head_before" ]
+    run grep -- "--ref v0.0.1" install.sh
+    assert_success
+    [ -z "$(git status --porcelain=v1 --untracked-files=all)" ]
+
+    run git tag -l "v1.0.0"
+    assert_output ""
+}
+
+@test "--push proceeds when HEAD matches upstream" {
+    configure_upstream
+
+    run bash scripts/release.sh --dry-run --push
+    assert_success
+    assert_output --partial "Verified HEAD matches upstream branch origin/main"
+    assert_output --partial "[DRY-RUN] Would push tag to origin"
 }
 
 @test "fails when VERSION file is missing" {
@@ -115,13 +184,19 @@ teardown() {
     assert_output --partial "Tag v1.0.0 already exists"
 }
 
-@test "uncommitted untracked files do not block release" {
-    # Untracked files are ignored; only version ref changes are auto-committed
+@test "uncommitted files block release without changing HEAD" {
     echo "new content" > newfile.txt
+    local head_before
+    head_before=$(git rev-parse HEAD)
 
     run bash scripts/release.sh --dry-run
-    assert_success
-    assert_output --partial "[DRY-RUN] Would create tag: v1.0.0"
+    assert_failure
+    assert_output --partial "Repository has uncommitted changes"
+
+    [ "$(git rev-parse HEAD)" = "$head_before" ]
+    [ -f newfile.txt ]
+    run git tag -l "v1.0.0"
+    assert_output ""
 }
 
 @test "creates tag without --push" {
@@ -151,8 +226,7 @@ teardown() {
     assert_output --partial "Release 2.0.0"
 }
 
-@test "updates static version references in install.sh" {
-    # Create install.sh with old version reference
+@test "stale static version references fail without modifying the repository" {
     cat > install.sh <<'EOF'
 #!/usr/bin/env bash
 # Example: bash -s -- --ref v0.0.1
@@ -160,31 +234,38 @@ echo "installer"
 EOF
 
     git add -A && git commit -m "Add file with version ref" --quiet
+    configure_upstream
+    local head_before
+    head_before=$(git rev-parse HEAD)
 
-    run bash scripts/release.sh
-    assert_success
-    assert_output --partial "Updated version in install.sh"
+    run bash scripts/release.sh --dry-run --push
+    assert_failure
+    assert_output --partial "Version references do not match v1.0.0 in: install.sh"
 
-    # Verify the static example was updated
-    run grep -- "--ref v1.0.0" install.sh
+    [ "$(git rev-parse HEAD)" = "$head_before" ]
+    run grep -- "--ref v0.0.1" install.sh
     assert_success
+    [ -z "$(git status --porcelain=v1 --untracked-files=all)" ]
+    run git tag -l "v1.0.0"
+    assert_output ""
 }
 
-@test "dry-run shows version update commit would happen" {
-    # Create install.sh with old version reference
+@test "matching static version references pass validation unchanged" {
     cat > install.sh <<'EOF'
 #!/usr/bin/env bash
-# Example: bash -s -- --ref v0.0.1
+# Example: bash -s -- --ref v1.0.0
 EOF
 
     git add -A && git commit -m "Add install.sh" --quiet
+    local head_before
+    head_before=$(git rev-parse HEAD)
 
     run bash scripts/release.sh --dry-run
     assert_success
-    assert_output --partial "[DRY-RUN] Would commit version reference updates"
+    assert_output --partial "[DRY-RUN] Would create tag: v1.0.0"
 
-    # File should NOT be modified in dry-run (update happens but no commit)
-    # Actually the update does happen, just the commit is skipped
     run grep -- "--ref v1.0.0" install.sh
     assert_success
+    [ "$(git rev-parse HEAD)" = "$head_before" ]
+    [ -z "$(git status --porcelain=v1 --untracked-files=all)" ]
 }

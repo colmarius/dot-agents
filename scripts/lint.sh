@@ -15,6 +15,7 @@ SCRIPTS=(
     .agents/setup
     .agents/resume
     .agents/scripts/sync.sh
+    .agents/skills/agent-work/scripts/close-work.sh
     .agents/skills/agent-work/scripts/list-work.sh
     .agents/skills/agent-work/scripts/new-work.sh
     scripts/build-test-fixture.sh

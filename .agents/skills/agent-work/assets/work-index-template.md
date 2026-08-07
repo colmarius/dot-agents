@@ -19,6 +19,7 @@ Updated: {{UPDATED}}
 - Plan: none
 - Progress: none
 - Decisions: none
+- Handoffs: none
 
 ## Next Action
 

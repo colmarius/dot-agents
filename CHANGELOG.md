@@ -8,6 +8,41 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-07
+
+### Changed
+
+- **BREAKING:** `agent-work` is now the single owner of durable requirements, planning, refinement, execution, coordination, and handoffs; self-contained planning stays conversational.
+- The workflow now starts by choosing conversational or durable work instead of treating every change as a work item.
+- `.agents/work/AGENTS.md` is the canonical contract for status, artifact ownership, evidence, handoffs, promotion, final snapshots, and completed-work removal.
+- `index.md` owns lifecycle state and the canonical next action; plans own intended tasks and planned verification; `progress.md` owns observed evidence and concise resumption detail.
+- Persisted `handoff-*.md` files are first-class but optional, remain separate from plans, distinguish inherited from newly observed evidence, and require explicit delivery authority.
+- Research answers may remain conversational; work-local or reusable notes are created only when durability helps.
+- Completed work items are removed from the current tree after reusable outcomes are promoted and a final completed snapshot is committed; git history is the archive.
+- `adapt` now preserves intentional project guidance while preferring concise canonical pointers and verified commands or paths over copied inventories.
+- Release commands now require a clean tree, reviewed version references, and an exact upstream match before publishing; they never rewrite or auto-commit release files.
+
+### Added
+
+- Plan refinement/execution and handoff-context references under `agent-work`.
+- Guarded `close-work.sh` validation and removal staging, including dirty-repository, final-snapshot, exact-next-action, and ignored-content checks.
+- Orb lifecycle hooks and a supervised Astro portal service, with narrow Vite allowlisting for Amp's generated `.e2b.app` and `.onamp.dev` hosts.
+- Matching conversational-versus-durable workflow diagrams in README and the landing page, with semantic HTML and responsive, reduced-motion-safe styling on the site.
+- v0.5 migration guidance, including repair steps for customized root `AGENTS.md` files.
+- Installer and Bats coverage for previewing, backing up, and removing retired `feature-planning` and `tmux` content and managed Claude skill links.
+
+### Removed
+
+- **BREAKING:** Removed `feature-planning` as a core skill. Sync backs up and removes installed copies, removes dot-agents-managed Claude symlinks, and directs users to `agent-work`.
+- **BREAKING:** Removed `tmux` as a core skill. Sync backs up and removes installed copies and managed Claude symlinks; projects should use current environment-specific process-management guidance.
+
+### Compatibility
+
+- Existing active work items, statuses, `plans/`, `progress.md`, reusable research, and legacy plan/PRD documents remain valid; no user artifact rename occurs, and sync never removes work items automatically.
+- Existing completed work items may remain until explicitly reviewed and closed. The close helper stages deletion only after promotion and a committed final snapshot; squash workflows must retain that snapshot before deleting it.
+- Customized root `AGENTS.md` files remain user-owned and are not overwritten by sync. Run `adapt` or follow the v0.5 migration guide to replace stale generic skill and workflow references.
+- Non-colliding custom skills and user-owned Claude skill paths remain preserved. Customized skills using the retired upstream `feature-planning` or `tmux` names are backed up before removal.
+
 ## [0.4.0] - 2026-07-31
 
 ### Changed
@@ -111,7 +146,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Installer skip logic now correctly includes plans/TEMPLATE.md
 - Postfix increment operators causing script exit on bash 5.3+ with `set -e` ([#1](https://github.com/colmarius/dot-agents/issues/1))
 
-[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/colmarius/dot-agents/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/colmarius/dot-agents/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/colmarius/dot-agents/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/colmarius/dot-agents/compare/v0.1.1...v0.2.0

@@ -41,9 +41,7 @@ your-project/
         ├── adapt/
         ├── agent-browser/
         ├── agent-work/
-        ├── feature-planning/
-        ├── research/
-        └── tmux/
+        └── research/
 ```
 
 If the project already has a `.claude/` directory, dot-agents also links skills into `.claude/skills/` so Claude Code can discover them as project skills.
@@ -73,9 +71,15 @@ If your agent does not auto-discover skills, tell it:
 Read .agents/skills/adapt/SKILL.md and follow it.
 ```
 
-## 3. Create a Work Item
+## 3. Choose Conversational Or Durable Work
 
-Use work items for multi-session or context-heavy work. For a tiny one-shot edit, you may not need one.
+For a small, self-contained change, stay in the current conversation:
+
+```text
+Plan and implement this change, then verify and report the result.
+```
+
+Create a work item when the work needs resumption, coordination, handoff, auditability, durable decisions, or repository context by explicit request.
 
 Ask your agent:
 
@@ -152,11 +156,13 @@ When another thread, worker, or environment would help, ask instead:
 Review .agents/work/feature/user-authentication and write a paste-ready handoff prompt for the next implementation thread.
 ```
 
+Generate the prompt in conversation by default. When the transition itself must survive or be reused, save a separately named `handoff-*.md` and link it from `index.md`; it is a first-class optional artifact, not a required stage or a second plan.
+
 The implementing thread keeps task checkboxes and `index.md` current. It creates or updates living `progress.md` only when durable execution evidence helps work resume across sessions or workers.
 
 ## 6. Continue Later
 
-List active work:
+List current work:
 
 ```bash
 .agents/skills/agent-work/scripts/list-work.sh
@@ -164,12 +170,33 @@ List active work:
 
 Then continue from the exact next action, or ask for a handoff prompt if another thread will take over.
 
+## 7. Close Completed Work
+
+After implementation and final verification:
+
+1. Promote reusable outcomes to canonical code, docs, guidance, checks, skills, or `.agents/research/`.
+2. Finalize `index.md` with `Status: completed` and exactly `- None.` under `## Next Action`, then commit that snapshot.
+3. Validate and stage removal from the repository root:
+
+```bash
+.agents/skills/agent-work/scripts/close-work.sh \
+  --category feature \
+  --slug user-authentication \
+  --check
+
+.agents/skills/agent-work/scripts/close-work.sh \
+  --category feature \
+  --slug user-authentication
+```
+
+The helper requires a clean repository and never commits. Review and commit the staged deletion separately. Git history is the archive; if a squash workflow would discard the final snapshot commit, land that snapshot first or keep the work item in the tree.
+
 ## Outcome
 
-At the end of the quickstart, you have a work item with stable intent, an execution-ready plan, current verification evidence, and an exact next action.
+At the end of the quickstart, a self-contained change is implemented and verified in conversation, or durable work has a resumable active work item. Once completed, its reusable outcomes remain canonical and its final snapshot remains in git history rather than the current tree.
 
 ## Upgrading?
 
-See the [v0.4 migration guide](./docs/migration-v0.4.md) for workflow and core-skill changes. Projects older than v0.3 should also read the [v0.3 migration guide](./docs/migration-v0.3.md).
+See the [v0.5 migration guide](./docs/migration-v0.5.md) for workflow and core-skill changes. Projects older than v0.4 should also read the [v0.4](./docs/migration-v0.4.md) and [v0.3](./docs/migration-v0.3.md) guides as applicable.
 
 **Next:** [Concepts](./docs/concepts.md) · [Skills Reference](./docs/skills.md) · [dot-agents.dev](https://dot-agents.dev)

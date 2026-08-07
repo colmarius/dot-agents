@@ -51,7 +51,7 @@ Examples:
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 
   # Install specific version
-  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.4.0
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.5.0
 
   # Preview changes first
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --diff
@@ -481,8 +481,8 @@ format_version_string() {
 }
 
 # Core skills that come from upstream
-CORE_SKILLS="adapt agent-browser agent-work feature-planning research tmux"
-RETIRED_CORE_SKILLS="ralph"
+CORE_SKILLS="adapt agent-browser agent-work research"
+RETIRED_CORE_SKILLS="ralph feature-planning tmux"
 RETIRED_LEGACY_GUIDANCE_FILES=".agents/plans/AGENTS.md .agents/prds/AGENTS.md .agents/plans/TEMPLATE.md .agents/prds/TEMPLATE.md"
 
 is_retired_core_skill() {
@@ -496,6 +496,21 @@ is_retired_core_skill() {
     done
 
     return 1
+}
+
+report_retired_core_skill_migration() {
+    local skill_name="$1"
+
+    case "$skill_name" in
+        feature-planning)
+            log_info "    Use agent-work for durable requirements, planning, refinement, execution, and handoffs."
+            log_info "    Migration: https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/main/docs/migration-v0.5.md"
+            ;;
+        tmux)
+            log_info "    Use the execution environment's current process-management guidance."
+            log_info "    Migration: https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/main/docs/migration-v0.5.md"
+            ;;
+    esac
 }
 
 detect_custom_skills() {
@@ -554,6 +569,7 @@ cleanup_retired_core_skills() {
 
         if [[ "$DIFF_ONLY" == "true" ]]; then
             log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill, preview only)"
+            report_retired_core_skill_migration "$retired"
             pending_change_count=$((pending_change_count + 1))
             continue
         fi
@@ -565,6 +581,7 @@ cleanup_retired_core_skills() {
             rm -rf "$skill_dir"
             log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill)"
         fi
+        report_retired_core_skill_migration "$retired"
     done
 }
 

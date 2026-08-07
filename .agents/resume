@@ -24,4 +24,8 @@ if [[ ! -f "$repo_root/test/test_helper/bats-support/load.bash" || ! -f "$repo_r
     exit 1
 fi
 
+echo "Ensuring Orb services are running"
+cd "$repo_root"
+amp orb services ensure
+
 echo "Orb environment ready"

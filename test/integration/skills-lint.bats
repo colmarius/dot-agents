@@ -17,7 +17,7 @@ teardown() {
 @test "core skills pass metadata and link lint" {
     run bash "$SKILLS_LINT" "$CORE_SKILLS"
     assert_success
-    assert_output "Skill lint passed: 6 file(s)"
+    assert_output "Skill lint passed: 4 file(s)"
 }
 
 @test "skill lint rejects metadata that does not match its folder" {

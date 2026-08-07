@@ -8,10 +8,8 @@ Skills are specialized instructions that agents load for specific workflows. dot
 | --- | --- | --- |
 | [adapt](#adapt) | `Run adapt` | Analyze project, fill in `AGENTS.md` |
 | [agent-browser](#agent-browser) | `Use agent-browser to verify...` | Load current real-browser automation guidance |
-| [agent-work](#agent-work) | `Create a work item` | Create and maintain `.agents/work/` context |
-| [feature-planning](#feature-planning) | `Create a plan`, `write a handoff prompt` | Turn context into execution-ready plans and optional handoffs |
+| [agent-work](#agent-work) | `Create a work item`, `refine this plan` | Manage durable requirements, plans, execution, and handoffs |
 | [research](#research) | `Research [topic]` | Investigate and save work-local or reusable findings |
-| [tmux](#tmux) | `tmux`, `background process` | Manage background processes |
 
 ## adapt
 
@@ -52,32 +50,17 @@ Creates and curates durable work item folders:
 .agents/work/<category>/<slug>/index.md
 ```
 
-Use it to create work items, list active work, place artifacts deliberately, coordinate bounded workers, and migrate legacy plans when requested.
+Use it to decide when durable context is warranted, create or list work items, manage requirements and plans, refine or stress-test planned work, execute in the current thread, coordinate bounded workers, produce optional handoffs, and safely close completed work.
+
+Small, self-contained planning remains in the current conversation without a work item. Detailed artifact and lifecycle rules come from `.agents/work/AGENTS.md`; focused references under the skill cover plan execution, handoffs, and coordinated workers. `close-work.sh` verifies a clean repository and committed final snapshot, then stages only the work-item deletion for a separate commit.
 
 **Invoke:** `Create a new work item for user authentication`
 
 **Details:** [.agents/skills/agent-work/SKILL.md](../.agents/skills/agent-work/SKILL.md)
 
-## feature-planning
-
-Turns work-item context into execution-ready plans, current-thread implementation guidance, and optional paste-ready handoff prompts.
-
-Use it to:
-
-- Create or refine a short requirements brief (`prd.md`) only when alignment is needed
-- Create or refine the active plan file
-- Validate stale assumptions before implementation
-- Execute in the current thread by default
-- Generate a new-thread handoff prompt when another thread is useful
-- Stress-test a plan when explicitly asked
-
-**Invoke:** `Write a handoff prompt for .agents/work/feature/user-authentication`
-
-**Details:** [.agents/skills/feature-planning/SKILL.md](../.agents/skills/feature-planning/SKILL.md)
-
 ## research
 
-Investigates technical questions using available local, web, and repository evidence.
+Investigates technical questions using available local, web, and repository evidence. The answer may remain conversational; save it only when resumption, auditability, durable decisions, or future reuse makes an artifact worthwhile.
 
 Research is saved:
 
@@ -87,18 +70,6 @@ Research is saved:
 **Invoke:** `Research authentication patterns for this work item`
 
 **Details:** [.agents/skills/research/SKILL.md](../.agents/skills/research/SKILL.md)
-
-## tmux
-
-Background process management:
-
-- Spawns long-running processes such as servers or watchers
-- Captures output for review
-- Sends interrupts or kills background windows when needed
-
-**Invoke:** `Use tmux to run the dev server in the background`
-
-**Details:** [.agents/skills/tmux/SKILL.md](../.agents/skills/tmux/SKILL.md)
 
 ## Adding Custom Skills
 

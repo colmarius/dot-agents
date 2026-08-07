@@ -61,7 +61,7 @@ if [[ ! -x "$node_home/bin/node" ]] || [[ "$($node_home/bin/node --version)" != 
     curl -fsSLo "$temp_dir/SHASUMS256.txt" --retry 3 --retry-delay 2 \
         "$release_url/SHASUMS256.txt"
 
-    checksum="$(grep " ${node_archive}\$" "$temp_dir/SHASUMS256.txt")"
+    checksum="$(grep " ${node_archive}\$" "$temp_dir/SHASUMS256.txt" || true)"
     if [[ -z "$checksum" ]]; then
         echo "No checksum found for $node_archive" >&2
         exit 1
@@ -103,5 +103,8 @@ git -C "$repo_root" submodule update --init --recursive
 echo "==> Installing npm dependencies"
 cd "$repo_root"
 npm ci --no-audit --no-fund
+
+echo "==> Ensuring Orb services are running"
+amp orb services ensure
 
 echo "==> Orb setup complete"

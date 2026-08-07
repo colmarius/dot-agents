@@ -16,15 +16,16 @@
 ## Workflow
 
 ```text
-Work Item → Context as needed → Plan → Execute → Record Evidence
-                                      └─ Hand off when useful
+Request or change
+├─ Self-contained ───────────▶ Plan and execute in this conversation ─▶ Verify and report
+└─ Continuity has value ─────▶ Work Item → Context as needed → Plan → Execute → Verify
+                                                                    ├─ Hand off when useful
+                                                                    └─ Promote → Commit snapshot → Remove
 ```
 
-1. **Work Item:** Create durable context in `.agents/work/<category>/<slug>/`.
-2. **Context:** Add `research.md` or `research/` for technical facts, or `prd.md` as a short requirements brief only when needed.
-3. **Plan:** Break work into implementation-ready tasks in the active plan file (`plan.md` by default, or `plans/<name>.md` for focused plans).
-4. **Execute:** Implement in the current thread by default; delegate or generate a paste-ready handoff only when another worker or environment helps.
-5. **Evidence:** Update plan checkboxes, living `progress.md` when needed, and `index.md`; record observed verification results.
+Keep small, self-contained planning and execution in the current conversation. Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request justifies repository context. For durable work, add context only when needed, implement in the current thread by default, and hand off only when another worker or environment genuinely helps.
+
+The canonical artifact, status, and completion contract lives in `.agents/work/AGENTS.md`.
 
 ## Project Structure
 
@@ -41,7 +42,8 @@ project/
 │   │       ├── plan.md          # Optional primary implementation plan
 │   │       ├── plans/           # Optional focused implementation plans
 │   │       ├── progress.md      # Optional living execution summary
-│   │       └── decisions/       # Optional durable decisions
+│   │       ├── decisions/       # Optional durable decisions
+│   │       └── handoff-*.md     # Optional reusable transition prompts
 │   ├── research/                # Reusable cross-work research notes
 │   ├── references/              # External repos or docs checkouts (gitignored)
 │   ├── scripts/                 # dot-agents helper scripts
@@ -49,9 +51,7 @@ project/
 │       ├── adapt/
 │       ├── agent-browser/
 │       ├── agent-work/
-│       ├── feature-planning/
-│       ├── research/
-│       └── tmux/
+│       └── research/
 └── src/                         # Source code
 ```
 
@@ -76,27 +76,9 @@ Work items live at:
 .agents/work/<category>/<slug>/
 ```
 
-Every work item has `index.md` with:
+Every work item has `index.md` as the entrypoint and canonical current state. Add research, a requirements brief, plans, progress evidence, decisions, or a separately named `handoff-*.md` only when they hold durable value. Persisted handoffs are first-class but optional; do not create one by default or treat it as a second plan.
 
-```markdown
-Status: researching | planned | in-progress | blocked | completed
-Category: <lowercase-kebab-case project, product, domain, or work type>
-Updated: YYYY-MM-DD
-```
-
-New indexes keep original intent in `Why` and evolving status in `Summary`. Categories are open; common defaults include `feature`, `bugfix`, `tech-debt`, `docs`, `tooling`, and `research`.
-
-Use optional files only when useful:
-
-- `research.md` - work-specific investigation notes
-- `research/` - optional folder with `research/index.md` for multiple focused notes
-- `prd.md` - short requirements brief when alignment is needed
-- `plan.md` - primary implementation-ready task checklist
-- `plans/` - optional folder with `plans/index.md` for multiple focused plans
-- `progress.md` - optional living execution summary with verification evidence, blockers, and next action
-- `decisions/` - durable decision records
-
-Do not create empty support folders by default. Add `research/`, `plans/`, or `decisions/` only when they hold useful files.
+Follow `.agents/work/AGENTS.md` for the authoritative status, artifact ownership, handoff, and completion rules. At closeout, promote reusable outcomes, commit the final `completed` snapshot, then use `close-work.sh` to stage removal for a separate commit; git history is the archive.
 
 ### Task Format
 
@@ -139,9 +121,10 @@ git push
 
 After making changes:
 
-1. **Update AGENTS.md** - Keep project commands and conventions current.
+1. **Update AGENTS.md** - Keep concise, verified project commands and conventions current. Preserve intentional project guidance and prefer pointers to canonical detail over copied inventories.
 2. **Update work items** - Keep `index.md`, the active plan file, and living `progress.md` in sync with implementation state when needed.
 3. **Update docs** - Reflect user-facing behavior changes.
+4. **Close completed work** - Promote reusable outcomes and remove completed work items only after their final snapshot is committed.
 
 ## Conventions
 

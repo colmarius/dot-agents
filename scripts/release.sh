@@ -34,10 +34,11 @@ Options:
   --help       Show this help message
 
 Workflow:
-  1. Update VERSION file with new version number
+  1. Update VERSION and pinned --ref examples with the new version
   2. Update CHANGELOG.md (move Unreleased to new version)
   3. Commit changes
-  4. Run: ./scripts/release.sh --push
+  4. Push the reviewed branch and verify HEAD matches its upstream
+  5. Run: ./scripts/release.sh --push
 
 EOF
 }
@@ -53,6 +54,30 @@ info() {
 
 warn() {
     echo -e "${YELLOW}▸${NC} $1"
+}
+
+verify_upstream_release_commit() {
+    local upstream
+    local head_commit
+    local upstream_commit
+
+    if ! upstream="$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null)"; then
+        die "Current branch has no configured upstream. Push the reviewed branch before releasing."
+    fi
+
+    head_commit="$(git rev-parse HEAD)"
+    upstream_commit="$(git rev-parse "$upstream")"
+    if [[ "$head_commit" != "$upstream_commit" ]]; then
+        die "HEAD does not match upstream branch $upstream. Push the reviewed branch and verify it before releasing."
+    fi
+
+    info "Verified HEAD matches upstream branch $upstream"
+}
+
+require_clean_release_tree() {
+    if [[ -n "$(git status --porcelain=v1 --untracked-files=all)" ]]; then
+        die "Repository has uncommitted changes. Commit or remove them before releasing."
+    fi
 }
 
 # Parse arguments
@@ -93,26 +118,33 @@ TAG="v$VERSION"
 info "Version: $VERSION"
 info "Tag: $TAG"
 
-# Files containing version references to update
+# Files containing pinned version references
 VERSION_FILES=(
     "$PROJECT_ROOT/install.sh"
 )
 
-# Update version references in files
-update_version_refs() {
-    local new_tag="$1"
-    local old_pattern='v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?'
-    
+# Require version references to be reviewed and committed before release
+validate_version_refs() {
+    local expected_tag="$1"
+    local version_pattern='v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?'
+    local file
+    local reference
+    local -a stale_files=()
+
     for file in "${VERSION_FILES[@]}"; do
-        if [[ -f "$file" ]]; then
-            # Only update version refs in --ref examples
-            if grep -qE -- "--ref $old_pattern" "$file" 2>/dev/null; then
-                sed -i.bak -E "s/--ref $old_pattern/--ref $new_tag/g" "$file"
-                rm -f "$file.bak"
-                info "Updated version in $(basename "$file")"
+        [[ -f "$file" ]] || continue
+
+        while IFS= read -r reference; do
+            if [[ "$reference" != "--ref $expected_tag" ]]; then
+                stale_files+=("$(basename "$file")")
+                break
             fi
-        fi
+        done < <(grep -Eo -- "--ref $version_pattern" "$file" 2>/dev/null || true)
     done
+
+    if [[ ${#stale_files[@]} -gt 0 ]]; then
+        die "Version references do not match $expected_tag in: ${stale_files[*]}. Update and commit them before releasing."
+    fi
 }
 
 # Check if tag already exists
@@ -120,19 +152,13 @@ if git rev-parse "$TAG" >/dev/null 2>&1; then
     die "Tag $TAG already exists. Bump VERSION file first."
 fi
 
-# Update version references in example code
-update_version_refs "$TAG"
+require_clean_release_tree
 
-# Check for uncommitted changes and commit version updates
-if ! git diff --quiet HEAD 2>/dev/null || ! git diff --cached --quiet 2>/dev/null; then
-    info "Committing version reference updates..."
-    if [[ "$DRY_RUN" == true ]]; then
-        info "[DRY-RUN] Would commit version reference updates"
-    else
-        git add -A
-        git commit -m "chore: Update version references to $TAG"
-    fi
+if [[ "$PUSH" == true ]]; then
+    verify_upstream_release_commit
 fi
+
+validate_version_refs "$TAG"
 
 # Extract changelog section for this version
 extract_changelog() {

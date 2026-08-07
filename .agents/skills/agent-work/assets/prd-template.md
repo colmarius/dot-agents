@@ -56,6 +56,6 @@ What should be true when this is done?
 - [ ] Question that materially affects scope, sequence, or architecture
 ```
 
-## Handoff To Planning
+## Create The Plan
 
 Once the brief is aligned, create `plan.md` in the same work item using the [agent-work plan template](plan-template.md). Do not create new `.agents/plans/` files.

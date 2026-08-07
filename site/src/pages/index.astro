@@ -69,8 +69,8 @@ const description =
           <div class="hero-copy">
             <h1 id="hero-title">Make AI coding work <em>survive the next thread.</em></h1>
             <p class="hero-description">
-              dot-agents stores work items, plans, and verification in your repo’s plain <code>.agents/</code> folder,
-              so the next thread can continue without reconstructing the work.
+              Small changes stay conversational. When continuity matters, dot-agents stores work items, plans, and
+              verification in your repo’s plain <code>.agents/</code> folder so the next thread can continue.
             </p>
             <div class="hero-actions">
               <a class="button button-primary" href="#install">Install with one command <span aria-hidden="true">↓</span></a>
@@ -118,37 +118,87 @@ const description =
 
         <section id="workflow" class="workflow-section section-block" aria-labelledby="workflow-title">
           <div class="section-heading">
-            <p class="eyebrow">The working loop</p>
-            <h2 id="workflow-title">A small protocol for long-running work.</h2>
-            <p>Keep only the context another thread needs to continue.</p>
+            <p class="eyebrow">Choose the smallest useful path</p>
+            <h2 id="workflow-title">Keep simple work simple. Make durable work resumable.</h2>
+            <p>
+              Stay in the conversation when one thread is enough. Open a work item only when continuity,
+              coordination, decisions, or a handoff makes repository context worth maintaining.
+            </p>
           </div>
 
-          <ol class="workflow-grid">
-            <li>
-              <span class="step-number">01</span>
-              <p class="step-label">Frame</p>
-              <h3>Open a work item</h3>
-              <p>Capture the goal, current status, and next action in <code>index.md</code>.</p>
-            </li>
-            <li>
-              <span class="step-number">02</span>
-              <p class="step-label">Context</p>
-              <h3>Add what earns its place</h3>
-              <p>Add research, requirements, or a plan only when the work needs it.</p>
-            </li>
-            <li>
-              <span class="step-number">03</span>
-              <p class="step-label">Execute</p>
-              <h3>Work from the repo</h3>
-              <p>Implement from durable repo context, in the current thread by default.</p>
-            </li>
-            <li>
-              <span class="step-number">04</span>
-              <p class="step-label">Prove</p>
-              <h3>Record the evidence</h3>
-              <p>Record what you verified and the exact next action.</p>
-            </li>
-          </ol>
+          <div class="workflow-map">
+            <p class="workflow-choice"><span>Request or change</span></p>
+
+            <div class="workflow-paths">
+              <article class="workflow-path workflow-path-conversational" aria-labelledby="conversational-path-title">
+                <header class="workflow-path-header">
+                  <p class="path-kicker">Self-contained</p>
+                  <h3 id="conversational-path-title">Stay in this conversation</h3>
+                  <p>Use no repository workflow artifacts when the scope is clear and one conversation is enough.</p>
+                </header>
+
+                <ol class="workflow-steps">
+                  <li>
+                    <span class="workflow-step-number">01</span>
+                    <h4>Plan and execute</h4>
+                    <p>Work directly from the request in the current conversation.</p>
+                  </li>
+                  <li>
+                    <span class="workflow-step-number">02</span>
+                    <h4>Verify</h4>
+                    <p>Run checks that match the change’s risk.</p>
+                  </li>
+                  <li>
+                    <span class="workflow-step-number">03</span>
+                    <h4>Report</h4>
+                    <p>Summarize the outcome and any remaining uncertainty.</p>
+                  </li>
+                </ol>
+              </article>
+
+              <article class="workflow-path workflow-path-durable" aria-labelledby="durable-path-title">
+                <header class="workflow-path-header">
+                  <p class="path-kicker">Continuity has value</p>
+                  <h3 id="durable-path-title">Create durable context</h3>
+                  <p>Use a work item when work must resume, coordinate, preserve decisions, or move between threads.</p>
+                </header>
+
+                <ol class="workflow-steps">
+                  <li>
+                    <span class="workflow-step-number">01</span>
+                    <h4>Work item</h4>
+                    <p><code>index.md</code> owns status and the exact next action.</p>
+                  </li>
+                  <li>
+                    <span class="workflow-step-number">02 · optional</span>
+                    <h4>Context</h4>
+                    <p>Add research or requirements only when unknowns need them.</p>
+                  </li>
+                  <li>
+                    <span class="workflow-step-number">03</span>
+                    <h4>Plan</h4>
+                    <p>Define scoped tasks and planned verification.</p>
+                  </li>
+                  <li>
+                    <span class="workflow-step-number">04</span>
+                    <h4>Execute</h4>
+                    <p>Implement in the current thread by default.</p>
+                  </li>
+                  <li>
+                    <span class="workflow-step-number">05</span>
+                    <h4>Evidence and closeout</h4>
+                    <p>Record proof, promote reusable lessons, commit the final snapshot, then remove the work item.</p>
+                  </li>
+                </ol>
+
+                <aside class="workflow-handoff" aria-label="Optional handoff path">
+                  <p class="path-kicker">Optional branch</p>
+                  <h4>Hand off when useful</h4>
+                  <p>Prepare bounded context only when another worker, thread, or environment genuinely helps; persist it only when reuse adds value.</p>
+                </aside>
+              </article>
+            </div>
+          </div>
         </section>
 
         <section class="artifacts-section section-block" aria-labelledby="artifacts-title">
@@ -217,7 +267,7 @@ Implement Task 1 from plan.md.</code></pre>
             </article>
             <article>
               <code>Create a plan for ...</code>
-              <p>Turn stable context into implementation-ready tasks.</p>
+              <p>Plan conversationally, or turn durable context into implementation-ready tasks.</p>
             </article>
             <article>
               <code>Write a handoff prompt for ...</code>
@@ -232,7 +282,7 @@ Implement Task 1 from plan.md.</code></pre>
         <p>Durable context for AI coding agents.</p>
         <nav aria-label="Footer navigation">
           <a href="https://github.com/colmarius/dot-agents/blob/main/QUICKSTART.md">Quickstart</a>
-          <a href="https://github.com/colmarius/dot-agents/blob/main/docs/migration-v0.4.md">v0.4 migration</a>
+          <a href="https://github.com/colmarius/dot-agents/blob/main/docs/migration-v0.5.md">v0.5 migration</a>
           <a href="https://github.com/colmarius/dot-agents/blob/main/CHANGELOG.md">Changelog</a>
           <a href="https://ampcode.com">Made for Amp + AI agents</a>
           <span>MIT License</span>

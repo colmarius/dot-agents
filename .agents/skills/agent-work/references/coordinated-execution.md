@@ -4,15 +4,7 @@ Use this reference before assigning multiple workers, a resumable worker, or a w
 
 ## Define The Contract
 
-Every delegation should name:
-
-- role and expected outcome;
-- scope, files, inputs, and non-goals;
-- starting environment, branch or revision, and available state;
-- proof target and verification expectations;
-- effort or budget boundary;
-- stop conditions and escalation path;
-- return format and integration owner.
+Brief each worker using the [handoff context contract](handoff-context.md). For coordinated execution, also name its role, expected outcome, effort or budget boundary, return format, and integration owner.
 
 Choose worker capability by uncertainty, not urgency. Bounded, known-done tasks need less discovery than outcomes whose implementation path is unclear.
 

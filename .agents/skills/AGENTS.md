@@ -103,7 +103,5 @@ In the dot-agents source repository, run `./scripts/skills-lint.sh` to validate 
 | ----- | ------- |
 | `adapt` | Analyze project and fill in AGENTS.md after installation |
 | `agent-browser` | Discover current real-browser automation workflows from the installed CLI |
-| `agent-work` | Create and maintain `.agents/work/` work items |
-| `feature-planning` | Turn context into plans and paste-ready handoff prompts |
+| `agent-work` | Manage durable work from requirements and plans through execution and handoffs |
 | `research` | Research technical topics, saving work-local or reusable findings |
-| `tmux` | Manage background processes using tmux windows for servers and long-running tasks |

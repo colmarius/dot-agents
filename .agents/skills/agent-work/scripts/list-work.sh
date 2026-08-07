@@ -6,17 +6,16 @@ usage() {
 Usage:
   list-work.sh [--all] [--status <status>]
 
-Lists agent work items from .agents/work/. By default, completed work items are hidden.
+Lists all work items currently in .agents/work/. Completed entries are final snapshots awaiting removal.
+The --all option remains available for compatibility and has no additional effect.
 USAGE
 }
 
-show_all=0
 status_filter=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --all)
-      show_all=1
       shift
       ;;
     --status)
@@ -54,10 +53,6 @@ find .agents/work -mindepth 3 -maxdepth 3 -name index.md -type f | sort | while 
   [[ -n "$title" ]] || title="$(basename "$(dirname "$index_file")")"
 
   if [[ -n "$status_filter" && "$status" != "$status_filter" ]]; then
-    continue
-  fi
-
-  if [[ "$show_all" -eq 0 && "$status" == "completed" ]]; then
     continue
   fi
 

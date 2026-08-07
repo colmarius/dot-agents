@@ -5,7 +5,7 @@ description: "Researches technical questions with authoritative sources and save
 
 # Research Skill
 
-Research a technical question, synthesize reliable evidence, and save findings either work-locally or as reusable notes in `.agents/research/`.
+Research a technical question and synthesize reliable evidence. The answer may stay in the conversation; save it work-locally or in `.agents/research/` only when durability helps.
 
 ## Workflow
 
@@ -58,7 +58,9 @@ Produce:
 3. Confidence level and uncertainty.
 4. Unresolved risks or follow-up validations.
 
-### 4. Save or Update Findings
+### 4. Save or Update Findings When Useful
+
+Do not create a durable note for every research request. Save findings when they must support resumption, coordination, auditability, durable decisions, or future reuse, or when the user explicitly asks. Follow [the work-item contract](../../work/AGENTS.md) for work-local artifact ownership.
 
 Use work-local `.agents/work/<category>/<work-slug>/research.md` when:
 

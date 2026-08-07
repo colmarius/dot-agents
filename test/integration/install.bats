@@ -61,10 +61,11 @@ teardown() {
     [ -f ".agents/skills/adapt/SKILL.md" ]
     [ -f ".agents/skills/agent-browser/SKILL.md" ]
     [ -f ".agents/skills/agent-work/SKILL.md" ]
-    [ -f ".agents/skills/feature-planning/SKILL.md" ]
     [ -f ".agents/skills/research/SKILL.md" ]
-    [ -f ".agents/skills/tmux/SKILL.md" ]
+    [ ! -d ".agents/skills/tmux" ]
     [ ! -d ".agents/skills/ralph" ]
+    [ ! -d ".agents/skills/feature-planning" ]
+    [ "$(find .agents/skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" -eq 4 ]
     [ ! -d ".agents/plans" ]
     [ ! -d ".agents/prds" ]
     [ ! -e ".agents/setup" ]
@@ -584,6 +585,47 @@ teardown() {
     [ ! -d ".agents/.dot-agents-backup" ]
 }
 
+@test "--diff previews retired feature-planning and managed Claude link removal without changes" {
+    mkdir -p .claude
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/skills/feature-planning
+    echo "# Customized feature planning" > .agents/skills/feature-planning/SKILL.md
+    ln -s ../../.agents/skills/feature-planning .claude/skills/feature-planning
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial ".agents/skills/feature-planning (retired core skill, preview only)"
+    assert_output --partial ".claude/skills/feature-planning (stale)"
+    assert_output --partial "Use agent-work for durable requirements, planning, refinement, execution, and handoffs."
+    assert_output --partial "docs/migration-v0.5.md"
+    assert_output --partial "Pending changes:"
+
+    [ -f ".agents/skills/feature-planning/SKILL.md" ]
+    [ -L ".claude/skills/feature-planning" ]
+    [ ! -d ".agents/.dot-agents-backup" ]
+}
+
+@test "--diff previews retired tmux and managed Claude link removal without changes" {
+    mkdir -p .claude
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/skills/tmux
+    echo "# Customized tmux" > .agents/skills/tmux/SKILL.md
+    ln -s ../../.agents/skills/tmux .claude/skills/tmux
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure
+    assert_output --partial ".agents/skills/tmux (retired core skill, preview only)"
+    assert_output --partial ".claude/skills/tmux (stale)"
+    assert_output --partial "Use the execution environment's current process-management guidance."
+    assert_output --partial "docs/migration-v0.5.md"
+
+    [ -f ".agents/skills/tmux/SKILL.md" ]
+    [ -L ".claude/skills/tmux" ]
+    [ ! -d ".agents/.dot-agents-backup" ]
+}
+
 @test "--diff exits 1 for retired legacy guidance without removing it" {
     bash "$INSTALL_SCRIPT" --yes
 
@@ -857,9 +899,11 @@ teardown() {
     [ -L ".claude/skills/adapt" ]
     [ -L ".claude/skills/agent-browser" ]
     [ -L ".claude/skills/agent-work" ]
-    [ -L ".claude/skills/feature-planning" ]
     [ -L ".claude/skills/research" ]
-    [ -L ".claude/skills/tmux" ]
+    [ ! -e ".claude/skills/tmux" ]
+    [ ! -e ".claude/skills/feature-planning" ]
+
+    [ "$(find .claude/skills -mindepth 1 -maxdepth 1 -type l | wc -l | tr -d ' ')" -eq 4 ]
 
     local target
     target="$(readlink .claude/skills/adapt)"
@@ -917,9 +961,27 @@ teardown() {
     assert_output "# User adapt skill"
 }
 
+@test "install preserves user-owned Claude directory with a retired skill name" {
+    mkdir -p .claude/skills/feature-planning
+    mkdir -p .claude/skills/tmux
+    echo "# User feature planning" > .claude/skills/feature-planning/SKILL.md
+    echo "# User tmux guidance" > .claude/skills/tmux/SKILL.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+
+    [ ! -L ".claude/skills/feature-planning" ]
+    run cat .claude/skills/feature-planning/SKILL.md
+    assert_output "# User feature planning"
+    [ ! -L ".claude/skills/tmux" ]
+    run cat .claude/skills/tmux/SKILL.md
+    assert_output "# User tmux guidance"
+}
+
 @test "install preserves existing Claude Code user symlink" {
     mkdir -p .claude/skills
     ln -s ../../elsewhere/adapt .claude/skills/adapt
+    ln -s ../../elsewhere/tmux .claude/skills/tmux
 
     run bash "$INSTALL_SCRIPT" --yes
     assert_success
@@ -929,6 +991,8 @@ teardown() {
     local target
     target="$(readlink .claude/skills/adapt)"
     [ "$target" = "../../elsewhere/adapt" ]
+    target="$(readlink .claude/skills/tmux)"
+    [ "$target" = "../../elsewhere/tmux" ]
 }
 
 @test "sync removes stale dot-agents Claude Code skill symlinks" {
@@ -993,6 +1057,66 @@ teardown() {
     assert_output "# Legacy Ralph"
 }
 
+@test "sync backs up and removes customized retired feature-planning and its managed Claude link" {
+    mkdir -p .claude
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/skills/feature-planning/assets
+    echo "# Customized feature planning" > .agents/skills/feature-planning/SKILL.md
+    echo "custom asset" > .agents/skills/feature-planning/assets/custom.txt
+    ln -s ../../.agents/skills/feature-planning .claude/skills/feature-planning
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    assert_output --partial "retired core skill"
+    assert_output --partial "BACKUP"
+    assert_output --partial "Use agent-work for durable requirements, planning, refinement, execution, and handoffs."
+    assert_output --partial "docs/migration-v0.5.md"
+    refute_output --partial "Custom skills preserved:"
+
+    [ ! -d ".agents/skills/feature-planning" ]
+    [ ! -L ".claude/skills/feature-planning" ]
+
+    local backup_dir
+    backup_dir=$(find .agents/.dot-agents-backup -path '*/.agents/skills/feature-planning' -type d | head -1)
+    [ -n "$backup_dir" ]
+
+    run cat "$backup_dir/SKILL.md"
+    assert_output "# Customized feature planning"
+    run cat "$backup_dir/assets/custom.txt"
+    assert_output "custom asset"
+}
+
+@test "sync backs up and removes customized retired tmux and its managed Claude link" {
+    mkdir -p .claude
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/skills/tmux/references
+    echo "# Customized tmux" > .agents/skills/tmux/SKILL.md
+    echo "custom process notes" > .agents/skills/tmux/references/custom.md
+    ln -s ../../.agents/skills/tmux .claude/skills/tmux
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    assert_output --partial "retired core skill"
+    assert_output --partial "BACKUP"
+    assert_output --partial "Use the execution environment's current process-management guidance."
+    assert_output --partial "docs/migration-v0.5.md"
+    refute_output --partial "Custom skills preserved:"
+
+    [ ! -d ".agents/skills/tmux" ]
+    [ ! -L ".claude/skills/tmux" ]
+
+    local backup_dir
+    backup_dir=$(find .agents/.dot-agents-backup -path '*/.agents/skills/tmux' -type d | head -1)
+    [ -n "$backup_dir" ]
+
+    run cat "$backup_dir/SKILL.md"
+    assert_output "# Customized tmux"
+    run cat "$backup_dir/references/custom.md"
+    assert_output "custom process notes"
+}
+
 @test "sync backs up symlinked retired ralph core skill without following it" {
     bash "$INSTALL_SCRIPT" --yes
     ln -s ../missing-ralph .agents/skills/ralph
@@ -1025,7 +1149,6 @@ teardown() {
 
     [ ! -L ".claude/skills/adapt" ]
     [ ! -L ".claude/skills/agent-work" ]
-    [ ! -L ".claude/skills/feature-planning" ]
     [ -f ".claude/skills/my-custom-skill/SKILL.md" ]
 }
 

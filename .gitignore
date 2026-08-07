@@ -6,3 +6,6 @@
 site/.astro/
 site/dist/
 node_modules/
+
+# Amp-generated portal manifests
+.amp/portals/

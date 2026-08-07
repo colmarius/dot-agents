@@ -8,7 +8,9 @@
 ## Concepts
 
 - [Workflow Overview](./concepts.md#workflow)
+- [Completing And Removing Work Items](./concepts.md#completion-and-removal)
 - [Glossary](./concepts.md#glossary)
+- [v0.5 Migration](./migration-v0.5.md)
 - [v0.4 Migration](./migration-v0.4.md)
 - [v0.3 Migration](./migration-v0.3.md)
 
