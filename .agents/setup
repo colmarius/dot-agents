@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-node_version="22.14.0"
+node_version="24.19.0"
 
 echo "==> Installing system dependencies"
 packages=()

@@ -2,12 +2,16 @@
   "name": "dot-agents",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=24.19.0"
+  },
+  "packageManager": "npm@11.17.0",
   "scripts": {
     "dev": "astro dev --root site",
     "build": "astro build --root site",
     "preview": "astro preview --root site"
   },
   "dependencies": {
-    "astro": "^7.1.6"
+    "astro": "^7.2.0"
   }
 }
