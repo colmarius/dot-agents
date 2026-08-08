@@ -2,9 +2,12 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-node_version="24.19.0"
+node_version="$(tr -d '[:space:]' < "$repo_root/.nvmrc")"
+node_version="${node_version#v}"
+SECONDS=0
 
 echo "==> Installing system dependencies"
+step_started=$SECONDS
 packages=()
 command -v bats >/dev/null 2>&1 || packages+=(bats)
 command -v shellcheck >/dev/null 2>&1 || packages+=(shellcheck)
@@ -28,6 +31,7 @@ if ((${#packages[@]} > 0)); then
 else
     echo "    System dependencies already installed"
 fi
+echo "    System dependencies ready in $((SECONDS - step_started))s"
 
 case "$(uname -m)" in
     x86_64) node_arch="x64" ;;
@@ -52,6 +56,7 @@ cleanup() {
 trap cleanup EXIT
 
 echo "==> Installing Node.js ${node_version}"
+step_started=$SECONDS
 if [[ ! -x "$node_home/bin/node" ]] || [[ "$($node_home/bin/node --version)" != "v${node_version}" ]]; then
     temp_dir="$(mktemp -d)"
     release_url="https://nodejs.org/dist/v${node_version}"
@@ -74,6 +79,7 @@ if [[ ! -x "$node_home/bin/node" ]] || [[ "$($node_home/bin/node --version)" != 
 else
     echo "    Node.js ${node_version} already installed"
 fi
+echo "    Node.js ready in $((SECONDS - step_started))s"
 
 mkdir -p "$HOME/.local/bin"
 for executable in node npm npx corepack; do
@@ -92,19 +98,28 @@ esac
 EOF
 fi
 
-export PATH="$HOME/.local/bin:$PATH"
+case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
 hash -r
 node --version
 npm --version
 
 echo "==> Initializing test submodules"
+step_started=$SECONDS
 git -C "$repo_root" submodule update --init --recursive
+echo "    Test submodules ready in $((SECONDS - step_started))s"
 
 echo "==> Installing npm dependencies"
+step_started=$SECONDS
 cd "$repo_root"
 npm ci --no-audit --no-fund
+echo "    npm dependencies ready in $((SECONDS - step_started))s"
 
 echo "==> Ensuring Orb services are running"
+step_started=$SECONDS
 amp orb services ensure
+echo "    Orb services ready in $((SECONDS - step_started))s"
 
-echo "==> Orb setup complete"
+echo "==> Orb setup complete in ${SECONDS}s"

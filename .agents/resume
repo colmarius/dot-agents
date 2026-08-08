@@ -2,7 +2,8 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-expected_node_version="v24.19.0"
+required_node_version="$(tr -d '[:space:]' < "$repo_root/.nvmrc")"
+expected_node_version="v${required_node_version#v}"
 
 if ! command -v node >/dev/null 2>&1; then
     echo "Node.js is unavailable; run .agents/setup" >&2

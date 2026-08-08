@@ -13,6 +13,7 @@ setup() {
     git init --quiet
     git config user.email "test@test.com"
     git config user.name "Test User"
+    git config commit.gpgsign false
 
     mkdir -p .agents/skills/agent-work/scripts
     cp "$CLOSE_WORK_SOURCE" .agents/skills/agent-work/scripts/close-work.sh
