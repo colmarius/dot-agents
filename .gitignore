@@ -9,3 +9,4 @@ node_modules/
 
 # Amp-generated portal manifests
 .amp/portals/
+.amp/portal-proxy.mjs
