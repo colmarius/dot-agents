@@ -263,6 +263,11 @@ button:focus-visible {
   padding: 0 0 clamp(5.5rem, 9vw, 7.5rem);
 }
 
+#install,
+#workflow {
+  scroll-margin-top: clamp(1.5rem, 4vw, 2.5rem);
+}
+
 .install-intro {
   max-width: 640px;
   margin: 0 auto 1.75rem;
