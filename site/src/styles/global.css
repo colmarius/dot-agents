@@ -725,7 +725,7 @@ button:focus-visible {
 }
 
 .file-tree code span {
-  color: #7d8780;
+  color: #68736c;
 }
 
 .document-bar span:first-child {
@@ -888,11 +888,21 @@ button:focus-visible {
   .nav a {
     display: flex;
     align-items: center;
+    min-width: 44px;
     min-height: 44px;
   }
 
   .header-github {
     justify-self: end;
+    min-height: 44px;
+  }
+
+  .wordmark {
+    min-height: 44px;
+  }
+
+  .text-link {
+    min-height: 44px;
   }
 
   .hero {
@@ -920,7 +930,19 @@ button:focus-visible {
     top: auto;
     right: 0.85rem;
     bottom: 0.8rem;
+    min-height: 44px;
     transform: none;
+  }
+
+  .terminal-hints p {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .terminal-hints code {
+    overflow-x: visible;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   .section-block {
@@ -972,14 +994,25 @@ button:focus-visible {
   .site-footer nav {
     grid-column: auto;
     display: grid;
-    gap: 0.6rem;
+    gap: 0;
     padding-bottom: 0;
+  }
+
+  .site-footer nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
   }
 }
 
 @media (max-width: 420px) {
   .wordmark img {
     display: none;
+  }
+
+  .file-tree pre {
+    padding: 1rem;
+    font-size: 0.62rem;
   }
 
   .button {
