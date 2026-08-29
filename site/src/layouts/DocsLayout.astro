@@ -62,7 +62,22 @@ const ogImage = new URL("/og-image.png", Astro.site);
 
       document.querySelectorAll<HTMLElement>(".docs-prose pre").forEach((block) => {
         const content = block.querySelector<HTMLElement>("code");
-        if (content) addCopyControl(block, content, "prompt");
+        if (!content) return;
+
+        addCopyControl(block, content, "prompt");
+
+        const revealCopyControl = (focus = false) => {
+          block.classList.add("is-copy-active");
+          if (focus) block.querySelector<HTMLButtonElement>(".copy-button")?.focus();
+        };
+
+        block.addEventListener("click", () => revealCopyControl(), { once: true });
+        block.addEventListener("keydown", (event) => {
+          if (block.classList.contains("is-copy-active") || (event.key !== "Enter" && event.key !== " ")) return;
+
+          event.preventDefault();
+          revealCopyControl(true);
+        });
       });
     </script>
   </body>

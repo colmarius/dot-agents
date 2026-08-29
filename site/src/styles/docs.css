@@ -209,8 +209,13 @@
 
 .docs-prose pre .copy-button {
   position: static;
+  display: none;
   float: right;
   margin-left: 0.75rem;
+}
+
+.docs-prose pre.is-copy-active .copy-button {
+  display: inline-flex;
 }
 
 .docs-prose pre code {
