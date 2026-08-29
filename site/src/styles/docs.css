@@ -168,8 +168,7 @@
 .docs-prose ul,
 .docs-prose ol,
 .docs-prose pre,
-.docs-prose table,
-.docs-prose details {
+.docs-prose table {
   margin-top: 1rem;
 }
 
@@ -238,25 +237,6 @@
 .docs-prose th {
   color: var(--ink);
   background: var(--surface-muted);
-}
-
-.docs-prose details {
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
-.docs-prose summary {
-  min-height: 44px;
-  color: var(--ink);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.docs-prose summary:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 4px;
 }
 
 .docs-guide-nav {

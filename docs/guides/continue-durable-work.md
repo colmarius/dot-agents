@@ -31,7 +31,7 @@ Split only when the boundary creates a concrete benefit:
 - **Independent work:** slices have disjoint inputs and write targets and can proceed without serial decisions.
 - **Different access or environment:** another worker has the required repository, machine, service, or tool.
 
-Name one integration owner before splitting. That owner keeps scope and durable state coherent, inspects results, resolves conflicts, runs combined verification, and accepts the integrated outcome. Another environment does not automatically share the branch, uncommitted files, credentials, or local services.
+Before splitting, name one integration owner for scope, durable state, combined verification, and final acceptance. Another environment does not automatically share the branch, uncommitted files, credentials, or local services.
 
 ## Label evidence by what happened
 
@@ -65,13 +65,6 @@ Integration owner: <human or coordinating thread>
 
 Authority does not travel with access or an implementation assignment. State separately whether the recipient may commit, push, open a pull request, merge, deploy, run migrations, change data, or perform another shared-state action.
 
-<details>
-<summary>Composite example: parallel documentation and implementation</summary>
-
-One worker tests a content-loading boundary while another drafts guide copy in a separate orb. Neither may push. The coordinating thread owns the work item, downloads and inspects both patches, chooses the combined design, reruns the integrated build and browser checks, and reports which evidence was newly observed rather than inherited.
-
-</details>
-
 ## Integrate before accepting
 
 The integration owner should:
@@ -79,9 +72,6 @@ The integration owner should:
 1. Inspect actual changes and durable artifacts, not only the return message.
 2. Compare the result with current acceptance criteria and authority boundaries.
 3. Run combined verification and label the resulting evidence.
-4. Apply accepted feedback to the existing artifact that owns it—`index.md`, `prd.md`, or the active plan—before more work.
-5. Update checkboxes, `index.md`, and `progress.md` only where each artifact owns that state.
-
-The expected return is a reviewable change set, observed and unverified evidence kept distinct, one canonical next action, and any decision that remains with the human owner.
+4. Update checkboxes, `index.md`, and `progress.md` only where each artifact owns that state.
 
 For exact procedures, use [handoff context](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-work/references/handoff-context.md) and [coordinated execution](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-work/references/coordinated-execution.md). For the reasoning behind thread boundaries, see [Right-Sized Threads, Durable State](https://with-agents.dev/coding/posts/right-sized-threads-durable-state/).

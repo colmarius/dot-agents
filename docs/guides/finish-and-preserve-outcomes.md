@@ -78,14 +78,4 @@ Perform durable closeout only after implementation and verification are complete
 
 The helper rejects a dirty repository and ignored or untracked work-item content. If authority is missing, leave the completed snapshot in place and return the exact pending action to the owner. If later history rewriting would erase the snapshot, preserve it in retained history or keep the completed work item in the tree.
 
-```text
-Finish <work item or conversational task>.
-
-Reconcile every material claim with observed evidence. Classify evidence as
-inherited, rerun, newly observed, or unverified; scale further checks to risk;
-and leave residual-risk and shared-state decisions with the human owner. Promote
-reusable outcomes to their smallest canonical homes. Return evidence, promoted
-outcomes, hidden work, and any pending closeout action.
-```
-
 The canonical closeout semantics live in the [work-item contract](https://github.com/colmarius/dot-agents/blob/main/.agents/work/AGENTS.md#completion-and-removal) and the [v0.5 migration guide](https://github.com/colmarius/dot-agents/blob/main/docs/migration-v0.5.md#completion-and-removal). For the reasoning behind acceptance, see [Make the Agent Prove It](https://with-agents.dev/coding/posts/make-the-agent-prove-it/).
