@@ -342,7 +342,7 @@ button:focus-visible {
 
 .terminal-command pre {
   max-width: 100%;
-  padding: 1.5rem 7rem 1.5rem 1.25rem;
+  padding: 1.5rem 4.75rem 1.5rem 1.25rem;
   overflow-wrap: anywhere;
   color: var(--terminal-ink);
   font-size: clamp(0.72rem, 1.2vw, 0.85rem);
@@ -357,20 +357,19 @@ button:focus-visible {
 
 .copy-button {
   position: absolute;
-  top: 50%;
-  right: 0.85rem;
+  top: 0.75rem;
+  right: 0.75rem;
   display: inline-flex;
-  gap: 0.4rem;
   align-items: center;
-  padding: 0.45rem 0.62rem;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   border: 1px solid #4c5850;
   border-radius: 6px;
   color: var(--terminal-ink);
   background: var(--terminal-raised);
   cursor: pointer;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  transform: translateY(-50%);
   transition: border-color 160ms var(--ease-out), background 160ms var(--ease-out), color 160ms var(--ease-out);
 }
 
@@ -1070,16 +1069,8 @@ button:focus-visible {
   }
 
   .terminal-command pre {
-    padding: 1.25rem 1rem 4.4rem;
+    padding: 1.25rem 4.5rem 1.25rem 1rem;
     font-size: 0.72rem;
-  }
-
-  .copy-button {
-    top: auto;
-    right: 0.85rem;
-    bottom: 0.8rem;
-    min-height: 44px;
-    transform: none;
   }
 
   .terminal-hints p {

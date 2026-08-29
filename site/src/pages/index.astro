@@ -78,17 +78,6 @@ const description =
               </div>
               <div class="terminal-command">
                 <pre><code><span class="prompt" aria-hidden="true">$</span> <span id="install-command">curl -fsSL https://<wbr />raw.githubusercontent.com/colmarius/<wbr />dot-agents/main/install.sh | bash</span></code></pre>
-                <button class="copy-button" type="button" aria-label="Copy install command" data-copy-command>
-                  <svg class="copy-icon" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
-                    <rect x="8" y="8" width="12" height="12" rx="2"></rect>
-                    <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
-                  </svg>
-                  <svg class="check-icon" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
-                    <path d="m5 12 4 4L19 6"></path>
-                  </svg>
-                  <span>Copy</span>
-                </button>
-                <span id="copy-status" class="sr-only" aria-live="polite"></span>
               </div>
               <div class="terminal-hints">
                 <p><span>Review</span><code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | less</code></p>
@@ -305,49 +294,12 @@ Implement Task 1 from plan.md.</code></pre>
     </div>
 
     <script>
-      const button = document.querySelector<HTMLButtonElement>("[data-copy-command]");
+      import { addCopyControl } from "../scripts/copy-controls";
+
+      const container = document.querySelector<HTMLElement>(".terminal-command");
       const command = document.querySelector<HTMLElement>("#install-command");
-      const status = document.querySelector<HTMLElement>("#copy-status");
 
-      if (button && command && status) {
-        const label = button.querySelector("span");
-        let resetTimer: number | undefined;
-
-        const markCopied = () => {
-          window.clearTimeout(resetTimer);
-          button.classList.add("is-copied");
-          button.setAttribute("aria-label", "Install command copied");
-          if (label) label.textContent = "Copied";
-          status.textContent = "Install command copied.";
-
-          resetTimer = window.setTimeout(() => {
-            button.classList.remove("is-copied");
-            button.setAttribute("aria-label", "Copy install command");
-            if (label) label.textContent = "Copy";
-            status.textContent = "";
-          }, 2000);
-        };
-
-        const selectCommand = () => {
-          const selection = window.getSelection();
-          if (!selection) return;
-
-          const range = document.createRange();
-          range.selectNodeContents(command);
-          selection.removeAllRanges();
-          selection.addRange(range);
-          button.setAttribute("aria-label", "Install command selected");
-          status.textContent = "Install command selected. Press Control or Command C to copy.";
-        };
-
-        button.addEventListener("click", () => {
-          if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(command.textContent ?? "").then(markCopied, selectCommand);
-          } else {
-            selectCommand();
-          }
-        });
-      }
+      if (container && command) addCopyControl(container, command, "install command");
     </script>
   </body>
 </html>

@@ -56,5 +56,14 @@ const ogImage = new URL("/og-image.png", Astro.site);
         </nav>
       </footer>
     </div>
+
+    <script>
+      import { addCopyControl } from "../scripts/copy-controls";
+
+      document.querySelectorAll<HTMLElement>(".docs-prose pre").forEach((block) => {
+        const content = block.querySelector<HTMLElement>("code");
+        if (content) addCopyControl(block, content, "prompt");
+      });
+    </script>
   </body>
 </html>
