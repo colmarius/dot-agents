@@ -68,7 +68,7 @@ Create a work item when resumption, coordination, handoff, auditability, durable
 
 The authoritative work-item artifact and lifecycle rules live in [`.agents/work/AGENTS.md`](./.agents/work/AGENTS.md).
 
-For practical prompts without a mandatory lifecycle, choose a [workflow guide](./docs/README.md#workflow-guides) for starting uncertain work, continuing durable work, or finishing and preserving outcomes.
+For high-level guidance on choosing and using the skills without a mandatory lifecycle, choose a [workflow guide](./docs/README.md#workflow-guides) for starting uncertain work, continuing durable work, or finishing and preserving outcomes.
 
 ## Next Steps
 

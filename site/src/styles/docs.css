@@ -166,9 +166,7 @@
 
 .docs-prose p,
 .docs-prose ul,
-.docs-prose ol,
-.docs-prose pre,
-.docs-prose table {
+.docs-prose ol {
   margin-top: 1rem;
 }
 
@@ -192,7 +190,7 @@
   text-underline-offset: 0.2rem;
 }
 
-.docs-prose :not(pre) > code {
+.docs-prose code {
   padding: 0.1rem 0.28rem;
   border: 1px solid var(--line);
   border-radius: 4px;
@@ -200,43 +198,6 @@
   background: var(--surface);
   font-size: 0.86em;
   overflow-wrap: anywhere;
-}
-
-.docs-prose pre {
-  padding: 1.1rem;
-  border: 1px solid #37423b;
-  border-radius: var(--radius);
-  color: var(--terminal-ink);
-  background: var(--terminal) !important;
-  font-size: 0.76rem;
-  line-height: 1.65;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.docs-prose pre code {
-  white-space: inherit;
-}
-
-.docs-prose table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-size: 0.9rem;
-}
-
-.docs-prose th,
-.docs-prose td {
-  padding: 0.75rem;
-  border: 1px solid var(--line);
-  overflow-wrap: anywhere;
-  text-align: left;
-  vertical-align: top;
-}
-
-.docs-prose th {
-  color: var(--ink);
-  background: var(--surface-muted);
 }
 
 .docs-guide-nav {
