@@ -196,6 +196,24 @@
   overflow-wrap: anywhere;
 }
 
+/* Shiki sets the block background and text color inline. */
+.docs-prose pre {
+  margin-top: 1rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid #37423b;
+  border-radius: var(--radius);
+  line-height: 1.6;
+}
+
+.docs-prose pre code {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: none;
+  font-size: 0.8rem;
+  overflow-wrap: normal;
+}
+
 .docs-guide-nav {
   padding-top: clamp(3.5rem, 7vw, 5rem);
   margin-top: clamp(3.5rem, 7vw, 5rem);

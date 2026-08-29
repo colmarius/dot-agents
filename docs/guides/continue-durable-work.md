@@ -4,11 +4,18 @@ description: Resume from canonical state, keep connected work together, and spli
 order: 2
 ---
 
-One connected job can include research, planning, implementation, verification, and feedback in the same thread. Durable state supports continuity; it does not require more agents or more artifacts.
+One connected job can include research, planning, implementation, verification, and feedback in the same thread. Durable state supports continuity; it does not require more agents or more artifacts. Unfamiliar terms—work item, canonical state, handoff—are defined in the [glossary](https://github.com/colmarius/dot-agents/blob/main/docs/concepts.md#glossary).
 
 ## Resume with agent-work
 
-Invoke [agent-work](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-work/SKILL.md) to locate and continue the work item. Let the skill load canonical state and only the active material needed for the next action. The agent should compare recorded assumptions with the current repository rather than reconstructing state from chat history.
+Invoke [agent-work](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-work/SKILL.md) to locate and continue the work item:
+
+```text
+Continue .agents/work/<category>/<slug> from index.md. Implement its next
+action and record verification evidence.
+```
+
+Let the skill load canonical state and only the active material needed for the next action. The agent should compare recorded assumptions with the current repository rather than reconstructing state from chat history.
 
 ## Keep connected work together by default
 
@@ -31,9 +38,21 @@ Use the verification skill appropriate to the work. For web flows, invoke [agent
 
 ## Hand off and integrate deliberately
 
-When another worker or environment genuinely helps, ask agent-work for a proportional handoff. Supply the accepted state, bounded slice, acceptance conditions, non-goals, stop conditions, delivery authority, and integration owner; let the skill determine the handoff details.
+When another worker or environment genuinely helps, ask agent-work for a proportional handoff. Supply:
 
-Authority does not travel with access or an implementation assignment. State separately whether the recipient may commit, push, merge, deploy, migrate, change data, or perform another shared-state action.
+- The accepted state and the bounded slice.
+- Acceptance conditions and non-goals.
+- Stop conditions and delivery authority.
+- The integration owner.
+
+Let the skill determine the handoff details.
+
+```text
+Write a handoff prompt for <slice> of .agents/work/<category>/<slug>. The
+recipient may commit locally but not push or merge; I integrate the result.
+```
+
+State separately what the recipient may do to shared state—commit, push, merge, deploy, migrate, or change data. Access alone authorizes none of it.
 
 The integration owner should inspect actual changes, resolve conflicts, run combined verification, and ask agent-work to reconcile the accepted result with canonical state before final acceptance.
 

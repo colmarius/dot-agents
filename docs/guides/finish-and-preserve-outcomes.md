@@ -4,13 +4,19 @@ description: Reconcile claims with evidence, promote what will be reused, and cl
 order: 3
 ---
 
-Conversational work can finish with verified changes and a clear report. Do not create a work item just to document work that is already done.
+Conversational work can finish with verified changes and a clear report. Do not create a work item just to document work that is already done. Unfamiliar terms—promotion, final snapshot, canonical state—are defined in the [glossary](https://github.com/colmarius/dot-agents/blob/main/docs/concepts.md#glossary).
 
 ## Accept outcomes based on evidence
 
-Ask the agent to reconcile each material claim with the evidence actually produced: what should be true, what was observed, what remains uncertain, and whether to fix, verify further, defer with an owner, or accept the residual risk.
+Ask the agent to reconcile each material claim with the evidence actually produced:
 
-Keep inherited, rerun, newly observed, and unverified evidence distinct. Do not mark work complete because code exists or a worker reported success.
+```text
+Reconcile each claim about this work with observed evidence. Mark each claim
+as rerun, newly observed, inherited, or unverified, and recommend whether to
+fix, verify further, defer with an owner, or accept the residual risk.
+```
+
+Do not mark work complete because code exists or a worker reported success.
 
 Scale further verification to consequence, reversibility, and detectability. Use the skill appropriate to the system; invoke [agent-browser](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-browser/SKILL.md) when a web workflow needs running-system proof.
 
@@ -35,7 +41,14 @@ Unowned hidden work means the job is not cleanly finished. Assign it, explicitly
 
 ## Close durable work with agent-work
 
-Once implementation and verification are complete, ask agent-work to complete and close the work item. The skill owns the exact status, final snapshot, preflight, and removal procedure.
+Once implementation and verification are complete, ask agent-work to complete and close the work item:
+
+```text
+Complete and close .agents/work/<category>/<slug>: promote reusable
+outcomes, commit the final snapshot, then remove it from the current tree.
+```
+
+The skill owns the exact status, final snapshot, preflight, and removal procedure.
 
 Closeout requires explicit authority to commit both the final snapshot and the later removal. If that authority is missing, leave the completed context in place and report the pending action to the owner.
 
