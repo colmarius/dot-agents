@@ -17,13 +17,13 @@
 
 ```text
 Request or change
-├─ Self-contained ───────────▶ Plan and execute in this conversation ─▶ Verify and report
-└─ Continuity has value ─────▶ Work Item → Context as needed → Plan → Execute → Verify
-                                                                    ├─ Hand off when useful
-                                                                    └─ Promote → Commit snapshot → Remove
+├─ Self-contained ───────────▶ Plan as needed and execute here ───────▶ Verify and report
+└─ Continuity has value ─────▶ Work Item → Context and plan as needed → Execute → Verify
+                                                                         ├─ Hand off when useful
+                                                                         └─ Promote → Commit snapshot → Remove
 ```
 
-Keep small, self-contained planning and execution in the current conversation. Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request justifies repository context. For durable work, add context only when needed, implement in the current thread by default, and hand off only when another worker or environment genuinely helps.
+Keep small, self-contained planning and execution in the current conversation. Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request justifies repository context. For durable work, add context or a saved plan only when it helps, implement in the current thread by default, and hand off only when another worker or environment genuinely helps.
 
 The canonical artifact, status, and completion contract lives in `.agents/work/AGENTS.md`.
 

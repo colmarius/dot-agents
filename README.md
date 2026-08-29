@@ -18,9 +18,9 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 
 ## Documentation
 
-- **[Quickstart](./QUICKSTART.md)** — Install, choose conversational or durable work, and execute a plan
-- **[Full Docs](./docs/README.md)** — Concepts, skills, and migration notes
-- **[Website](https://dot-agents.dev)** — Landing page (source: [site/](./site/))
+- **[Quickstart](./QUICKSTART.md)** — Install, choose conversational or durable work, and take the next action
+- **[Documentation Index](./docs/README.md)** — Workflow guides, concepts, skills, and migration notes
+- **[Website](https://dot-agents.dev)** — Overview, installation, and rendered workflow guides (source: [site/](./site/))
 
 Develop the Astro landing page locally:
 
@@ -48,34 +48,36 @@ If an agent does not auto-discover skills, ask it to read the relevant `.agents/
 ```text
 Request or change
        │
-       ├─ Self-contained ───────────────▶ Plan and execute in this conversation
-       │                                               │
-       │                                               ▼
-       │                                      Verify and report
+       ├─ Self-contained ───────────────▶ Plan as needed and execute here
+       │                                                │
+       │                                                ▼
+       │                                       Verify and report
        │
        └─ Continuity has value ─────────▶ Work Item (`index.md`)
                                                   │
                                                   ▼
-                              Context as needed → Plan → Execute → Verify and record
-                                                   ├──────── Hand off when useful
-                                                   ▼
+                              Context and plan as needed → Execute → Verify and record
+                                                      ├───── Hand off when useful
+                                                      ▼
                             Promote reusable lessons → Commit final snapshot → Remove
 ```
 
-For a small, self-contained change, keep the plan and execution in the current conversation, verify the result, and report it without creating repository artifacts.
+For a small, self-contained change, work in the current conversation, planning only as needed, then verify and report without creating repository artifacts.
 
-Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request makes repository context valuable. Start at `index.md`, add research or a requirements brief only when needed, execute in the current thread by default, record observed evidence, and hand off only when another worker or environment genuinely helps. At completion, promote reusable outcomes, commit the final snapshot, and remove the work item from the current tree; git history remains the archive.
+Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request makes repository context valuable. Start at `index.md`, add research, a requirements brief, or a saved plan only when it helps, execute in the current thread by default, record observed evidence, and hand off only when another worker or environment genuinely helps. At completion, promote reusable outcomes, commit the final snapshot, and remove the work item from the current tree; git history remains the archive.
 
 The authoritative work-item artifact and lifecycle rules live in [`.agents/work/AGENTS.md`](./.agents/work/AGENTS.md).
+
+For practical prompts without a mandatory lifecycle, choose a [workflow guide](./docs/README.md#workflow-guides) for starting uncertain work, continuing durable work, or finishing and preserving outcomes.
 
 ## Next Steps
 
 After install:
 
 1. Customize `AGENTS.md` for your project — run `adapt` to auto-fill or edit manually.
-2. For self-contained work, ask for a plan and implementation in the current conversation.
+2. For self-contained work, ask the agent to implement and verify in the current conversation.
 3. When continuity has value, create a work item under `.agents/work/<category>/<slug>/`.
-4. Ask for research or requirements only when needed, then plan and implement in the current thread by default.
+4. Ask for research, requirements, or a saved plan only when needed, then implement in the current thread by default.
 5. Use `agent-browser` for real-browser proof when relevant, or create a handoff when another thread or environment helps.
 6. Close completed durable work with `close-work.sh` after its reusable outcomes and final snapshot are preserved.
 7. Sync updates later with `.agents/scripts/sync.sh`.

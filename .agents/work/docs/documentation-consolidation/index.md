@@ -1,6 +1,6 @@
 # Documentation consolidation
 
-Status: planned
+Status: completed
 Category: docs
 Updated: 2026-08-29
 
@@ -10,7 +10,7 @@ The new workflow guides change how users enter the documentation, so the site an
 
 ## Summary
 
-A fresh high-mode orb will apply the completed workflow-guide branch as its baseline, review the full site and canonical Markdown, and prototype only incremental improvements. The coordinating thread will inspect its patch and screenshots, integrate only validated changes, and rerun combined verification.
+A fresh high-mode orb reviewed the exact feature baseline and produced an incremental prototype. Integrated the optional-plan consistency fixes, clearer Markdown entry points, task-specific references, guide navigation labels, and tighter hub spacing; rejected broader guide rewrites, new architecture, a denser hub introduction, and the prototype's detached two-column reference row. The coordinating review extended the semantic correction to installed guidance and the changelog, rebuilt the fixture, and verified the final site and Markdown across tests, builds, links, accessibility, responsive layouts, and navigation.
 
 ## Artifacts
 
@@ -23,7 +23,7 @@ A fresh high-mode orb will apply the completed workflow-guide branch as its base
 
 ## Next Action
 
-- Execute Task 1 in [plan.md](plan.md): obtain and inspect the high-mode documentation prototype.
+- None.
 
 ## Open Questions
 

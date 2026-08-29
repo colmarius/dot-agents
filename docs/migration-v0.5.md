@@ -37,13 +37,13 @@ The workflow now chooses between two paths:
 
 ```text
 Request or change
-├─ Self-contained ───────────▶ Plan and execute in this conversation ─▶ Verify and report
-└─ Continuity has value ─────▶ Work Item → Context as needed → Plan → Execute → Verify
-                                                                    ├─ Hand off when useful
-                                                                    └─ Promote → Commit snapshot → Remove
+├─ Self-contained ───────────▶ Plan as needed and execute here ───────▶ Verify and report
+└─ Continuity has value ─────▶ Work Item → Context and plan as needed → Execute → Verify
+                                                                         ├─ Hand off when useful
+                                                                         └─ Promote → Commit snapshot → Remove
 ```
 
-Keep a small, self-contained change in the current conversation. Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request makes repository context valuable.
+Keep a small, self-contained change in the current conversation. Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request makes repository context valuable. Add research, a requirements brief, or a saved plan only when it helps the next action.
 
 Current-thread execution remains the default. A handoff is optional and should state its canonical context, bounded slice, evidence expectations, stop conditions, and exact delivery authority.
 

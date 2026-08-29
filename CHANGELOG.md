@@ -8,6 +8,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- A Markdown-backed workflow-guide hub with focused guides for starting uncertain work, continuing durable work, and finishing while preserving reusable outcomes.
+
+### Changed
+
+- Documentation and installed project guidance now make saved plans explicitly optional when a work item's next action is already clear.
+- Documentation entry points now separate workflow guides, concepts, exact reference material, and migration guidance more clearly.
+
 ## [0.5.0] - 2026-08-07
 
 ### Changed

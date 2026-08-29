@@ -22,7 +22,7 @@ const { Content } = await render(entry);
 
 <DocsLayout title={entry.data.title} description={entry.data.description}>
   <article class="docs-guide">
-    <a class="docs-back-link" href="/docs/">Workflow guides</a>
+    <a class="docs-back-link" href="/docs/">All guides</a>
 
     <header class="docs-guide-header">
       <p class="eyebrow">Workflow guide</p>
@@ -34,8 +34,8 @@ const { Content } = await render(entry);
       <Content />
     </div>
 
-    <nav class="docs-guide-nav" aria-labelledby="other-guides-title">
-      <p id="other-guides-title">Choose another guide</p>
+    <nav class="docs-guide-nav" aria-labelledby="workflow-guides-title">
+      <p id="workflow-guides-title">Workflow guides</p>
       <div>
         {
           guides.map((guide) => (

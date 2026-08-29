@@ -4,7 +4,7 @@ Review the workflow-guide branch as one documentation system, prototype restrain
 
 ## Tasks
 
-- [ ] **Task 1: Review and prototype in a fresh high-mode orb**
+- [x] **Task 1: Review and prototype in a fresh high-mode orb**
   - Scope: complete feature diff from `4f61c7f`, site navigation and guide routes, `README.md`, `QUICKSTART.md`, and `docs/`
   - Depends on: none
   - Acceptance:
@@ -13,7 +13,7 @@ Review the workflow-guide branch as one documentation system, prototype restrain
     - Any prototype remains incremental and adds no docs framework, search, sidebar, client runtime, or broad content duplication.
     - The worker returns an incremental patch, desktop/mobile screenshots, checks run, and explicit recommended cuts.
 
-- [ ] **Task 2: Inspect and integrate the smallest validated improvements**
+- [x] **Task 2: Inspect and integrate the smallest validated improvements**
   - Scope: worker patch and evidence, affected site and Markdown files
   - Depends on: Task 1
   - Acceptance:
@@ -21,7 +21,7 @@ Review the workflow-guide branch as one documentation system, prototype restrain
     - Each accepted change solves a demonstrated navigation, readability, or ownership problem.
     - Rejected changes and consolidation choices are explained before integration.
 
-- [ ] **Task 3: Run combined documentation verification**
+- [x] **Task 3: Run combined documentation verification**
   - Scope: final branch diff, built site routes, canonical Markdown links
   - Depends on: Task 2
   - Acceptance:

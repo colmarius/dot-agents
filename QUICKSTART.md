@@ -76,7 +76,7 @@ Read .agents/skills/adapt/SKILL.md and follow it.
 For a small, self-contained change, stay in the current conversation:
 
 ```text
-Plan and implement this change, then verify and report the result.
+Implement this change, planning only as needed, then verify and report the result.
 ```
 
 Create a work item when the work needs resumption, coordination, handoff, auditability, durable decisions, or repository context by explicit request.
@@ -108,13 +108,12 @@ A minimal work item looks like:
 
 ```text
 .agents/work/feature/user-authentication/
-├── index.md      # status, summary, next action
-└── plan.md       # added when you ask for a plan
+└── index.md      # status, summary, next action
 ```
 
 Future threads start by reading `index.md`, then load only the plan, research, or progress they need.
 
-## 4. Add Context Only If Needed, Then Plan
+## 4. Add Context Or A Plan Only If Needed
 
 If the unknowns are technical, ask for work-local research:
 
@@ -128,20 +127,21 @@ If the desired behavior is ambiguous, ask for a short requirements brief:
 Create a short requirements brief for this work item.
 ```
 
-If the goal is already clear, skip extra context and ask for a plan:
+If execution needs sequencing, skip extra context and ask for a plan:
 
 ```text
 Create an implementation-ready plan in .agents/work/feature/user-authentication/plan.md.
 ```
 
-Plans use tasks with scope, dependencies, and acceptance criteria.
+Plans use tasks with scope, dependencies, and acceptance criteria. If the next action is already small and clear, skip a saved plan and implement directly from `index.md`.
 
 ## 5. Implement or Hand Off
 
-When the plan is ready, continue in the same thread by default:
+When the next action is clear, continue in the same thread by default:
 
 ```text
-Implement the next task in .agents/work/feature/user-authentication/plan.md and record verification evidence.
+Continue .agents/work/feature/user-authentication from index.md. Implement its
+next action and record verification evidence.
 ```
 
 For UI work, ask for running-system proof when the external CLI is available:
@@ -199,4 +199,4 @@ At the end of the quickstart, a self-contained change is implemented and verifie
 
 See the [v0.5 migration guide](./docs/migration-v0.5.md) for workflow and core-skill changes. Projects older than v0.4 should also read the [v0.4](./docs/migration-v0.4.md) and [v0.3](./docs/migration-v0.3.md) guides as applicable.
 
-**Next:** [Concepts](./docs/concepts.md) · [Skills Reference](./docs/skills.md) · [dot-agents.dev](https://dot-agents.dev)
+**Next:** [Workflow Guides](./docs/README.md#workflow-guides) · [Concepts](./docs/concepts.md) · [Skills Reference](./docs/skills.md) · [dot-agents.dev](https://dot-agents.dev)

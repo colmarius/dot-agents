@@ -4,24 +4,24 @@
 
 ```text
 Request or change
-├─ Self-contained ───────────▶ Plan and execute in this conversation ─▶ Verify and report
-└─ Continuity has value ─────▶ Work Item → Context as needed → Plan → Execute → Verify
-                                                                    ├─ Hand off when useful
-                                                                    └─ Promote → Commit snapshot → Remove
+├─ Self-contained ───────────▶ Plan as needed and execute here ───────▶ Verify and report
+└─ Continuity has value ─────▶ Work Item → Context and plan as needed → Execute → Verify
+                                                                         ├─ Hand off when useful
+                                                                         └─ Promote → Commit snapshot → Remove
 ```
 
-1. **Choose the path:** Keep small, self-contained planning and execution in the current conversation. Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request makes repository context valuable.
+1. **Choose the path:** Keep small, self-contained work in the current conversation. Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request makes repository context valuable.
 2. **Work Item:** For durable work, create `.agents/work/<category>/<slug>/index.md` as the context entrypoint and canonical current state.
 3. **Context:** Add optional context only when it helps: research for technical facts or `prd.md` when behavior needs alignment.
-4. **Plan:** Break work into scoped tasks with dependencies, acceptance criteria, and planned verification.
+4. **Plan When Useful:** For non-trivial execution, break work into scoped tasks with dependencies, acceptance criteria, and planned verification. Skip a saved plan when `index.md` already holds a clear, bounded next action.
 5. **Execute:** Implement in the current thread by default. Delegate only when isolation, parallelism, durable follow-up, or another environment helps.
-6. **Record Evidence:** Keep task completion in the plan, lifecycle state and canonical next action in `index.md`, and observed evidence in `progress.md` only when durability helps.
+6. **Record Evidence:** Keep task completion in the plan when one exists, lifecycle state and canonical next action in `index.md`, and observed evidence in `progress.md` only when durability helps.
 7. **Handoff When Useful:** Generate a proportional prompt only when another thread will execute a bounded slice. Permission to implement does not imply permission to commit, push, merge, deploy, or change shared state.
 8. **Promote And Remove:** Move reusable outcomes to canonical homes, commit the final completed snapshot, then stage and separately commit removal. Git history is the archive.
 
 The detailed artifact, status, handoff, and completion contract lives in [`.agents/work/AGENTS.md`](../.agents/work/AGENTS.md).
 
-Context is optional. Use `research.md` when the question is "what is true?" Use `research/` when multiple focused research notes are useful. Use `prd.md` as a requirements brief when the question is "what should be true?" Skip both when the plan can state the goal and acceptance criteria clearly.
+Context is optional. Use `research.md` when the question is "what is true?" Use `research/` when multiple focused research notes are useful. Use `prd.md` as a requirements brief when the question is "what should be true?" Skip them when the work item's intent and next action are already clear.
 
 ## Work Item Shape
 
@@ -91,7 +91,7 @@ dot-agents does not assume a specific execution runtime. The work item is the co
 
 Completed work items do not remain in the current tree by default:
 
-1. Finish planned work and final verification.
+1. Finish implementation and final verification.
 2. Promote reusable outcomes to canonical code, docs, guidance, checks, skills, or `.agents/research/`.
 3. Remove stale handoffs, set `Status: completed`, and set `## Next Action` to exactly `- None.`.
 4. Commit the final snapshot.
