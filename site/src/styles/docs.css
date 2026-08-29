@@ -312,11 +312,6 @@
     margin-top: 2.75rem;
   }
 
-  .docs-prose th,
-  .docs-prose td {
-    padding: 0.55rem;
-  }
-
   .docs-guide-nav > div {
     grid-template-columns: 1fr;
   }

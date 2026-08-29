@@ -1,6 +1,6 @@
 ---
 const isHome = Astro.url.pathname === "/";
-const isDocs = Astro.url.pathname.startsWith("/docs/");
+const isDocs = Astro.url.pathname === "/docs" || Astro.url.pathname.startsWith("/docs/");
 ---
 
 <header class="site-header">
