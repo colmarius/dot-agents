@@ -1,0 +1,53 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+
+export async function getStaticPaths() {
+  const guides = await getCollection("guides");
+
+  return guides.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"guides">;
+}
+
+const { entry } = Astro.props;
+const guides = (await getCollection("guides")).sort((a, b) => a.data.order - b.data.order);
+const { Content } = await render(entry);
+---
+
+<DocsLayout title={entry.data.title} description={entry.data.description}>
+  <article class="docs-guide">
+    <a class="docs-back-link" href="/docs/">Workflow guides</a>
+
+    <header class="docs-guide-header">
+      <p class="eyebrow">Workflow guide</p>
+      <h1>{entry.data.title}</h1>
+      <p>{entry.data.description}</p>
+    </header>
+
+    <div class="docs-prose">
+      <Content />
+    </div>
+
+    <nav class="docs-guide-nav" aria-labelledby="other-guides-title">
+      <p id="other-guides-title">Choose another guide</p>
+      <div>
+        {
+          guides.map((guide) => (
+            <a
+              href={`/docs/guides/${guide.id}/`}
+              aria-current={guide.id === entry.id ? "page" : undefined}
+            >
+              {guide.data.title}
+            </a>
+          ))
+        }
+      </div>
+    </nav>
+  </article>
+</DocsLayout>

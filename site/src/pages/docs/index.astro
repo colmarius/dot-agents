@@ -1,0 +1,44 @@
+---
+import { getCollection } from "astro:content";
+import DocsLayout from "../../layouts/DocsLayout.astro";
+
+const title = "Workflow guides";
+const description = "Choose practical dot-agents guidance for starting, continuing, or finishing AI coding work.";
+const guides = (await getCollection("guides")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<DocsLayout title={title} description={description}>
+  <header class="docs-hero">
+    <p class="eyebrow">Workflow guides</p>
+    <h1>Start where the work is.</h1>
+    <p>
+      Small, self-contained work can stay in one conversation. Create durable state only when continuity has value.
+      These are entry points, not phases.
+    </p>
+  </header>
+
+  <section class="docs-choices" aria-labelledby="choose-guide-title">
+    <h2 id="choose-guide-title" class="sr-only">Choose a workflow guide</h2>
+    {
+      guides.map((guide) => (
+        <a class="docs-choice" href={`/docs/guides/${guide.id}/`}>
+          <h2>{guide.data.title}</h2>
+          <p>{guide.data.description}</p>
+          <span class="docs-choice-link">Open guide</span>
+        </a>
+      ))
+    }
+  </section>
+
+  <section class="docs-reference" aria-labelledby="reference-title">
+    <div>
+      <p class="eyebrow">Reference when you need it</p>
+      <h2 id="reference-title">Exact behavior stays close to the source.</h2>
+    </div>
+    <nav aria-label="Documentation reference">
+      <a href="https://github.com/colmarius/dot-agents/blob/main/QUICKSTART.md">Quickstart <span aria-hidden="true">↗</span></a>
+      <a href="https://github.com/colmarius/dot-agents/blob/main/docs/concepts.md">Concepts <span aria-hidden="true">↗</span></a>
+      <a href="https://github.com/colmarius/dot-agents/blob/main/docs/skills.md">Skills <span aria-hidden="true">↗</span></a>
+    </nav>
+  </section>
+</DocsLayout>

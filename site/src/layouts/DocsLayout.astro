@@ -1,0 +1,71 @@
+---
+import "../styles/global.css";
+import "../styles/docs.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL("/og-image.png", Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f6f2" />
+    <title>{title} — dot-agents</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={`${title} — dot-agents`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <div class="page-shell docs-shell">
+      <header class="site-header">
+        <a class="wordmark" href="/" aria-label="dot-agents home">
+          <img src="/favicon.svg" width="32" height="32" alt="" />
+          <span><b>.</b>agents</span>
+        </a>
+
+        <nav class="nav docs-nav" aria-label="Primary navigation">
+          <a href="/">Home</a>
+          <a href="/docs/" aria-current={Astro.url.pathname.startsWith("/docs/") ? "location" : undefined}>Docs</a>
+        </nav>
+
+        <a class="header-github" href="https://github.com/colmarius/dot-agents">GitHub</a>
+      </header>
+
+      <main id="main-content" class="docs-main">
+        <slot />
+      </main>
+
+      <footer class="site-footer docs-footer">
+        <a class="wordmark footer-wordmark" href="/" aria-label="dot-agents home"><span><b>.</b>agents</span></a>
+        <p>Durable context for AI coding agents.</p>
+        <nav aria-label="Footer navigation">
+          <a href="https://github.com/colmarius/dot-agents/blob/main/QUICKSTART.md">Quickstart</a>
+          <a href="https://github.com/colmarius/dot-agents/blob/main/docs/concepts.md">Concepts</a>
+          <a href="https://github.com/colmarius/dot-agents">GitHub</a>
+          <span>MIT License</span>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>

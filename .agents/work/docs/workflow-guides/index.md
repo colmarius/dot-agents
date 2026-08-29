@@ -1,6 +1,6 @@
 # Workflow guides
 
-Status: planned
+Status: completed
 Category: docs
 Updated: 2026-08-29
 
@@ -10,7 +10,7 @@ dot-agents explains its workflow concisely, but users need practical examples fo
 
 ## Summary
 
-The information architecture and product boundary are settled after repository research, past-thread sampling, three independent site prototypes, Oracle feedback, and review of the companion With Agents articles. Implementation will add a calm local docs hub and three short Markdown-backed guides while keeping canonical reference material on GitHub and explanatory essays on with-agents.dev.
+Implemented a calm local docs hub and three concise Markdown-backed guides without adding a docs framework or navigation chrome. High-mode prototypes and focused Oracle review shaped the final non-linear entry points; repository tests, the static build, link checks, multi-width browser checks, accessibility audits, keyboard interaction, and the final portal all passed.
 
 ## Artifacts
 
@@ -23,7 +23,7 @@ The information architecture and product boundary are settled after repository r
 
 ## Next Action
 
-- Execute Task 1 in [plan.md](plan.md): build the Markdown-backed docs thin slice.
+- None.
 
 ## Open Questions
 

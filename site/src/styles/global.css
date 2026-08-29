@@ -459,12 +459,16 @@ button:focus-visible {
   margin-bottom: 2.5rem;
 }
 
-.section-heading > p:last-child,
+.section-heading > p:not(.eyebrow),
 .commands-intro > p:last-child {
   max-width: 600px;
   margin-top: 0.9rem;
   color: var(--ink-soft);
   font-size: 1rem;
+}
+
+.section-heading > .text-link {
+  margin-top: 0.9rem;
 }
 
 .workflow-map {

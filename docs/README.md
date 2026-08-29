@@ -5,6 +5,14 @@
 - [Installation](../README.md#install)
 - [Quickstart Guide](../QUICKSTART.md)
 
+## Workflow Guides
+
+Choose the guide that matches the work; these are direct entry points, not mandatory phases.
+
+- [Start uncertain work](./guides/start-uncertain-work.md)
+- [Continue durable work](./guides/continue-durable-work.md)
+- [Finish and preserve outcomes](./guides/finish-and-preserve-outcomes.md)
+
 ## Concepts
 
 - [Workflow Overview](./concepts.md#workflow)
