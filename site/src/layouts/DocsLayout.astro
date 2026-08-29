@@ -1,4 +1,5 @@
 ---
+import SiteHeader from "../components/SiteHeader.astro";
 import "../styles/global.css";
 import "../styles/docs.css";
 
@@ -38,19 +39,7 @@ const ogImage = new URL("/og-image.png", Astro.site);
     <a class="skip-link" href="#main-content">Skip to content</a>
 
     <div class="page-shell docs-shell">
-      <header class="site-header">
-        <a class="wordmark" href="/" aria-label="dot-agents home">
-          <img src="/favicon.svg" width="32" height="32" alt="" />
-          <span><b>.</b>agents</span>
-        </a>
-
-        <nav class="nav docs-nav" aria-label="Primary navigation">
-          <a href="/">Home</a>
-          <a href="/docs/" aria-current={Astro.url.pathname.startsWith("/docs/") ? "location" : undefined}>Docs</a>
-        </nav>
-
-        <a class="header-github" href="https://github.com/colmarius/dot-agents">GitHub</a>
-      </header>
+      <SiteHeader />
 
       <main id="main-content" class="docs-main">
         <slot />

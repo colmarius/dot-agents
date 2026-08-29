@@ -118,8 +118,8 @@ button:focus-visible {
 
 .site-header {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 2rem;
+  grid-template-columns: auto 1fr;
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: center;
   min-height: 72px;
   border-bottom: 1px solid var(--line);
@@ -143,12 +143,16 @@ button:focus-visible {
 
 .nav {
   display: flex;
-  gap: clamp(1.25rem, 3vw, 2.25rem);
-  justify-content: center;
+  gap: 0.35rem;
+  justify-content: flex-end;
 }
 
-.nav a,
-.site-footer nav a {
+.nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.65rem;
   color: var(--ink-soft);
   font-size: 0.88rem;
   font-weight: 550;
@@ -156,22 +160,28 @@ button:focus-visible {
   transition: color 160ms var(--ease-out);
 }
 
-.header-github {
-  display: inline-flex;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  color: var(--ink-soft);
-  font-size: 0.82rem;
-  font-weight: 650;
-  text-decoration: none;
-  transition: border-color 160ms var(--ease-out), color 160ms var(--ease-out), background 160ms var(--ease-out);
+.nav a[aria-current="page"] {
+  color: var(--accent-dark);
+  font-weight: 700;
 }
 
-.header-github svg {
-  fill: currentColor;
+.nav a[aria-current="page"]::after {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.2rem;
+  left: 0.65rem;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+  content: "";
+}
+
+.site-footer nav a {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  font-weight: 550;
+  text-decoration: none;
+  transition: color 160ms var(--ease-out);
 }
 
 .hero {
@@ -940,12 +950,6 @@ button:focus-visible {
     color: var(--accent-dark);
   }
 
-  .header-github:hover {
-    border-color: #b9c2bc;
-    color: var(--ink);
-    background: var(--surface);
-  }
-
   .button-primary:hover {
     border-color: var(--accent-dark);
     background: var(--accent-dark);
@@ -1022,29 +1026,23 @@ button:focus-visible {
   }
 
   .site-header {
-    grid-template-columns: 1fr auto;
-    gap: 0.75rem;
-    padding: 0.85rem 0;
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+    padding: 0.55rem 0 0.35rem;
   }
 
   .nav {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    justify-content: flex-start;
-    gap: 1.5rem;
-    padding-bottom: 0.2rem;
+    width: 100%;
+    gap: 0.15rem;
+    justify-content: space-between;
   }
 
   .nav a {
-    display: flex;
-    align-items: center;
-    min-width: 44px;
+    min-width: 0;
     min-height: 44px;
-  }
-
-  .header-github {
-    justify-self: end;
-    min-height: 44px;
+    justify-content: center;
+    padding: 0 0.45rem;
+    font-size: 0.82rem;
   }
 
   .wordmark {

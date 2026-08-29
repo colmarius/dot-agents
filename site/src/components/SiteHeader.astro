@@ -1,0 +1,18 @@
+---
+const isHome = Astro.url.pathname === "/";
+const isDocs = Astro.url.pathname.startsWith("/docs/");
+---
+
+<header class="site-header">
+  <a class="wordmark" href="/" aria-label="dot-agents home">
+    <img src="/favicon.svg" width="32" height="32" alt="" />
+    <span><b>.</b>agents</span>
+  </a>
+
+  <nav class="nav" aria-label="Primary navigation">
+    <a href="/" aria-current={isHome ? "page" : undefined}>Home</a>
+    <a href="/#install">Install</a>
+    <a href="/#workflow">Workflow</a>
+    <a href="/docs/" aria-current={isDocs ? "page" : undefined}>Docs</a>
+  </nav>
+</header>
