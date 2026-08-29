@@ -381,10 +381,6 @@ button:focus-visible {
   stroke-width: 2;
 }
 
-.copy-button .check-icon {
-  display: none;
-}
-
 .copy-button.is-copied {
   border-color: #8bb49c;
   color: var(--terminal);
@@ -395,8 +391,11 @@ button:focus-visible {
   display: none;
 }
 
-.copy-button.is-copied .check-icon {
-  display: block;
+.copy-button.is-copied::after {
+  content: "Copied";
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
 }
 
 .terminal-hints {

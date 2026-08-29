@@ -4,11 +4,6 @@ const copyIcon = `
     <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
   </svg>`;
 
-const checkIcon = `
-  <svg class="check-icon" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
-    <path d="m5 12 4 4L19 6"></path>
-  </svg>`;
-
 async function copyText(value: string) {
   if (navigator.clipboard && window.isSecureContext) {
     await navigator.clipboard.writeText(value);
@@ -43,7 +38,7 @@ export function addCopyControl(container: HTMLElement, content: HTMLElement, nam
   button.dataset.copyControl = "";
   button.setAttribute("aria-label", idleLabel);
   button.title = idleLabel;
-  button.innerHTML = copyIcon + checkIcon;
+  button.innerHTML = copyIcon;
 
   status.className = "sr-only";
   status.setAttribute("aria-live", "polite");
@@ -73,5 +68,5 @@ export function addCopyControl(container: HTMLElement, content: HTMLElement, nam
     }, 2000);
   });
 
-  container.append(button, status);
+  container.prepend(button, status);
 }
