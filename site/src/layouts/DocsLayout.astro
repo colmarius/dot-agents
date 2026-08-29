@@ -38,14 +38,14 @@ const ogImage = new URL("/og-image.png", Astro.site);
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
 
-    <div class="page-shell docs-shell">
+    <div class="page-shell">
       <SiteHeader />
 
       <main id="main-content" class="docs-main">
         <slot />
       </main>
 
-      <footer class="site-footer docs-footer">
+      <footer class="site-footer">
         <a class="wordmark footer-wordmark" href="/" aria-label="dot-agents home"><span><b>.</b>agents</span></a>
         <p>Durable context for AI coding agents.</p>
         <nav aria-label="Footer navigation">

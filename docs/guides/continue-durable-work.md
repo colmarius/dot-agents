@@ -38,14 +38,12 @@ Use the verification skill appropriate to the work. For web flows, invoke [agent
 
 ## Hand off and integrate deliberately
 
-When another worker or environment genuinely helps, ask agent-work for a proportional handoff. Supply:
+When another worker or environment genuinely helps, ask agent-work for a proportional handoff and let the skill determine the details. Supply:
 
 - The accepted state and the bounded slice.
 - Acceptance conditions and non-goals.
 - Stop conditions and delivery authority.
 - The integration owner.
-
-Let the skill determine the handoff details.
 
 ```text
 Write a handoff prompt for <slice> of .agents/work/<category>/<slug>. The
