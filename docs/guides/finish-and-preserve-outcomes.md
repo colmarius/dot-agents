@@ -44,8 +44,8 @@ Unowned hidden work means the job is not cleanly finished. Assign it, explicitly
 Once implementation and verification are complete, ask agent-work to complete and close the work item:
 
 ```text
-Complete and close .agents/work/<category>/<slug>: promote reusable
-outcomes, commit the final snapshot, then remove it from the current tree.
+Complete and close the work item at .agents/work/<category>/<slug>. You
+may create the commits required for closeout.
 ```
 
 The skill owns the exact status, final snapshot, preflight, and removal procedure.

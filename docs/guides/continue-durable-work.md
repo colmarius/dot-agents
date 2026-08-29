@@ -11,8 +11,8 @@ One connected job can include research, planning, implementation, verification, 
 Invoke [agent-work](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-work/SKILL.md) to locate and continue the work item:
 
 ```text
-Continue .agents/work/<category>/<slug> from index.md. Implement its next
-action and record verification evidence.
+Continue the work item at .agents/work/<category>/<slug>. Implement its
+next action and record verification evidence.
 ```
 
 Let the skill load canonical state and only the active material needed for the next action. The agent should compare recorded assumptions with the current repository rather than reconstructing state from chat history.

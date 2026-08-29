@@ -32,8 +32,7 @@ Keep work conversational when it is bounded, can finish now, and does not need a
 When resumption, coordination, handoff, auditability, or durable decisions make continuity valuable, invoke the [agent-work skill](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-work/SKILL.md). Let it find or create the work item and choose the smallest useful set of artifacts. Research, requirements, and plans are optional—not stages to perform by default.
 
 ```text
-Create a new work item for <goal>. Keep artifacts minimal—index.md is
-enough until an unknown blocks the next action.
+Create a new work item for <goal>.
 ```
 
 ## Use skills for the unknowns that matter
