@@ -4,7 +4,7 @@ description: Frame the outcome, reduce only the unknowns that block action, and 
 order: 1
 ---
 
-Uncertainty alone does not require research, a requirements brief, a plan, or a work item. Begin with the outcome and add structure only when it helps the next action. Unfamiliar terms—work item, canonical state, promotion—are defined in the [glossary](https://github.com/colmarius/dot-agents/blob/main/docs/concepts.md#glossary).
+Uncertainty alone does not require research, a requirements brief, a plan, or a work item. Begin with the outcome and add structure only when it helps the next action. Unfamiliar terms—work item, delivery authority, durable context—are defined in the [glossary](https://github.com/colmarius/dot-agents/blob/main/docs/concepts.md#glossary).
 
 ## Frame the outcome
 
@@ -23,13 +23,13 @@ or add dependencies without asking. I own any behavior tradeoffs.
 
 Let the agent resolve questions answered by the repository. Ask for a focused question only when a product decision would change the outcome or an action needs approval.
 
-Access is capability, not authority. Credentials or production access do not authorize commits, pushes, merges, deploys, migrations, data changes, or other shared-state actions. Grant each action explicitly when needed.
+Having credentials means the agent *can* perform an action; it does not grant permission. A configured Git remote does not authorize a push, and production access does not authorize a migration or data change. Grant each shared-state action explicitly when needed.
 
 ## Choose how much state the work needs
 
 Keep work conversational when it is bounded, can finish now, and does not need a repository record for another person or thread.
 
-When resumption, coordination, handoff, auditability, or durable decisions make continuity valuable, invoke the [agent-work skill](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-work/SKILL.md). Let it find or create the work item and choose the smallest useful set of artifacts. Research, requirements, and plans are optional—not stages to perform by default.
+Create a work item when its status, decisions, or next action must survive this conversation—for later resumption, coordination, handoff, or auditability. Invoke the [agent-work skill](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-work/SKILL.md) and let it find or create the work item and choose the smallest useful set of artifacts. Research, requirements, and plans are optional—not stages to perform by default.
 
 ```text
 Create a new work item for <goal>.

@@ -8,12 +8,13 @@ Conversational work can finish with verified changes and a clear report. Do not 
 
 ## Accept outcomes based on evidence
 
-Ask the agent to reconcile each material claim with the evidence actually produced:
+Ask the agent to back each material claim with the evidence actually produced:
 
 ```text
-Reconcile each claim about this work with observed evidence. Mark each claim
-as rerun, newly observed, inherited, or unverified, and recommend whether to
-fix, verify further, defer with an owner, or accept the residual risk.
+For each claim about this work, cite the command result or manual observation
+behind it. Label it observed now, inherited (not rerun), or unverified, and
+recommend whether to fix, verify further, defer with an owner, or accept the
+residual risk.
 ```
 
 Do not mark work complete because code exists or a worker reported success.
@@ -50,6 +51,6 @@ may create the commits required for closeout.
 
 The skill owns the exact status, final snapshot, preflight, and removal procedure.
 
-Closeout requires explicit authority to commit both the final snapshot and the later removal. If that authority is missing, leave the completed context in place and report the pending action to the owner.
+Closeout needs authority for two commits: the final `completed` snapshot and the later removal. If the agent may not commit the snapshot, it keeps the item `blocked` with authorization as its next action. If the snapshot is committed but the agent may not commit the deletion, it leaves the committed item in the tree and reports the pending removal to the owner.
 
 For exact semantics, rely on agent-work and the [work-item contract](https://github.com/colmarius/dot-agents/blob/main/.agents/work/AGENTS.md#completion-and-removal). For the reasoning behind acceptance, see [Make the Agent Prove It](https://with-agents.dev/coding/posts/make-the-agent-prove-it/).

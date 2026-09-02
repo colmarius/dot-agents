@@ -8,7 +8,7 @@ Skills are specialized instructions that agents load for specific workflows. dot
 | --- | --- | --- |
 | [adapt](#adapt) | `Run adapt` | Analyze project, fill in `AGENTS.md` |
 | [agent-browser](#agent-browser) | `Use agent-browser to verify...` | Load current real-browser automation guidance |
-| [agent-work](#agent-work) | `Create a work item`, `refine this plan` | Manage durable requirements, plans, execution, and handoffs |
+| [agent-work](#agent-work) | `Create a new work item for ...`, `Continue the work item at ...`, `Complete and close the work item at ...` | Manage durable requirements, plans, execution, handoffs, and closeout |
 | [research](#research) | `Research [topic]` | Investigate and save work-local or reusable findings |
 
 ## adapt

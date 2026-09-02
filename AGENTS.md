@@ -19,7 +19,7 @@ Request or change
                                                                          └─ Promote → Commit snapshot → Remove
 ```
 
-Keep small, self-contained planning and execution in the current conversation. Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request justifies repository context. For durable work, add context or a saved plan only when it helps, implement in the current thread by default, and hand off only when another worker or environment genuinely helps.
+Keep work conversational when one thread is enough. Create a work item when its status, decisions, or next action must survive this conversation — for later resumption, coordination, handoff, or auditability — or when the user explicitly asks. For durable work, add context or a saved plan only when it helps, implement in the current thread by default, and hand off only when another worker or environment genuinely helps.
 
 The canonical artifact, status, and completion contract lives in `.agents/work/AGENTS.md`.
 
@@ -49,9 +49,11 @@ dot-agents/
 | `Run adapt` | Analyze project and fill in `AGENTS.md` sections |
 | `Use agent-browser to verify ...` | Load current real-browser automation guidance from the installed CLI |
 | `Create a new work item for ...` | Create durable `.agents/work/` context |
+| `Continue the work item at ...` | Resume from `index.md` and implement the next action |
 | `Research ...` | Investigate and save work-local or reusable findings |
 | `Create/refine/execute a plan for ...` | Produce implementation-ready tasks and implement in the current thread |
 | `Write a handoff prompt for ...` | Produce a paste-ready prompt for a new implementation thread |
+| `Complete and close the work item at ...` | Promote outcomes, commit the final snapshot, and stage removal |
 
 Skills are loaded via natural language. See each skill's `SKILL.md` in `.agents/skills/` for details.
 

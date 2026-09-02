@@ -1,6 +1,6 @@
 ---
 name: agent-work
-description: "Manages durable work items, plans, execution, and handoffs. Use when repository context must survive or coordinate work. Triggers on: create work item, implement work item, requirements brief, refine plan, handoff prompt, stress-test plan."
+description: "Manages durable work items, plans, execution, and handoffs. Use when repository context must survive or coordinate work. Triggers on: create work item, continue work item, close work item, refine plan, handoff prompt, stress-test plan."
 ---
 
 # Agent Work
@@ -52,7 +52,7 @@ Close a work item only after implementation and verification are finished. First
 
 Use `close-work.sh --check` as the closeout preflight. If it succeeds, rerun the command without `--check`; it stages the folder removal but does not create a commit. Record that staged removal in its own commit so the preceding snapshot remains reachable in history.
 
-Closeout requires authority to commit the removal. The command rejects dirty repositories and leaves ignored or untracked material untouched. When planned history rewriting would erase the final snapshot, either preserve it on a retained ref or keep the completed folder in the tree.
+Closeout needs authority for two commits: the final snapshot and the removal. Without authority to commit the snapshot, keep the item `blocked` with authorization as its next action. With the snapshot committed but no authority to commit the deletion, leave the committed folder in place and report the pending removal. The command rejects dirty repositories and leaves ignored or untracked material untouched. When planned history rewriting would erase the final snapshot, either preserve it on a retained ref or keep the completed folder in the tree.
 
 ## Scripts
 

@@ -16,6 +16,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Documentation and installed project guidance now make saved plans explicitly optional when a work item's next action is already clear.
 - Documentation entry points now separate workflow guides, concepts, exact reference material, and migration guidance more clearly.
+- Entry-point docs, the landing page, and the root `AGENTS.md` template now state the work-item rule as "create one when its status, decisions, or next action must survive this conversation"; the exhaustive trigger list remains in `.agents/work/AGENTS.md` and `agent-work`.
+- The glossary now defines canonical state, category, closeout, delivery authority, durable context, integration owner, and promotion, which the workflow guides reference.
+- Workflow guides use plainer wording with concrete examples for authority, evidence labelling, and integration; the Quickstart and `agent-work` clarify who updates durable state for delegated work and which status applies when closeout commit authority is missing.
+- The landing page example now shows the full `.agents/work/...` path, an `Artifacts` entry, and list-formatted `Next Action`, and no longer labels the gitignored `references/` folder as tracked.
+- The root `AGENTS.md` template points to `plan-template.md` instead of copying the task format, and lists continue and close prompts alongside create.
+- `agent-work` discovery triggers include continue and close work item; README moves contributor commands into a dedicated section.
 
 ## [0.5.0] - 2026-08-07
 

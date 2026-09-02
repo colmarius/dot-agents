@@ -79,7 +79,7 @@ For a small, self-contained change, stay in the current conversation:
 Implement this change, planning only as needed, then verify and report the result.
 ```
 
-Create a work item when the work needs resumption, coordination, handoff, auditability, durable decisions, or repository context by explicit request.
+Create a work item when its status, decisions, or next action must survive this conversation — for later resumption, coordination, handoff, or auditability — or when you explicitly want repository context.
 
 Ask your agent:
 
@@ -156,9 +156,9 @@ When another thread, worker, or environment would help, ask instead:
 Review .agents/work/feature/user-authentication and write a paste-ready handoff prompt for the next implementation thread.
 ```
 
-Generate the prompt in conversation by default. When the transition itself must survive or be reused, save a separately named `handoff-*.md` and link it from `index.md`; it is a first-class optional artifact, not a required stage or a second plan.
+Generate the prompt in conversation by default. When the transition itself must survive or be reused, save a separately named `handoff-*.md` and link it from `index.md`; it is an optional artifact, not a required stage or a second plan.
 
-The implementing thread keeps task checkboxes and `index.md` current. It creates or updates living `progress.md` only when durable execution evidence helps work resume across sessions or workers.
+During current-thread execution, keep plan checkboxes and `index.md` current. For delegated work, the coordinating thread reviews the returned changes and evidence, then updates durable state unless the handoff explicitly assigns those files to the worker. Create or update `progress.md` only when observed evidence helps work resume across sessions or workers.
 
 ## 6. Continue Later
 

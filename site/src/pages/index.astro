@@ -93,8 +93,8 @@ const description =
             <p class="eyebrow">Choose the smallest useful path</p>
             <h2 id="workflow-title">Keep simple work simple. Make durable work resumable.</h2>
             <p>
-              Stay in the conversation when one thread is enough. Open a work item only when continuity,
-              coordination, decisions, or a handoff makes repository context worth maintaining.
+              Stay in the conversation when one thread is enough. Open a work item only when its status, decisions,
+              or next action must survive this conversation.
             </p>
             <a class="text-link" href="/docs/">Explore workflow guides <span aria-hidden="true">→</span></a>
           </div>
@@ -192,18 +192,18 @@ const description =
             <div class="file-tree" role="group" aria-label="Files added by dot-agents">
               <div class="file-tree-header">
                 <span>your-project/</span>
-                <span>tracked</span>
+                <span>installed</span>
               </div>
               <pre><code>├── <b>AGENTS.md</b>       <span># project instructions</span>
 └── <b>.agents/</b>
     ├── <b>work/</b>       <span># durable work items</span>
     ├── <b>research/</b>   <span># reusable findings</span>
-    ├── <b>references/</b> <span># local reference repos</span>
+    ├── <b>references/</b> <span># local checkouts (gitignored)</span>
     ├── <b>skills/</b>     <span># repeatable workflows</span>
     └── <b>scripts/</b>    <span># safe sync updates</span></code></pre>
             </div>
             <div class="example-document">
-              <div class="document-bar"><span>work/feature/user-authentication/index.md</span><span>● saved</span></div>
+              <div class="document-bar"><span>.agents/work/feature/user-authentication/index.md</span><span>● saved</span></div>
               <pre><code><b># User authentication</b>
 
 Status: planned
@@ -216,8 +216,11 @@ Users need secure access across sessions.
 <b>## Summary</b>
 Add auth flows and session persistence.
 
+<b>## Artifacts</b>
+- Plan: plan.md
+
 <b>## Next Action</b>
-Implement Task 1 from plan.md.</code></pre>
+- Implement Task 1 from plan.md.</code></pre>
             </div>
           </div>
         </section>

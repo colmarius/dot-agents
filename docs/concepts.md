@@ -10,18 +10,16 @@ Request or change
                                                                          └─ Promote → Commit snapshot → Remove
 ```
 
-1. **Choose the path:** Keep small, self-contained work in the current conversation. Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request makes repository context valuable.
-2. **Work Item:** For durable work, create `.agents/work/<category>/<slug>/index.md` as the context entrypoint and canonical current state.
-3. **Context:** Add optional context only when it helps: research for technical facts or `prd.md` when behavior needs alignment.
-4. **Plan When Useful:** For non-trivial execution, break work into scoped tasks with dependencies, acceptance criteria, and planned verification. Skip a saved plan when `index.md` already holds a clear, bounded next action.
+1. **Choose the path:** Keep work conversational when one thread is enough. Create a work item when its status, decisions, or next action must survive this conversation — for later resumption, coordination, handoff, or auditability — or when the user explicitly asks.
+2. **Work item:** For durable work, create `.agents/work/<category>/<slug>/index.md` as the entrypoint and canonical current state.
+3. **Add context only when needed:** Use `research.md` for "what is true?", `research/` for multiple focused notes, and `prd.md` for "what should be true?". Skip them when intent and the next action are already clear.
+4. **Plan when useful:** When execution needs sequencing, break work into scoped tasks with dependencies, acceptance criteria, and planned verification. Skip a saved plan when `index.md` already holds a clear, bounded next action.
 5. **Execute:** Implement in the current thread by default. Delegate only when isolation, parallelism, durable follow-up, or another environment helps.
-6. **Record Evidence:** Keep task completion in the plan when one exists, lifecycle state and canonical next action in `index.md`, and observed evidence in `progress.md` only when durability helps.
-7. **Handoff When Useful:** Generate a proportional prompt only when another thread will execute a bounded slice. Permission to implement does not imply permission to commit, push, merge, deploy, or change shared state.
-8. **Promote And Remove:** Move reusable outcomes to canonical homes, commit the final completed snapshot, then stage and separately commit removal. Git history is the archive.
+6. **Record evidence:** Keep task completion in the plan when one exists, lifecycle state and the next action in `index.md`, and observed evidence in `progress.md` only when durability helps.
+7. **Hand off when useful:** Write a prompt containing only the context another thread needs for its bounded slice. Permission to implement does not imply permission to commit, push, merge, deploy, or change shared state.
+8. **Promote and remove:** Move reusable outcomes to their lasting homes, commit the final completed snapshot, then stage and separately commit removal. Git history is the archive.
 
 The detailed artifact, status, handoff, and completion contract lives in [`.agents/work/AGENTS.md`](../.agents/work/AGENTS.md).
-
-Context is optional. Use `research.md` when the question is "what is true?" Use `research/` when multiple focused research notes are useful. Use `prd.md` as a requirements brief when the question is "what should be true?" Skip them when the work item's intent and next action are already clear.
 
 ## Work Item Shape
 
@@ -63,6 +61,10 @@ Users need secure access across sessions.
 ## Summary
 
 Add auth flows and session persistence.
+
+## Artifacts
+
+- Plan: [plan.md](./plan.md)
 
 ## Next Action
 
@@ -108,12 +110,19 @@ Older dot-agents installs used `.agents/plans/` and `.agents/prds/`. v0.3.0 pres
 | Term | Definition |
 | --- | --- |
 | adapt | Skill that analyzes your project and fills in `AGENTS.md` |
-| work item | Durable folder under `.agents/work/<category>/<slug>/` when continuity, coordination, auditability, decisions, or handoff justify repository context |
-| task | Checkbox entry inside `plan.md` or a focused plan under `plans/` |
-| PRD | Optional short requirements brief defining what should be true |
-| plan | Implementation-ready task list with scope, dependencies, and acceptance criteria |
-| handoff prompt | Paste-ready prompt for a fresh implementation thread |
+| canonical state | The authoritative record of a work item: `index.md` owns status, summary, and next action; each linked artifact owns its own detail |
+| category | Open lowercase kebab-case path segment that groups work items by project, domain, or work type |
+| closeout | Committing the completed work-item snapshot, then staging and separately committing its removal |
+| delivery authority | Explicit permission for shared-state actions such as committing, pushing, merging, deploying, migrating, or changing data; implementing does not imply it |
+| durable context | Repository-backed information meant to outlive the current conversation or worker |
 | final snapshot | Committed `Status: completed` work-item state retained in git history immediately before removal |
+| handoff prompt | Paste-ready prompt for a fresh implementation thread |
+| integration owner | The person or coordinating thread responsible for scope, durable state, combined verification, and final acceptance when work is split |
+| plan | Implementation-ready task list with scope, dependencies, and acceptance criteria |
+| PRD | Optional short requirements brief defining what should be true |
 | progress summary | Optional living `progress.md` for the current slice, observed verification evidence, blockers, and concise resumption detail |
+| promotion | Moving a validated reusable outcome out of a work item into its lasting home: code, tests, product docs, `AGENTS.md`, a skill, a script or check, or `.agents/research/` |
 | skills | Specialized agent instructions loaded via natural language |
 | sync | Script that updates dot-agents from upstream while preserving user work |
+| task | Checkbox entry inside `plan.md` or a focused plan under `plans/` |
+| work item | Durable folder under `.agents/work/<category>/<slug>/` for work whose state must survive the current conversation |

@@ -1,6 +1,6 @@
 # dot-agents
 
-AI-ready `.agents/` workspace for any project — durable work items, reusable research, execution-ready plans, verification evidence, and optional handoffs across threads.
+dot-agents adds plain-Markdown agent instructions and a `.agents/` workspace to any repository. Small changes stay in the current AI conversation. Work that must survive it gets a work item with a status, an exact next action, and optional research, plans, and verification evidence so the next thread can continue.
 
 ## Install
 
@@ -21,21 +21,6 @@ curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.s
 - **[Quickstart](./QUICKSTART.md)** — Install, choose conversational or durable work, and take the next action
 - **[Documentation Index](./docs/README.md)** — Workflow guides, concepts, skills, and migration notes
 - **[Website](https://dot-agents.dev)** — Overview, installation, and rendered workflow guides (source: [site/](./site/))
-
-Develop the Astro landing page locally:
-
-```bash
-npm install
-npm run dev
-```
-
-Inside an Amp Orb, start the repository's supervised development service and print its authenticated portal URL:
-
-```bash
-amp orb services ensure
-```
-
-The service uses Amp's assigned `$PORT` and accepts the generated `.e2b.app` and `.onamp.dev` portal hosts.
 
 ## Agent Support
 
@@ -62,25 +47,15 @@ Request or change
                             Promote reusable lessons → Commit final snapshot → Remove
 ```
 
-For a small, self-contained change, work in the current conversation, planning only as needed, then verify and report without creating repository artifacts.
+Keep work conversational when one thread is enough: plan as needed, implement, verify, and report without creating repository artifacts.
 
-Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit request makes repository context valuable. Start at `index.md`, add research, a requirements brief, or a saved plan only when it helps, execute in the current thread by default, record observed evidence, and hand off only when another worker or environment genuinely helps. At completion, promote reusable outcomes, commit the final snapshot, and remove the work item from the current tree; git history remains the archive.
+Create a work item when its status, decisions, or next action must survive this conversation — for later resumption, coordination, handoff, or auditability — or when you explicitly ask for one. Start at `index.md`. Add research, a requirements brief, or a saved plan only when it helps the next action. Implement in the current thread by default and hand off only when another worker or environment genuinely helps. At completion, promote reusable outcomes, commit the final snapshot, and remove the work item from the current tree; git history remains the archive.
 
-The authoritative work-item artifact and lifecycle rules live in [`.agents/work/AGENTS.md`](./.agents/work/AGENTS.md).
-
-For high-level guidance on choosing and using the skills without a mandatory lifecycle, choose a [workflow guide](./docs/README.md#workflow-guides) for starting uncertain work, continuing durable work, or finishing and preserving outcomes.
+The authoritative work-item artifact and lifecycle rules live in [`.agents/work/AGENTS.md`](./.agents/work/AGENTS.md). The [workflow guides](./docs/README.md#workflow-guides) cover starting uncertain work, continuing durable work, and finishing and preserving outcomes.
 
 ## Next Steps
 
-After install:
-
-1. Customize `AGENTS.md` for your project — run `adapt` to auto-fill or edit manually.
-2. For self-contained work, ask the agent to implement and verify in the current conversation.
-3. When continuity has value, create a work item under `.agents/work/<category>/<slug>/`.
-4. Ask for research, requirements, or a saved plan only when needed, then implement in the current thread by default.
-5. Use `agent-browser` for real-browser proof when relevant, or create a handoff when another thread or environment helps.
-6. Close completed durable work with `close-work.sh` after its reusable outcomes and final snapshot are preserved.
-7. Sync updates later with `.agents/scripts/sync.sh`.
+After installing, ask the agent to `Run adapt` so `AGENTS.md` reflects your project. For self-contained work, ask it to implement and verify directly. For durable work, ask it to `Create a new work item for ...`. The [Quickstart](./QUICKSTART.md) covers optional research, planning, handoffs, and closeout. Sync updates later with `.agents/scripts/sync.sh`.
 
 ## Sync Behavior
 
@@ -113,6 +88,19 @@ Sync never closes work items automatically. The guarded `agent-work` helper vali
 dot-agents uses [Semantic Versioning](https://semver.org/). Releases are tagged as `vMAJOR.MINOR.PATCH`.
 
 See [CHANGELOG.md](./CHANGELOG.md) for release history.
+
+## For Contributors
+
+Run `./scripts/test.sh` for lint and Bats tests. See [AGENTS.md](./AGENTS.md) for the full contributor workflow.
+
+Develop the Astro landing page locally:
+
+```bash
+npm install
+npm run dev
+```
+
+Inside an Amp Orb, `amp orb services ensure` starts the supervised development service on Amp's assigned `$PORT` and prints its authenticated portal URL.
 
 ## Credits
 
