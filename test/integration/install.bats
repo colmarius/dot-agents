@@ -881,6 +881,36 @@ teardown() {
     [ -f ".agents/skills/my-custom-skill/SKILL.md" ]
 }
 
+@test "preview preserves custom Claude links and predicts missing links once" {
+    mkdir -p .claude
+    bash "$INSTALL_SCRIPT" --yes
+    mkdir -p .agents/skills/custom
+    echo '# Custom' > .agents/skills/custom/SKILL.md
+    ln -s ../../.agents/skills/custom .claude/skills/custom
+
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_success
+    refute_output --partial '[REMOVE] .claude/skills/custom'
+    [ -L .claude/skills/custom ]
+
+    run bash "$INSTALL_SCRIPT" --dry-run
+    assert_success
+    refute_output --partial '[REMOVE] .claude/skills/custom'
+
+    rm .claude/skills/custom
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_failure 1
+    assert_output --partial '[LINK] .claude/skills/custom'
+    assert_equal "$(printf '%s\n' "$output" | grep -c '\[LINK\] .claude/skills/custom')" 1
+    [ ! -L .claude/skills/custom ]
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    [ -L .claude/skills/custom ]
+    run bash "$INSTALL_SCRIPT" --diff
+    assert_success
+}
+
 @test "core skills are not reported as custom" {
     # First install
     bash "$INSTALL_SCRIPT" --yes

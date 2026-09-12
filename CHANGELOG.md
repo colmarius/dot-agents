@@ -13,6 +13,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `--uninstall --diff` now rejects the unsupported preview combination before any deletion and directs users to `--uninstall --dry-run`; uninstall explicitly warns that it removes user content.
 - `new-work.sh` rejects `completed` as an initial status; verified completion remains a closeout step.
 - Corrected the closeout heading link, root-guidance installation semantics, and stale preview command; older migration guides now point to the current lifecycle.
+- Custom-skill documentation now warns about current and retired upstream name collisions; pinned install examples pin both the installer and payload.
+- Sync verifies the complete installer download before execution, so failed downloads cannot report success or execute partial content.
+- Claude skill-link previews include retained local skills, preserve valid custom links, and report missing links once.
+- Release publishing checks for the GitHub CLI before creating or pushing a tag; local-tag output gives a valid manual continuation. Release scripts are now included in shell lint.
 
 ### Added
 
@@ -25,6 +29,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Browser guidance retains version-matched CLI discovery while clarifying environment rules, sensitive evidence, inspected results, and task-owned session cleanup.
 - Skill maintenance distinguishes loading from exercised behavior and uses skill metadata instead of a duplicate inventory; adaptation checks applicable guidance scopes.
 - Documentation and installed project guidance now make saved plans explicitly optional when a work item's next action is already clear.
+- The landing page demonstrates a bounded work item without a plan, prioritizes continuing work, and links to all four skills. Delivery-authority wording distinguishes local commits from publication, and contributor release steps require a chosen new version.
 - Documentation entry points now separate workflow guides, concepts, exact reference material, and migration guidance more clearly.
 - Entry-point docs, the landing page, and the root `AGENTS.md` template now state the work-item rule as "create one when its status, decisions, or next action must survive this conversation"; the exhaustive trigger list remains in `.agents/work/AGENTS.md` and `agent-work`.
 - The glossary now defines canonical state, category, closeout, delivery authority, durable context, integration owner, and promotion, which the workflow guides reference.

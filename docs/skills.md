@@ -97,7 +97,7 @@ The `name` and `description` fields are used for skill discovery. Keep descripti
 
 ### Preserving Custom Skills
 
-Custom skills in `.agents/skills/` are preserved during `sync.sh` updates. Only upstream core skills are updated or retired by dot-agents.
+Custom skills whose names do not collide with current or retired upstream skills are preserved during `sync.sh` updates. Colliding names can be overwritten or backed up and removed. Preview with `.agents/scripts/sync.sh --diff` and follow the [v0.5 migration warning](migration-v0.5.md#what-sync-removes-and-preserves) to rename customized retired skills before syncing.
 
 ## Claude Code Project Skill Discovery
 

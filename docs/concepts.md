@@ -113,7 +113,7 @@ Older dot-agents installs used `.agents/plans/` and `.agents/prds/`. v0.3.0 pres
 | canonical state | The authoritative record of a work item: `index.md` owns status, summary, and next action; each linked artifact owns its own detail |
 | category | Open lowercase kebab-case path segment that groups work items by project, domain, or work type |
 | closeout | Committing the completed work-item snapshot, then staging and separately committing its removal |
-| delivery authority | Explicit permission for shared-state actions such as committing, pushing, merging, deploying, migrating, or changing data; implementing does not imply it |
+| delivery authority | Explicit permission for delivery actions, including local commits and shared-state changes such as pushing, merging, deploying, migrating, or changing shared data; implementing does not imply it |
 | durable context | Repository-backed information meant to outlive the current conversation or worker |
 | final snapshot | Committed `Status: completed` work-item state retained in git history immediately before removal |
 | handoff prompt | Paste-ready prompt for a fresh implementation thread |

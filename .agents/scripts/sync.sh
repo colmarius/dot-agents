@@ -124,8 +124,13 @@ _main() {
     echo "Syncing from: ${upstream} (ref: ${ref})"
     echo ""
 
-    # Fetch and execute upstream install.sh with passthrough flags
-    exec bash <(curl -fsSL "$install_url") --ref "$ref" "$@"
+    # Verify the complete download before executing any of its contents.
+    local installer
+    if ! installer=$(curl -fsSL "$install_url"); then
+        log_error "Could not download installer; no installer commands were run."
+        exit 1
+    fi
+    exec bash -c "$installer" install.sh --ref "$ref" "$@"
 }
 
 # Only run if script is executed, not sourced

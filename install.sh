@@ -51,7 +51,7 @@ Examples:
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 
   # Install specific version
-  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref v0.5.0
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/v0.5.0/install.sh | bash -s -- --ref v0.5.0
 
   # Preview changes first
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --diff
@@ -620,7 +620,7 @@ cleanup_stale_claude_code_skill_symlinks() {
         is_dot_agents_claude_skill_symlink "$skill_link" || continue
 
         skill_name="$(basename "$skill_link")"
-        if [[ -f "$agents_skills_dir/$skill_name/SKILL.md" ]] && ! is_retired_core_skill "$skill_name"; then
+        if [[ -f "$agents_skills_dir/$skill_name/SKILL.md" || -f ".agents/skills/$skill_name/SKILL.md" ]] && ! is_retired_core_skill "$skill_name"; then
             continue
         fi
 
@@ -643,6 +643,7 @@ setup_claude_code_integration() {
     local linked=0
     local skipped=0
     local skill_dir skill_name dest link_target existing_target
+    local -a skill_dirs
 
     [[ -d ".claude" ]] || return 0
     if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
@@ -670,11 +671,19 @@ setup_claude_code_integration() {
         fi
     fi
 
-    for skill_dir in "$agents_skills_dir"/*/; do
+    skill_dirs=("$agents_skills_dir"/*/)
+    if [[ "$agents_skills_dir" != ".agents/skills" ]]; then
+        # Preview the union of upstream skills and retained local skills.
+        skill_dirs+=(.agents/skills/*/)
+    fi
+    for skill_dir in "${skill_dirs[@]}"; do
         [[ -d "$skill_dir" ]] || continue
         [[ -f "$skill_dir/SKILL.md" ]] || continue
 
         skill_name="$(basename "$skill_dir")"
+        if [[ "$agents_skills_dir" != ".agents/skills" && "$skill_dir" == .agents/skills/* && -f "$agents_skills_dir/$skill_name/SKILL.md" ]]; then
+            continue
+        fi
         if is_retired_core_skill "$skill_name"; then
             continue
         fi

@@ -205,6 +205,11 @@ if [[ "$DRY_RUN" == true ]]; then
     exit 0
 fi
 
+# Check publishing prerequisites before creating or pushing a tag.
+if [[ "$PUSH" == true ]] && ! command -v gh &>/dev/null; then
+    die "gh CLI is required for --push. Install it before publishing: https://cli.github.com"
+fi
+
 # Create tag
 info "Creating tag $TAG..."
 git tag -a "$TAG" -m "Release $VERSION"
@@ -214,21 +219,17 @@ if [[ "$PUSH" == true ]]; then
     info "Pushing tag to origin..."
     git push origin "$TAG"
     
-    # Create GitHub release (requires gh CLI)
-    if command -v gh &>/dev/null; then
-        info "Creating GitHub release..."
-        echo "$RELEASE_NOTES" | gh release create "$TAG" \
-            --title "$TAG" \
-            --notes-file -
-        info "GitHub release created: https://github.com/colmarius/dot-agents/releases/tag/$TAG"
-    else
-        warn "gh CLI not found. Push tag manually or install gh: https://cli.github.com"
-        info "Tag $TAG created locally. Push with: git push origin $TAG"
-    fi
+    info "Creating GitHub release for published tag $TAG..."
+    echo "$RELEASE_NOTES" | gh release create "$TAG" \
+        --verify-tag \
+        --title "$TAG" \
+        --notes-file -
+    info "GitHub release created: https://github.com/colmarius/dot-agents/releases/tag/$TAG"
 else
     info "Tag $TAG created locally"
-    info "To push and release: ./scripts/release.sh --push"
-    info "Or manually: git push origin $TAG"
+    info "After publishing is approved, push this tag: git push origin $TAG"
+    info "Save the reviewed release notes to a file, then create the release:"
+    info "gh release create $TAG --verify-tag --title $TAG --notes-file <reviewed-notes-file>"
 fi
 
 echo ""

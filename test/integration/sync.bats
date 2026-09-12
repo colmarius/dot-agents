@@ -80,6 +80,40 @@ EOF
     assert_output --partial "ref: v1.0.0"
 }
 
+@test "failed installer downloads never execute empty or partial content" {
+    mkdir -p .agents
+    printf '{"upstream":"https://github.com/colmarius/dot-agents","ref":"main"}\n' > .agents/.dot-agents.json
+    curl() { printf '%s' "$DOWNLOAD_BODY"; return 22; }
+    export -f curl
+    export DOWNLOAD_BODY=""
+
+    run bash "$SYNC_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "Could not download installer"
+
+    DOWNLOAD_BODY='touch downloaded-body-ran'
+    run bash "$SYNC_SCRIPT" --diff
+    assert_failure
+    assert_output --partial "Could not download installer"
+    [ ! -e downloaded-body-ran ]
+}
+
+@test "downloaded installer receives exact arguments and returns its exit status" {
+    mkdir -p .agents
+    printf '{"upstream":"https://github.com/colmarius/dot-agents","ref":"v1.2.3"}\n' > .agents/.dot-agents.json
+    curl() {
+        cat <<'EOF'
+printf '<%s>\n' "$@"
+exit 7
+EOF
+    }
+    export -f curl
+
+    run bash "$SYNC_SCRIPT" --diff --ref "topic with spaces"
+    assert_failure 7
+    assert_output --partial $'<--ref>\n<v1.2.3>\n<--diff>\n<--ref>\n<topic with spaces>'
+}
+
 @test "--version shows version info when not installed" {
     run bash "$SYNC_SCRIPT" --version
     assert_success

@@ -81,7 +81,7 @@ const description =
               </div>
               <div class="terminal-hints">
                 <p><span>Review</span><code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | less</code></p>
-                <p><span>Pin {releaseTag}</span><code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --ref {releaseTag}</code></p>
+                <p><span>Pin {releaseTag}</span><code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/{releaseTag}/install.sh | bash -s -- --ref {releaseTag}</code></p>
               </div>
             </div>
             <p class="install-next">Then tell your agent: <code>Run adapt</code>.</p>
@@ -203,24 +203,25 @@ const description =
     └── <b>scripts/</b>    <span># safe sync updates</span></code></pre>
             </div>
             <div class="example-document">
-              <div class="document-bar"><span>.agents/work/feature/user-authentication/index.md</span><span>● saved</span></div>
-              <pre><code><b># User authentication</b>
+              <div class="document-bar"><span>.agents/work/docs/install-pin/index.md</span><span>● saved</span></div>
+              <pre><code><b># Pin the install example</b>
 
 Status: planned
-Category: feature
+Category: docs
 Updated: 2026-06-22
 
 <b>## Why</b>
-Users need secure access across sessions.
+Resume this docs fix next session.
 
 <b>## Summary</b>
-Add auth flows and session persistence.
+Pin both installer and payload versions.
 
 <b>## Artifacts</b>
-- Plan: plan.md
+- None needed.
 
 <b>## Next Action</b>
-- Implement Task 1 from plan.md.</code></pre>
+- Update the README install example.
+- Check URL tag and --ref match VERSION.</code></pre>
             </div>
           </div>
         </section>
@@ -230,6 +231,7 @@ Add auth flows and session persistence.
             <p class="eyebrow">Start with these prompts</p>
             <h2 id="commands-title">Ask for what you need.</h2>
             <p>Use these prompts as written. Add detail only when it helps.</p>
+            <a class="text-link" href="https://github.com/colmarius/dot-agents/blob/main/docs/skills.md">All four skills <span aria-hidden="true">↗</span></a>
           </div>
 
           <div class="command-list">
@@ -246,8 +248,8 @@ Add auth flows and session persistence.
               <p>Plan conversationally, or turn durable context into implementation-ready tasks.</p>
             </article>
             <article>
-              <code>Write a handoff prompt for ...</code>
-              <p>Prepare a scoped prompt when another thread would help.</p>
+              <code>Continue the work item at ...</code>
+              <p>Read its current state, implement the next action, and verify.</p>
             </article>
           </div>
         </section>

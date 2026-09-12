@@ -19,7 +19,7 @@ The agent reads `index.md` first, then only the linked plan, research, or progre
 
 ## Keep connected work together by default
 
-Continue in the current thread while the same context and judgment remain useful. When feedback changes accepted behavior or the next action, update the active plan and `index.md` before continuing.
+Continue in the current thread while the same context and judgment remain useful. When feedback changes accepted behavior or the next action, update `index.md` and the active plan, when present, before continuing.
 
 Split only when the boundary creates a concrete benefit:
 
@@ -56,8 +56,8 @@ Write a handoff prompt for <slice> of .agents/work/<category>/<slug>. The
 recipient may commit locally but not push or merge; I integrate the result.
 ```
 
-State separately what the recipient may do to shared state—commit, push, merge, deploy, migrate, or change data. Access alone authorizes none of it.
+State permission for each delivery action separately, including local commits and shared-state changes such as pushing, merging, deploying, migrating, or changing shared data. Access alone authorizes none of it.
 
-The integration owner inspects the actual changes, resolves conflicts, runs combined verification, and then updates the plan checkboxes, recorded evidence, and `index.md` status and next action before final acceptance.
+The integration owner inspects the actual changes, resolves conflicts, runs combined verification, and then updates plan checkboxes when present, recorded evidence, and `index.md` status and next action before final acceptance.
 
 For exact procedures, rely on agent-work and the [work-item contract](https://github.com/colmarius/dot-agents/blob/main/.agents/work/AGENTS.md). For the reasoning behind thread boundaries, see [Right-Sized Threads, Durable State](https://with-agents.dev/coding/posts/right-sized-threads-durable-state/).

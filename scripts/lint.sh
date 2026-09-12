@@ -20,6 +20,7 @@ SCRIPTS=(
     .agents/skills/agent-work/scripts/new-work.sh
     scripts/build-test-fixture.sh
     scripts/lint.sh
+    scripts/release.sh
     scripts/serve-docs.sh
     scripts/skills-lint.sh
     scripts/test.sh

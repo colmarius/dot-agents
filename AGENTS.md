@@ -117,14 +117,19 @@ git push
 
 ### Release Workflow
 
+Choose and confirm the new version before running this workflow. Update current pins in `install.sh` help and `README.md` (both installer URL and `--ref`), plus the changelog release section and comparison links. The site derives its current pin from `VERSION`. Preserve historical changelog text and version-specific migration examples. Rebuild the fixture if installable guidance changed, then run `./scripts/test.sh` and `npm run build`.
+
 ```bash
-# 1. Update VERSION and pinned --ref examples with the new version
-echo "0.5.0" > VERSION
+# 1. Set the explicitly approved, unreleased version
+read -r -p "Approved new version (without v): " new_version
+printf '%s\n' "${new_version:?A new version is required}" > VERSION
 
-# 2. Update CHANGELOG.md - move [Unreleased] items to new version section
+# 2. Update current pins and CHANGELOG.md as described above; verify the candidate
 
-# 3. Commit changes
-git add -A && git commit -m "Release v0.5.0"
+# 3. Review and commit only the intended release changes
+git diff
+git add VERSION install.sh README.md CHANGELOG.md
+git commit -m "Release v$new_version"
 
 # 4. Push the reviewed release commit and verify the remote branch matches
 git push origin main

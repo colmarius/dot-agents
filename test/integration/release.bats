@@ -204,10 +204,30 @@ EOF
     run bash scripts/release.sh
     assert_success
     assert_output --partial "Tag v1.0.0 created locally"
+    assert_output --partial "git push origin v1.0.0"
+    assert_output --partial "gh release create v1.0.0 --verify-tag"
+    refute_output --partial "To push and release: ./scripts/release.sh --push"
 
     # Tag should exist
     run git tag -l "v1.0.0"
     assert_output "v1.0.0"
+}
+
+@test "missing gh blocks publishing before creating or pushing a tag" {
+    configure_upstream
+    command() {
+        if [[ "$*" == '-v gh' ]]; then return 1; fi
+        builtin command "$@"
+    }
+    export -f command
+
+    run bash scripts/release.sh --push
+    assert_failure
+    assert_output --partial "gh CLI is required"
+    run git tag -l v1.0.0
+    assert_output ""
+    run git --git-dir="$REMOTE_DIR" tag -l v1.0.0
+    assert_output ""
 }
 
 @test "extracts release notes from CHANGELOG" {
