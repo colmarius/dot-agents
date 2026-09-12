@@ -1,5 +1,7 @@
 # Migration Guide: Work Items and Handoff Prompts
 
+This is historical v0.3 guidance. For current skill ownership and work-item closeout, follow the [v0.5 migration guide](migration-v0.5.md).
+
 dot-agents v0.3.0 replaces the old `.agents/plans/` / `.agents/prds/` / Ralph workflow with durable work items and paste-ready handoff prompts.
 
 ## What Changed

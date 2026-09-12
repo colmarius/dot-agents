@@ -208,6 +208,28 @@ teardown() {
     [ -d ".agents" ]
 }
 
+@test "--uninstall --diff rejects deletion and preserves all user content" {
+    mkdir -p .agents/work/tooling/custom .agents/research .claude/skills
+    printf 'Custom project guidance\n' > AGENTS.md
+    printf 'Tracked work\n' > .agents/work/tooling/custom/index.md
+    printf 'Untracked research\n' > .agents/research/note.md
+    printf 'Ignored evidence\n' > .agents/work/tooling/custom/evidence.txt
+    printf 'evidence.txt\n' > .gitignore
+    git init --quiet
+    git add AGENTS.md .agents/work/tooling/custom/index.md .gitignore
+    ln -s ../../.agents/skills/agent-work .claude/skills/agent-work
+
+    run bash "$INSTALL_SCRIPT" --uninstall --diff --yes
+    assert_failure 2
+    assert_output --partial "Use --uninstall --dry-run"
+    assert_equal "$(cat AGENTS.md)" "Custom project guidance"
+    assert_equal "$(cat .agents/work/tooling/custom/index.md)" "Tracked work"
+    assert_equal "$(cat .agents/research/note.md)" "Untracked research"
+    assert_equal "$(cat .agents/work/tooling/custom/evidence.txt)" "Ignored evidence"
+    [ -L .claude/skills/agent-work ]
+    git diff --exit-code
+}
+
 @test "user content samples are not installed" {
     run bash "$INSTALL_SCRIPT" --yes
     assert_success
@@ -261,6 +283,15 @@ teardown() {
         --status unknown
     assert_failure
     assert_output --partial "Invalid status"
+
+    run .agents/skills/agent-work/scripts/new-work.sh \
+        --category feature \
+        --slug premature-completion \
+        --title "Premature completion" \
+        --status completed
+    assert_failure 2
+    assert_output --partial "Expected initial status"
+    [ ! -e .agents/work/feature/premature-completion ]
 }
 
 @test "agent-work helper accepts a custom kebab-case category" {

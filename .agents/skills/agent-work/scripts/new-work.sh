@@ -8,6 +8,7 @@ Usage:
 
 Creates .agents/work/<category>/<work-slug>/index.md from the work index template.
 Default status: researching
+Initial statuses: researching, planned, in-progress, blocked (complete only after verification)
 Category: any lowercase kebab-case project, product, domain, or work type
 Common defaults: feature, bugfix, tech-debt, docs, tooling, research
 USAGE
@@ -54,10 +55,10 @@ if [[ -z "$category" || -z "$slug" || -z "$title" ]]; then
 fi
 
 case "$status" in
-  researching|planned|in-progress|blocked|completed) ;;
+  researching|planned|in-progress|blocked) ;;
   *)
     echo "Invalid status: $status" >&2
-    echo "Expected one of: researching, planned, in-progress, blocked, completed" >&2
+    echo "Expected initial status: researching, planned, in-progress, blocked" >&2
     exit 2
     ;;
 esac

@@ -87,21 +87,13 @@ The core `agent-browser` skill follows this pattern.
 
 ## Testing Skills
 
-Verify your skill by loading it and checking:
+Check discovery and behavior separately:
 
-- Triggers fire on expected phrases
-- Instructions are clear and actionable
-- Examples cover common use cases
-- Workflows produce expected outputs
-- Referenced scripts, assets, and relative links exist
+- Load the skill and confirm its metadata and references are available; this alone does not prove automatic trigger selection.
+- Exercise a representative task and check its actual output against the intended workflow.
+- Report workflows or trigger behavior that were not exercised.
+- Check that referenced scripts, assets, and relative links exist.
 
 In the dot-agents source repository, run `./scripts/skills-lint.sh` to validate core skill metadata and links.
 
-## Available Skills
-
-| Skill | Purpose |
-| ----- | ------- |
-| `adapt` | Analyze project and fill in AGENTS.md after installation |
-| `agent-browser` | Discover current real-browser automation workflows from the installed CLI |
-| `agent-work` | Manage durable work from requirements and plans through execution and handoffs |
-| `research` | Research technical topics, saving work-local or reusable findings |
+Use each skill's `SKILL.md` metadata as the current inventory rather than maintaining a second list here.

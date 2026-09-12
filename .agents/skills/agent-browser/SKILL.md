@@ -9,6 +9,8 @@ Use `agent-browser` when work needs a real browser, repeatable UI checks, screen
 
 This checked-in skill is a discovery stub. Ask the installed CLI for current workflow details instead of vendoring fast-changing runtime instructions.
 
+CLI instructions supplement the execution environment's service, authentication, and artifact rules. Use disposable non-production test data for mutating checks; keep credentials, saved authentication state, and sensitive captures out of commits.
+
 ## Workflow
 
 1. Check whether the CLI is available:
@@ -33,6 +35,8 @@ This checked-in skill is a discovery stub. Ask the installed CLI for current wor
 
    Use `core --full` for normal browser work. Select a specialized runtime skill when the task clearly matches one listed by the CLI.
 
+   If runtime-skill discovery is unsupported or `core` is absent, use installed help and version-matched upstream documentation, and report the compatibility gap.
+
 4. Follow the CLI-served workflow. Record commands, screenshots, videos, traces, observed errors, and known gaps in the active work item or final response.
 
 ## Runtime Skill Commands
@@ -49,6 +53,7 @@ Use `--json` when structured output helps. Treat `agent-browser skills list` as 
 ## Verification
 
 - Confirm `agent-browser --help` succeeds before relying on the workflow.
-- Verify the target behavior in the browser, not only in source or static HTML.
-- Save reviewable evidence when a visual or running-system claim matters.
-- Close browser sessions and report anything that remained unverified.
+- Derive assertions from acceptance criteria and check representative visible states; a convenient selector or URL pattern may omit items the user sees.
+- Verify the target behavior, final URL, and visible state in the browser, not only in source or static HTML; inspect runtime errors.
+- Save and inspect reviewable evidence when a visual or running-system claim matters. A capture alone does not verify the result.
+- Close only browser sessions owned by the current task and report anything that remained unverified.

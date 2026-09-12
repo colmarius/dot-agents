@@ -1,6 +1,6 @@
 # Requirements Brief Template
 
-Use this template only when work needs durable requirements alignment before planning. For small, scoped changes with clear behavior and acceptance criteria, create `plan.md` directly instead.
+Use this template only when work needs durable requirements alignment before planning. For small, scoped changes with clear behavior and acceptance criteria, skip the brief and use a plan only when sequencing needs one.
 
 Keep this brief. If technical discovery dominates, use `research.md` instead.
 
@@ -58,4 +58,4 @@ What should be true when this is done?
 
 ## Create The Plan
 
-Once the brief is aligned, create `plan.md` in the same work item using the [agent-work plan template](plan-template.md). Do not create new `.agents/plans/` files.
+Once the brief is aligned, record a bounded next action in `index.md`. If execution needs sequencing, create `plan.md` in the same work item using the [agent-work plan template](plan-template.md). Do not create new `.agents/plans/` files.

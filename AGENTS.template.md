@@ -94,9 +94,11 @@ Follow `.agents/work/AGENTS.md` for the authoritative status, artifact ownership
 
 ## Git Workflow
 
+Follow the user's delivery authority and project policy; these commands are examples, not permission to push or change shared state. Stage only the intended changes.
+
 ```bash
 git status
-git add -A
+git add <changed-paths>
 git commit -m "Description of changes"
 git push
 ```

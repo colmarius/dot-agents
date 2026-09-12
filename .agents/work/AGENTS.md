@@ -35,8 +35,8 @@ Read `index.md` first when entering a work item, then load only the artifacts ne
 ## Status Rules
 
 - Use `researching`, `planned`, `in-progress`, `blocked`, or `completed`:
-  - `researching`: context exists, but no implementation-ready plan exists yet.
-  - `planned`: `plan.md` or an indexed phase under `plans/` exists and is ready for implementation or handoff.
+  - `researching`: context exists, but the next action is not yet ready for implementation.
+  - `planned`: a scoped next action is ready for implementation or handoff, in `index.md` or a linked plan when needed.
   - `in-progress`: implementation has started in the current thread or a delegated worker.
   - `blocked`: progress needs input, access, or plan changes before continuing.
   - `completed`: implementation and verification are done; this is a committed final snapshot immediately before removal, not a retained state.
@@ -86,10 +86,13 @@ After implementation and verification are complete:
 
 1. Reconcile plan checkboxes with observed evidence.
 2. Promote validated outcomes to canonical code or docs, short always-relevant guidance, a reusable skill, a deterministic check, or `.agents/research/` when they should outlive this work item.
+   Retained material must stand alone after removal; replace necessary links back to work-local files with retained snapshot links.
 3. Remove stale persisted handoffs, set `Status: completed`, update `Updated:`, and set `## Next Action` to exactly `- None.`.
 4. Commit all remaining scoped changes and the final work-item snapshot.
 5. Run `.agents/skills/agent-work/scripts/close-work.sh --category <category> --slug <work-slug> --check`, then rerun without `--check` to stage the work-item deletion. Commit that deletion separately.
 
-The helper requires repository-root execution, a clean worktree, a committed final snapshot, and no ignored or untracked files under the work item. It stages only the deletion and never commits. Run it only with authority to commit closeout; otherwise leave the completed snapshot in place.
+The helper requires repository-root execution, a clean worktree, a committed final snapshot, and no ignored or untracked files under the work item. It stages only the deletion and never commits.
+
+Closeout needs authority for two commits: the final snapshot and the removal. Without authority to commit the snapshot, keep the item `blocked` with authorization as its next action. With the snapshot committed but no authority to commit the deletion, leave the committed folder in place and report the pending removal.
 
 Git history is the archive. If a squash workflow would discard the completed snapshot commit, land that snapshot in retained history before a follow-up deletion, or keep the work item in the tree.

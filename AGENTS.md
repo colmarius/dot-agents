@@ -86,9 +86,6 @@ Legacy `.agents/plans/` and `.agents/prds/` paths may exist in older installs. P
 # Rebuild test fixture after changes to .agents/ or AGENTS.template.md
 ./scripts/build-test-fixture.sh
 
-# Serve docs locally
-./scripts/serve-docs.sh [port]
-
 # Install dependencies and develop the Astro landing page
 npm install
 npm run dev
@@ -156,7 +153,7 @@ After making changes:
 
 The installer (`install.sh`) downloads a tarball from GitHub, extracts it to a temp directory, and copies:
 
-- `AGENTS.template.md` → `./AGENTS.md` on fresh install only.
+- `AGENTS.template.md` → `./AGENTS.md` when missing; existing root guidance is preserved.
 - Upstream-owned `.agents/` files such as skills, `.agents/work/AGENTS.md`, and `sync.sh`.
 
 User content under `.agents/work/<category>/<slug>/`, `.agents/research/`, and legacy plan/PRD documents is preserved during sync. Retired upstream skills and stale legacy guidance/templates may be backed up and removed during sync.

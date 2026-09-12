@@ -1036,6 +1036,11 @@ _main() {
     fi
 
     if [[ "$UNINSTALL" == "true" ]]; then
+        if [[ "$DIFF_ONLY" == "true" ]]; then
+            echo "--uninstall does not support --diff. Use --uninstall --dry-run to preview removal." >&2
+            exit 2
+        fi
+        echo "Uninstall removes AGENTS.md and all .agents/ content, including work items, research, and backups."
         if [[ "$YES" != "true" ]]; then
             echo -n "Remove dot-agents from this project? [y/N] "
             read -r response

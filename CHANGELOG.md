@@ -8,12 +8,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed
+
+- `--uninstall --diff` now rejects the unsupported preview combination before any deletion and directs users to `--uninstall --dry-run`; uninstall explicitly warns that it removes user content.
+- `new-work.sh` rejects `completed` as an initial status; verified completion remains a closeout step.
+- Corrected the closeout heading link, root-guidance installation semantics, and stale preview command; older migration guides now point to the current lifecycle.
+
 ### Added
 
 - A Markdown-backed workflow-guide hub with focused guides for starting uncertain work, continuing durable work, and finishing while preserving reusable outcomes.
 
 ### Changed
 
+- Guidance and skill review keeps the four core skills, consolidates closeout authority in the work-item contract, and allows `planned` readiness without a saved plan.
+- Research audits distinguish source evidence from inference and coverage gaps; promoted notes stand alone after work-item removal.
+- Browser guidance retains version-matched CLI discovery while clarifying environment rules, sensitive evidence, inspected results, and task-owned session cleanup.
+- Skill maintenance distinguishes loading from exercised behavior and uses skill metadata instead of a duplicate inventory; adaptation checks applicable guidance scopes.
 - Documentation and installed project guidance now make saved plans explicitly optional when a work item's next action is already clear.
 - Documentation entry points now separate workflow guides, concepts, exact reference material, and migration guidance more clearly.
 - Entry-point docs, the landing page, and the root `AGENTS.md` template now state the work-item rule as "create one when its status, decisions, or next action must survive this conversation"; the exhaustive trigger list remains in `.agents/work/AGENTS.md` and `agent-work`.

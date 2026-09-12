@@ -65,14 +65,16 @@ Re-running `install.sh` updates dot-agents from upstream while preserving your w
 | --- | --- |
 | Skills, scripts, `.agents/work/AGENTS.md` | Updated from upstream |
 | Retired upstream skills and legacy guidance/templates | Backed up and removed on sync |
-| `AGENTS.md` | Skipped after fresh install |
+| `AGENTS.md` | Created if missing; existing root guidance is preserved |
 | Work items | Preserved by sync under `.agents/work/<category>/<slug>/`; explicit closeout removes completed items |
 | Reusable research | Preserved under `.agents/research/` |
 | Legacy plan/PRD documents | Preserved if present |
 
-The installer copies `AGENTS.template.md` → `AGENTS.md` on fresh install only.
+The installer copies `AGENTS.template.md` → `AGENTS.md` whenever the root file is missing, including during sync.
 
 Sync never closes work items automatically. The guarded `agent-work` helper validates a committed completed snapshot and stages only that work item's removal for a separate commit.
+
+Uninstall is different: `install.sh --uninstall` deletes root `AGENTS.md` and all `.agents/` content, including user work, research, and backups. Use `--uninstall --dry-run` to preview; `--uninstall --diff` is rejected.
 
 **Sync options:**
 

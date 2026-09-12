@@ -36,7 +36,7 @@ Use the smallest toolset that can answer the question.
 | --- | --- |
 | Web search | Find authoritative sources when local docs are insufficient |
 | Web page reading | Extract relevant details from specific URLs |
-| Oracle or another reasoning model | Synthesize trade-offs after evidence is gathered |
+| Optional reasoning assistance | User-requested review or a specific unresolved high-impact judgment after gathering evidence |
 | Repository search | Inspect local implementations and patterns |
 | GitHub tooling | Inspect issues, PRs, releases, or external repository examples |
 
@@ -48,6 +48,7 @@ Guidelines:
 4. Target 2-5 high-quality sources instead of broad source dumps.
 5. Use deeper reasoning after collecting evidence, not as a substitute for evidence.
 6. If the user asks for latest or recent information, force a fresh fetch when your tools support it.
+7. For audits or verification, read full relevant sources; excerpts can omit qualifications or contradictory evidence. Separate sourced facts from inference and state coverage or access gaps.
 
 ### 3. Synthesize Recommendation
 
@@ -61,6 +62,8 @@ Produce:
 ### 4. Save or Update Findings When Useful
 
 Do not create a durable note for every research request. Save findings when they must support resumption, coordination, auditability, durable decisions, or future reuse, or when the user explicitly asks. Follow [the work-item contract](../../work/AGENTS.md) for work-local artifact ownership.
+
+Keep one authoritative synthesis for each recommendation or decision; supporting notes should link to it rather than repeat it.
 
 Use work-local `.agents/work/<category>/<work-slug>/research.md` when:
 
@@ -76,7 +79,7 @@ Create or update `.agents/research/<topic-slug>.md` when:
 - The topic needs multiple sources or non-obvious trade-offs.
 - The user explicitly asks to document reusable research.
 
-If work-local findings later become broadly reusable, add a concise promoted synthesis to `.agents/research/` and link between the files.
+If work-local findings later become broadly reusable, update an existing topic note or add a concise synthesis to `.agents/research/`. Make it self-contained with primary-source citations so it survives work-item removal. Link from the work item to the retained note; use a retained commit link for any necessary backlink to removed context.
 
 Use this template:
 

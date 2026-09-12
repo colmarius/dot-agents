@@ -1,5 +1,7 @@
 # Migrating to v0.4
 
+This is historical v0.4 guidance. For current skill ownership and work-item closeout, follow the [v0.5 migration guide](migration-v0.5.md).
+
 dot-agents v0.4.0 evolves work items from a handoff-centered workflow to current-thread execution with optional coordinated workers. It also adds `agent-browser` as a core discovery skill, opens work-item categories, and strengthens durable intent and verification evidence.
 
 ## Preview the Sync

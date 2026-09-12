@@ -25,6 +25,7 @@ Run this skill after installing dot-agents into a new project, after project com
 
 3. **Preserve project-specific guidance**
    - Read the current `AGENTS.md` before editing it
+   - Read applicable ancestor guidance and affected nested guides so root edits respect local scope and canonical ownership
    - Keep project architecture, commands, conventions, safety rules, and intentional custom workflows
    - Change only sections that are placeholders, stale project facts, or outdated generic dot-agents guidance
    - Prefer concise pointers to canonical detail over copied inventories, and verify commands and paths before documenting them
