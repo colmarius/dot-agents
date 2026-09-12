@@ -1,6 +1,6 @@
 # Release guidance and skill audit
 
-Status: blocked
+Status: in-progress
 Category: tooling
 Updated: 2026-09-12
 
@@ -10,7 +10,7 @@ Prepare the next release by auditing all base guidance and skills, recent usage,
 
 ## Summary
 
-Guidance and skill audits, downstream comparison, bounded historical investigation, and the site/repository documentation pass are complete. The four-skill scaffold is retained with focused accuracy, evidence, and lifecycle improvements. Final whole-repository high-orb findings were integrated: failed-download handling, custom-link preview accuracy, release continuation and CLI preflight, and release-script lint coverage. Oracle reviewed the integrated changes and found no blockers. Version remains 0.5.0; bump and release await confirmation.
+Guidance and skill audits, downstream comparison, bounded historical investigation, and the site/repository documentation pass are complete. The four-skill scaffold is retained with focused accuracy, evidence, and lifecycle improvements. Final whole-repository high-orb findings were integrated: failed-download handling, custom-link preview accuracy, release continuation and CLI preflight, and release-script lint coverage. Oracle reviewed the integrated changes and found no blockers. The user approved v0.5.1 publication and pushing to origin/main; release metadata is updated and final candidate verification is underway.
 
 Historical coverage was qualitative: 11 threads read directly, with pagination incomplete and several search timeouts. Updated-time searches do not prove creation-date coverage or usage frequency. Findings justified single-owner research synthesis and acceptance-driven browser assertions, not additional mandatory artifacts or review gates. Downstream app-specific commands, paths, and rollout rules were excluded. Source evidence remains in the coordinating conversation rather than copying private material into the repository.
 
@@ -27,8 +27,8 @@ Verification: regressions reproduced uninstall-preview deletion, failed-download
 
 ## Next Action
 
-- Obtain confirmation for the new version and publication, then update VERSION, current pins and release notes, verify the release candidate, and follow the reviewed publishing workflow. Preparation is ready; the release candidate has not yet been versioned or published.
+- Verify and publish v0.5.1, confirm CI and Pages deployment, and obtain independent high-orb live-site and published-installation verification before closing this work item.
 
 ## Open Questions
 
-- [ ] Confirm the release version and publishing action after reviewing the verified changes.
+- None.

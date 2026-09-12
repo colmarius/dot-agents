@@ -51,7 +51,7 @@ Examples:
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash
 
   # Install specific version
-  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/v0.5.0/install.sh | bash -s -- --ref v0.5.0
+  curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/v0.5.1/install.sh | bash -s -- --ref v0.5.1
 
   # Preview changes first
   curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/main/install.sh | bash -s -- --diff
