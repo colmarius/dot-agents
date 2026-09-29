@@ -12,6 +12,6 @@
     "preview": "astro preview --root site"
   },
   "dependencies": {
-    "astro": "^7.2.0"
+    "astro": "^7.3.5"
   }
 }
