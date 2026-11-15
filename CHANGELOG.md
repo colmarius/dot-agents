@@ -8,6 +8,28 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed
+
+- **Work items are a lean shared record.** `.agents/work/AGENTS.md` now defines a work item as the record people and agents share for work that needs review or must outlive the conversation, and as its recovery checkpoint. `index.md` gains `## Decisions` (`Open:`, `Proposed:`, `Accepted:`; only a person accepts) and a short dated `## Log`, replacing `Open Questions`, `progress.md`, and `decisions/` for new work.
+- Creation triggers are observable: review or alignment, resumption in another session, thread, or worker, or an explicit request; creating an item late is fine.
+- Checkpoints are written at milestones (commit, finished step, decision, blocker, delegation, before stopping), in the same commit as the change; resuming threads check the index against the log and `git log`.
+- Support files are named by content: `research.md`, `proposal.md` for what reviewers must decide (contracts, data types, diagrams), `plan.md` only when order is not obvious, and `log.md` for older log entries. External views such as Notion pages and rendered documents are listed with the commit they reflect, and feedback there is brought back before acting.
+- Statuses keep their values with broader meanings: `in-progress` covers research and proposals, `blocked` includes waiting on review, and `completed` includes rejected or cancelled outcomes.
+- `agent-work` inlines its handoff, coordination, and stress-test essentials; `research`, `adapt`, the plan and index templates, the root `AGENTS.md` template, and skill-authoring guidance are shorter and drop procedures current models follow on their own.
+- Closeout names the snapshot commit in the removal commit and, with squash merges, removes the item in a later change.
+
+### Removed
+
+- `agent-work` references (`coordinated-execution.md`, `handoff-context.md`, `plan-execution.md`) and the PRD and decision templates. Sync backs them up and removes them; existing work-item files are untouched.
+
+### Fixed
+
+- `close-work.sh` reads `Status:` only from the metadata above the first section, so a log line starting with `Status:` no longer blocks closeout.
+
+### Added
+
+- [v0.6 migration guide](docs/migration-v0.6.md).
+
 ## [0.5.1] - 2026-09-12
 
 ### Fixed

@@ -1,134 +1,44 @@
 ---
 name: research
-description: "Researches technical questions with authoritative sources and saves work-local or reusable findings. Use for docs, comparisons, APIs, and architecture references. Triggers on: research, investigate, compare, gather references."
+description: "Researches technical questions with authoritative sources and saves findings when they should last. Use for docs, comparisons, APIs, and architecture references. Triggers on: research, investigate, compare, gather references."
 ---
 
-# Research Skill
+# Research
 
-Research a technical question and synthesize reliable evidence. The answer may stay in the conversation; save it work-locally or in `.agents/research/` only when durability helps.
+Answer a technical question with reliable evidence. The answer can stay in the conversation; save a note only when people must review it, the work continues elsewhere, or the findings will be reused.
 
 ## Workflow
 
-### 0. Check Existing Context
+1. **Check what exists.** Read the active work item's `index.md` and its research, search `.agents/research/`, and check repository docs. Update an existing note instead of starting a parallel one.
+2. **Frame the question.** State the exact question and the depth needed; default to a targeted answer. If the request is ambiguous but actionable, state your assumptions and proceed.
+3. **Gather evidence.** Prefer the repository, official docs, specifications, release notes, and maintainer sources; use community posts only to fill gaps. Fetch fresh copies when the user asks for the latest information. For audits and verification, read full sources, since excerpts can omit qualifications.
+4. **Synthesize.** Give the recommendation, key trade-offs, confidence, and open risks. Separate sourced facts from your inference, and name coverage gaps.
+5. **Save when useful.**
+   - Findings for one work item go in its `research.md`, or `research/<topic>.md` with a `research/index.md` map when there are several.
+   - Findings reused across unrelated work go in `.agents/research/<topic>.md`. Make them stand alone with primary-source citations, so they survive the work item's removal.
+6. **Report.** Summarize the answer and recommendation, link any saved note, and list open questions.
 
-Before doing new research:
-
-- If the work belongs to an active work item, read `.agents/work/<category>/<work-slug>/index.md` and prefer work-local `research.md` or `research/` for task-specific findings. Read `research/index.md` first when the folder contains multiple notes.
-- Search `.agents/research/` for an existing reusable topic note.
-- Check repo docs, attached files, and skill `references/` first.
-- If an existing note already answers the question, update it only when stale or incomplete.
-
-### 1. Define the Research Brief
-
-Capture these before researching:
-
-- **Question**: What exact question must be answered?
-- **Depth**: Default to a targeted answer unless a deep-dive is explicitly requested.
-- **Focus**: Implementation details, comparisons, best practices, or conceptual overview.
-
-If the request is ambiguous but actionable, state assumptions and proceed. Ask follow-up questions only when ambiguity would materially change the recommendation.
-
-### 2. Gather Evidence
-
-Use the smallest toolset that can answer the question.
-
-| Tool | Use for |
-| --- | --- |
-| Web search | Find authoritative sources when local docs are insufficient |
-| Web page reading | Extract relevant details from specific URLs |
-| Optional reasoning assistance | User-requested review or a specific unresolved high-impact judgment after gathering evidence |
-| Repository search | Inspect local implementations and patterns |
-| GitHub tooling | Inspect issues, PRs, releases, or external repository examples |
-
-Guidelines:
-
-1. Prefer local docs and existing research before external search.
-2. Prefer official docs, specs, release notes, and maintainer-authored sources.
-3. Use community posts only to fill gaps in official guidance.
-4. Target 2-5 high-quality sources instead of broad source dumps.
-5. Use deeper reasoning after collecting evidence, not as a substitute for evidence.
-6. If the user asks for latest or recent information, force a fresh fetch when your tools support it.
-7. For audits or verification, read full relevant sources; excerpts can omit qualifications or contradictory evidence. Separate sourced facts from inference and state coverage or access gaps.
-
-### 3. Synthesize Recommendation
-
-Produce:
-
-1. The best current recommendation.
-2. Key trade-offs.
-3. Confidence level and uncertainty.
-4. Unresolved risks or follow-up validations.
-
-### 4. Save or Update Findings When Useful
-
-Do not create a durable note for every research request. Save findings when they must support resumption, coordination, auditability, durable decisions, or future reuse, or when the user explicitly asks. Follow [the work-item contract](../../work/AGENTS.md) for work-local artifact ownership.
-
-Keep one authoritative synthesis for each recommendation or decision; supporting notes should link to it rather than repeat it.
-
-Use work-local `.agents/work/<category>/<work-slug>/research.md` when:
-
-- The research mainly supports one implementation task or work item.
-- The findings explain task-specific constraints, alternatives, or plan decisions.
-- A future agent should find the research beside `plan.md`, `prd.md`, or `progress.md`.
-
-Use work-local `.agents/work/<category>/<work-slug>/research/<topic-slug>.md` when one work item needs multiple focused research notes, and maintain `research/index.md` as the map.
-
-Create or update `.agents/research/<topic-slug>.md` when:
-
-- Findings are likely to be reused across unrelated work.
-- The topic needs multiple sources or non-obvious trade-offs.
-- The user explicitly asks to document reusable research.
-
-If work-local findings later become broadly reusable, update an existing topic note or add a concise synthesis to `.agents/research/`. Make it self-contained with primary-source citations so it survives work-item removal. Link from the work item to the retained note; use a retained commit link for any necessary backlink to removed context.
-
-Use this template:
+## Note Shape
 
 ```markdown
-# Research: [Topic Name]
+# Research: [Topic]
 
-**Date:** YYYY-MM-DD
-**Status:** draft | complete
-**Question:** [What was researched]
+Date: YYYY-MM-DD
+Question: [What was researched]
 
 ## Recommendation
 
-[Best current answer in 2-4 sentences]
+[Best current answer in 2-4 sentences, with confidence.]
 
-## Key Findings
+## Findings
 
-- Finding 1
-- Finding 2
-- Finding 3
-
-## Evidence
-
-### [Source or Subtopic]
-
-[Relevant facts only]
+- [Finding, with its source]
 
 ## Sources
 
-- [Source Title](https://example.com/source) — What this source established
+- [Title](https://example.com) — what it established
 
 ## Open Questions
 
-- [ ] Include only unresolved questions that materially affect the answer
+- [Only questions that change the answer]
 ```
-
-Status definitions:
-
-- `draft`: Useful findings exist, but material questions remain.
-- `complete`: Evidence is sufficient to answer the stated question with confidence.
-
-### 5. Report Back
-
-Provide the user with:
-
-1. A concise summary.
-2. A clear recommendation.
-3. Link to the saved research file, if saved.
-4. Explicit unknowns or open questions.
-
-## Definition Of Done
-
-Research is complete when the question has a clear answer or recommendation, supporting evidence is cited, reusable findings are saved when warranted, and the user receives the summary plus any saved file path.

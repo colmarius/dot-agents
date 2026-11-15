@@ -6,9 +6,9 @@ usage() {
 Usage:
   new-work.sh --category <category> --slug <work-slug> --title <title> [--status <status>]
 
-Creates .agents/work/<category>/<work-slug>/index.md from the work index template.
+Creates .agents/work/<category>/<work-slug>/index.md from the work index template, and an empty log.md.
 Default status: researching
-Initial statuses: researching, planned, in-progress, blocked (complete only after verification)
+Initial statuses: researching, in-progress, blocked (complete only after verification)
 Category: any lowercase kebab-case project, product, domain, or work type
 Common defaults: feature, bugfix, tech-debt, docs, tooling, research
 USAGE
@@ -55,10 +55,10 @@ if [[ -z "$category" || -z "$slug" || -z "$title" ]]; then
 fi
 
 case "$status" in
-  researching|planned|in-progress|blocked) ;;
+  researching|in-progress|blocked) ;;
   *)
     echo "Invalid status: $status" >&2
-    echo "Expected initial status: researching, planned, in-progress, blocked" >&2
+    echo "Expected initial status: researching, in-progress, blocked" >&2
     exit 2
     ;;
 esac
@@ -100,15 +100,15 @@ escape_sed_replacement() {
 }
 
 escaped_title=$(escape_sed_replacement "$title")
-escaped_category=$(escape_sed_replacement "$category")
 escaped_status=$(escape_sed_replacement "$status")
-updated=$(date +%F)
 
 sed \
   -e "s|{{TITLE}}|$escaped_title|g" \
   -e "s|{{STATUS}}|$escaped_status|g" \
-  -e "s|{{CATEGORY}}|$escaped_category|g" \
-  -e "s|{{UPDATED}}|$updated|g" \
   "$template" > "$index_file"
+
+if [[ ! -e "$work_dir/log.md" ]]; then
+  printf '# Log\n' > "$work_dir/log.md"
+fi
 
 echo "$index_file"

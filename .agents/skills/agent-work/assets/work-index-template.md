@@ -1,30 +1,24 @@
 # {{TITLE}}
 
 Status: {{STATUS}}
-Category: {{CATEGORY}}
-Updated: {{UPDATED}}
 
 ## Why
 
-[In 1-3 sentences, preserve the original intent, problem, and why it matters. Keep this stable as the work evolves.]
+[1-3 sentences: the problem, the outcome wanted, and who needs it. Keep this stable.]
 
 ## Summary
 
-[Describe the current state and scope boundary. Rewrite this when status changes; keep session detail in research or progress artifacts.]
+[What is done, what remains (a short checklist when there is no plan), what is unverified, the scope boundary, the branch and base commit, and where uncommitted work lives. Rewrite it as the work changes; history goes to log.md.]
 
 ## Artifacts
 
-- Research: none
-- PRD: none
-- Plan: none
-- Progress: none
-- Decisions: none
-- Handoffs: none
+- [log.md](log.md) — dated history
+- [Other support files and external views, with what each holds.]
+
+## Decisions
+
+- [Open: ... (who decides) / Proposed: ... / Accepted: ... (who, when, where); delete this section if there are none.]
 
 ## Next Action
 
-- [The next concrete action; link the exact task, phase file, research note, or external blocker when useful.]
-
-## Open Questions
-
-- [ ] [Only questions that materially affect scope, sequence, or architecture.]
+- [The immediate next step and who takes it; link the next plan task when a plan exists.]

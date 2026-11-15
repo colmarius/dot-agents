@@ -59,13 +59,15 @@ teardown() {
     [ -d ".agents/references" ]
     [ -f ".agents/references/.gitkeep" ]
     [ -f ".agents/skills/adapt/SKILL.md" ]
-    [ -f ".agents/skills/agent-browser/SKILL.md" ]
+    [ ! -d ".agents/skills/agent-browser" ]
+    [ ! -f ".agents/skills/AGENTS.md" ]
+    [ -f ".agents/skills/README.md" ]
     [ -f ".agents/skills/agent-work/SKILL.md" ]
     [ -f ".agents/skills/research/SKILL.md" ]
     [ ! -d ".agents/skills/tmux" ]
     [ ! -d ".agents/skills/ralph" ]
     [ ! -d ".agents/skills/feature-planning" ]
-    [ "$(find .agents/skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" -eq 4 ]
+    [ "$(find .agents/skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" -eq 3 ]
     [ ! -d ".agents/plans" ]
     [ ! -d ".agents/prds" ]
     [ ! -e ".agents/setup" ]
@@ -254,19 +256,37 @@ teardown() {
         --category feature \
         --slug demo-work \
         --title "Demo work" \
-        --status planned
+        --status in-progress
     assert_success
     assert_output ".agents/work/feature/demo-work/index.md"
 
     [ -f ".agents/work/feature/demo-work/index.md" ]
     run grep -F "## Why" .agents/work/feature/demo-work/index.md
     assert_success
+    run grep -F "## Log" .agents/work/feature/demo-work/index.md
+    assert_failure
+    run grep -E "^(Category|Updated):" .agents/work/feature/demo-work/index.md
+    assert_failure
+    run cat .agents/work/feature/demo-work/log.md
+    assert_output "# Log"
     [ ! -d ".agents/work/feature/demo-work/decisions" ]
 
-    run .agents/skills/agent-work/scripts/list-work.sh --status planned
+    mkdir -p .agents/work/feature/kept-log
+    printf '# Log\n\n- 2026-01-01 — Earlier history.\n' > .agents/work/feature/kept-log/log.md
+    run .agents/skills/agent-work/scripts/new-work.sh \
+        --category feature --slug kept-log --title "Kept log"
+    assert_success
+    run grep -F "Earlier history." .agents/work/feature/kept-log/log.md
+    assert_success
+
+    run .agents/skills/agent-work/scripts/new-work.sh \
+        --category feature --slug old-status --title "Old status" --status planned
+    assert_failure
+
+    run .agents/skills/agent-work/scripts/list-work.sh --status in-progress
     assert_success
     assert_output --partial "Demo work"
-    assert_output --partial "planned"
+    assert_output --partial "feature"
 
     run .agents/skills/agent-work/scripts/list-work.sh --status blocked
     assert_success
@@ -382,6 +402,30 @@ teardown() {
 
     run find .agents/.dot-agents-backup -path '*/.agents/plans/TEMPLATE.md' -type f
     assert_output --partial ".agents/plans/TEMPLATE.md"
+}
+
+@test "sync removes retired agent-work references and templates but keeps work items" {
+    bash "$INSTALL_SCRIPT" --yes
+
+    mkdir -p .agents/skills/agent-work/references .agents/work/feature/demo-work
+    echo "# Old handoff guide" > .agents/skills/agent-work/references/handoff-context.md
+    echo "# Old PRD template" > .agents/skills/agent-work/assets/prd-template.md
+    echo "# Old skills guide" > .agents/skills/AGENTS.md
+    echo "# Demo PRD" > .agents/work/feature/demo-work/prd.md
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_success
+    assert_output --partial "retired legacy guidance"
+
+    [ ! -e ".agents/skills/agent-work/references/handoff-context.md" ]
+    [ ! -e ".agents/skills/agent-work/assets/prd-template.md" ]
+    [ ! -e ".agents/skills/AGENTS.md" ]
+    [ -f ".agents/skills/README.md" ]
+    [ -f ".agents/skills/agent-work/assets/plan-template.md" ]
+    [ -f ".agents/work/feature/demo-work/prd.md" ]
+
+    run find .agents/.dot-agents-backup -path '*/agent-work/references/handoff-context.md' -type f
+    assert_output --partial "handoff-context.md"
 }
 
 @test "--write-conflicts creates .dot-agents.md files for Markdown conflicts" {
@@ -923,21 +967,19 @@ teardown() {
     refute_output --partial "Custom skills preserved:"
 }
 
-@test "sync backs up a custom agent-browser skill when core takes ownership" {
+@test "sync backs up and removes the retired agent-browser skill" {
     bash "$INSTALL_SCRIPT" --yes
 
-    rm -rf .agents/skills/agent-browser
     mkdir -p .agents/skills/agent-browser
     echo "# Custom agent-browser skill" > .agents/skills/agent-browser/SKILL.md
 
     run bash "$INSTALL_SCRIPT" --yes
     assert_success
-    assert_output --partial "force overwrite"
-    assert_output --partial "BACKUP"
+    assert_output --partial ".agents/skills/agent-browser (retired core skill)"
+    assert_output --partial "agent-browser skills list"
     refute_output --partial "Custom skills preserved:"
 
-    run head -1 .agents/skills/agent-browser/SKILL.md
-    assert_output "---"
+    [ ! -e ".agents/skills/agent-browser" ]
 
     local backup_file
     backup_file=$(find .agents/.dot-agents-backup -path '*/.agents/skills/agent-browser/SKILL.md' -type f | head -1)
@@ -958,13 +1000,13 @@ teardown() {
     assert_output --partial "Claude Code skills linked"
 
     [ -L ".claude/skills/adapt" ]
-    [ -L ".claude/skills/agent-browser" ]
+    [ ! -e ".claude/skills/agent-browser" ]
     [ -L ".claude/skills/agent-work" ]
     [ -L ".claude/skills/research" ]
     [ ! -e ".claude/skills/tmux" ]
     [ ! -e ".claude/skills/feature-planning" ]
 
-    [ "$(find .claude/skills -mindepth 1 -maxdepth 1 -type l | wc -l | tr -d ' ')" -eq 4 ]
+    [ "$(find .claude/skills -mindepth 1 -maxdepth 1 -type l | wc -l | tr -d ' ')" -eq 3 ]
 
     local target
     target="$(readlink .claude/skills/adapt)"

@@ -11,17 +11,9 @@ dot-agents is an AI-ready `.agents/` workspace scaffold for any project. It prov
 
 ## Workflow
 
-```text
-Request or change
-├─ Self-contained ───────────▶ Plan as needed and execute here ───────▶ Verify and report
-└─ Continuity has value ─────▶ Work Item → Context and plan as needed → Execute → Verify
-                                                                         ├─ Hand off when useful
-                                                                         └─ Promote → Commit snapshot → Remove
-```
+Keep work in the conversation when one thread can finish it. Create a work item when people need a durable record to review or decide direction, when the work must resume in another session, thread, or worker, or when the user asks. Its `index.md` is the shared record and recovery checkpoint; add research, a proposal, or a plan only when someone will read it.
 
-Keep work conversational when one thread is enough. Create a work item when its status, decisions, or next action must survive this conversation — for later resumption, coordination, handoff, or auditability — or when the user explicitly asks. For durable work, add context or a saved plan only when it helps, implement in the current thread by default, and hand off only when another worker or environment genuinely helps.
-
-The canonical artifact, status, and completion contract lives in `.agents/work/AGENTS.md`.
+The contract lives in `.agents/work/AGENTS.md`; this repository ships it to user projects, so keep it, the skills, and the docs consistent.
 
 ## Project Structure
 
@@ -51,9 +43,8 @@ dot-agents/
 | `Create a new work item for ...` | Create durable `.agents/work/` context |
 | `Continue the work item at ...` | Resume from `index.md` and implement the next action |
 | `Research ...` | Investigate and save work-local or reusable findings |
-| `Create/refine/execute a plan for ...` | Produce implementation-ready tasks and implement in the current thread |
 | `Write a handoff prompt for ...` | Produce a paste-ready prompt for a new implementation thread |
-| `Complete and close the work item at ...` | Promote outcomes, commit the final snapshot, and stage removal |
+| `Close the work item at ...` | Promote outcomes, commit the final snapshot, and stage removal |
 
 Skills are loaded via natural language. See each skill's `SKILL.md` in `.agents/skills/` for details.
 
@@ -65,9 +56,7 @@ Work items live under:
 .agents/work/<category>/<slug>/
 ```
 
-Every work item has `index.md` with stable intent, current status and summary, category, updated date, artifact links, next action, and open questions. Categories are an open lowercase kebab-case namespace. Optional artifacts include `research.md`, indexed `research/`, `prd.md`, `plan.md`, indexed `plans/`, living `progress.md`, `decisions/` records, and separately named `handoff-*.md` files.
-
-Use work items only when durable context earns its maintenance cost. Follow `.agents/work/AGENTS.md` as the source of truth for artifact ownership and lifecycle rules, including promotion, the committed final snapshot, and removal from the current tree.
+Every work item has `index.md` with metadata (`Status`, `Category`, `Updated`) and `Why`, `Summary`, optional `Artifacts` and `Decisions`, `Next Action`, and a short `Log`. Support files are named by content, such as `research.md`, `proposal.md`, `plan.md`, and `log.md`. Follow `.agents/work/AGENTS.md` for the rules, including promotion, the committed final snapshot, and removal.
 
 Legacy `.agents/plans/` and `.agents/prds/` paths may exist in older installs. Preserve legacy plan and PRD documents as user content, but allow sync to retire stale Ralph guidance/templates. Migrate one plan at a time into `.agents/work/` only when requested.
 

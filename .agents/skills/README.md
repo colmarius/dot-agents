@@ -1,6 +1,6 @@
 # Skills Development Guide
 
-Guidelines for creating and maintaining agent skills in this workspace.
+Guidelines for creating and maintaining agent skills in this workspace. Read them only when creating or editing a skill; using a skill does not need them. This file is named `README.md` so agent harnesses do not load it as instructions.
 
 ## Structure
 
@@ -52,15 +52,12 @@ The description determines when the skill gets loaded:
 
 ## Writing Good Skills
 
-1. **Be specific** - Detailed instructions beat vague guidance
-2. **Include examples** - Show commands and code patterns
-3. **Define workflows** - Step-by-step processes work best
-4. **Add checklists** - Help ensure nothing is missed
-5. **Reference patterns** - Point to existing code/files
-6. **Keep workflow skills durable** - Put reusable templates in `assets/` and runnable helpers in `scripts/`
-7. **Avoid runner-specific concepts** - Prefer work items and handoff prompts over assuming a specific agent runtime
-8. **Keep the entrypoint concise** - Move detailed background or command catalogs into `references/`
-9. **Do not create a skill for an interaction style alone** - Add an explicit opt-in mode to the closest existing skill
+1. **State what the model cannot infer** - Project facts, exact commands, paths, contracts, and safety rules; skip generic advice a capable model already follows
+2. **Be specific** - Show real commands and point to existing code or files
+3. **Keep the entrypoint short** - Put templates in `assets/`, runnable helpers in `scripts/`, and rarely needed detail in `references/`
+4. **Enforce invariants with scripts** - A check that can fail beats a rule that can be skipped
+5. **Avoid runner-specific concepts** - Prefer work items and handoff prompts over assuming a specific agent runtime
+6. **Do not create a skill for an interaction style alone** - Add an explicit opt-in mode to the closest existing skill
 
 ## Where Guidance Belongs
 
@@ -83,7 +80,7 @@ Prefer a thin discovery skill when an external CLI or service changes faster tha
 3. Execute the version-matched workflow.
 4. Persist commands and evidence, not copied runtime documentation.
 
-The core `agent-browser` skill follows this pattern.
+For example, a browser-automation skill can run `agent-browser skills list` and load the guidance the installed CLI ships.
 
 ## Testing Skills
 

@@ -3,111 +3,40 @@ name: adapt
 description: "Analyzes a project and fills in AGENTS.md. Use after installing dot-agents or when project commands and conventions change. Triggers on: adapt, setup AGENTS, customize AGENTS."
 ---
 
-# Adapt Skill
+# Adapt
 
-Analyze the current project and fill in `AGENTS.md` with project-specific information (tech stack, commands, conventions).
-
-## When to Use
-
-Run this skill after installing dot-agents into a new project, after project commands or conventions change, or after a dot-agents migration changes generic workflow guidance.
+Fill in `AGENTS.md` with verified, project-specific facts: what the project is, its stack, the commands that build, test, and lint it, its conventions, and its architecture.
 
 ## Workflow
 
-1. **Analyze project structure**
-   - Scan for configuration files (package.json, Cargo.toml, go.mod, pyproject.toml, etc.)
-   - Identify frameworks, libraries, and tools in use
-   - Find existing scripts/commands in config files
+1. **Read before editing.** Read the current `AGENTS.md`, any ancestor guidance, and the nested `AGENTS.md` files the edit affects. Keep intentional project guidance: architecture, commands, conventions, safety rules, and custom workflows.
+2. **Analyze the project.** Read manifests and task runners (`package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`, `Makefile`, `justfile`, CI workflows), linter and formatter configs, and test layout.
+3. **Verify, then write.** Run or inspect each command before documenting it. Fill placeholders and fix stale facts; prefer pointers to canonical docs over copied inventories or file trees.
+4. **Keep the agent-work section current.** It should say to keep self-contained work in the conversation, create a work item when people need to review direction or the work must outlive the conversation, and follow `.agents/work/AGENTS.md` for the rest. Replace older generic dot-agents text with that short section: work-item file trees or artifact lists (`prd.md`, `progress.md`, `decisions/`, `plans/`, `handoff-*.md`), copied task-field formats, workflow diagrams, and references to `feature-planning`, `tmux`, mandatory plans, or mandatory handoffs. Leave project-specific workflows alone.
+5. **Report** what changed, which commands you verified, and any section you left unchanged because its intent was unclear.
 
-2. **Detect conventions**
-   - Look at code style (naming, formatting)
-   - Check for existing linter/formatter configs
-   - Identify testing patterns
-
-3. **Preserve project-specific guidance**
-   - Read the current `AGENTS.md` before editing it
-   - Read applicable ancestor guidance and affected nested guides so root edits respect local scope and canonical ownership
-   - Keep project architecture, commands, conventions, safety rules, and intentional custom workflows
-   - Change only sections that are placeholders, stale project facts, or outdated generic dot-agents guidance
-   - Prefer concise pointers to canonical detail over copied inventories, and verify commands and paths before documenting them
-
-4. **Update AGENTS.md**
-   - Fill in project name/overview
-   - List detected tech stack
-   - Extract commands from package.json scripts, Cargo.toml, Makefile, etc.
-   - Note any project-specific conventions observed
-   - Keep the current `.agents/work/` execution, coordination, evidence, and optional handoff model intact
-   - Point detailed work-item rules to [the canonical work-item contract](../../work/AGENTS.md) instead of copying it
-
-5. **Repair stale generic workflow references**
-   - Replace generic references to the retired `.agents/skills/feature-planning/` skill with `agent-work` for durable requirements, planning, refinement, execution, and handoffs
-   - Remove generic `tmux` skill references; use the project's or execution environment's current process-management guidance instead
-   - Replace old diagrams that make a work item or handoff mandatory with the current conversational-versus-durable branch
-   - Keep small, self-contained planning conversational and reserve work items for continuity, coordination, handoff, auditability, durable decisions, or explicit requests
-   - Describe completion as promotion, a committed final snapshot, and removal through `close-work.sh`; do not imply that sync deletes work items
-   - Preserve any clearly project-specific skill or workflow that happens to use similar wording; do not mechanically rewrite unrelated instructions
-
-## Example Output
-
-After running, AGENTS.md should have these sections filled in:
+## Example
 
 ````markdown
 ## Overview
 
-my-awesome-app - A Next.js web application with PostgreSQL backend
+my-app - A Next.js web application with a PostgreSQL backend.
 
 ## Tech Stack
 
-- Language: TypeScript
-- Framework: Next.js 14
-- Database: PostgreSQL with Prisma
-- Testing: Jest, Playwright
+- TypeScript, Next.js 14, PostgreSQL with Prisma, Jest and Playwright
 
 ## Commands
 
 ```bash
-# Install
-pnpm install
-
-# Development
-pnpm dev
-
-# Build
-pnpm build
-
-# Test
-pnpm test
-pnpm test:e2e
-
-# Lint/Format
-pnpm lint
-pnpm format
+pnpm install       # install
+pnpm dev           # develop
+pnpm test          # unit tests
+pnpm test:e2e      # browser tests
+pnpm lint          # lint and format check
 ```
 
 ## Conventions
 
-- Use kebab-case for file names
-- Components in src/components/
-- API routes in src/app/api/
-
-## Agent Work
-
-- Keep self-contained work in the current conversation
-- Durable work lives in `.agents/work/<category>/<slug>/` when continuity has value
-- Use `.agents/research/` only for reusable findings
-- Implement in the current thread by default; ask for a handoff prompt when another thread is useful
-- Promote reusable outcomes, commit the final completed snapshot, then remove the work item from the current tree
+- kebab-case file names; components in `src/components/`; API routes in `src/app/api/`
 ````
-
-## Checklist
-
-- [ ] Read package.json/Cargo.toml/go.mod for project name and scripts
-- [ ] Identify main framework from dependencies
-- [ ] Find test commands and test file patterns
-- [ ] Check for Makefile, Justfile, or task runners
-- [ ] Look for .eslintrc, .prettierrc, rustfmt.toml for style configs
-- [ ] Preserve project-specific guidance and intentional custom workflows
-- [ ] Prefer concise canonical pointers and verify commands and paths before documenting them
-- [ ] Replace stale generic `feature-planning`, `tmux`, mandatory-handoff, or completed-item retention references when present
-- [ ] Update AGENTS.md with findings
-- [ ] Preserve intentional project-specific workflow; otherwise refresh stale generic dot-agents guidance
-- [ ] If workflow intent is unclear, leave that section unchanged and report the ambiguity

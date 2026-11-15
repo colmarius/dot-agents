@@ -78,6 +78,25 @@ replace_in_file() {
     assert_success
     assert_output --partial "Demo work"
     assert_output --partial "completed"
+    assert_output --partial "close?"
+}
+
+@test "list-work derives category from the path and flags item state" {
+    mkdir -p .agents/work/billing/old-item
+    printf '# Old item\n\nStatus: planned\n\n## Next Action\n\n- Start.\n' \
+        > .agents/work/billing/old-item/index.md
+    git add -A
+    GIT_COMMITTER_DATE="2026-01-01T00:00:00Z" git commit -m "Old item" --quiet
+
+    run .agents/skills/agent-work/scripts/list-work.sh --stale-days 30
+    assert_success
+    assert_line --partial "in-progress  billing        2026-01-01  stale"
+
+    echo "- note" >> .agents/work/billing/old-item/index.md
+    run .agents/skills/agent-work/scripts/list-work.sh --status in-progress
+    assert_success
+    assert_line --partial "stale,uncommitted"
+    refute_output --partial "Demo work"
 }
 
 @test "close-work rejects invocation outside the repository root" {

@@ -1,110 +1,86 @@
 ---
 name: agent-work
-description: "Manages durable work items, plans, execution, and handoffs. Use when repository context must survive or coordinate work. Triggers on: create work item, continue work item, close work item, refine plan, handoff prompt, stress-test plan."
+description: "Creates, continues, hands off, and closes durable work items. Use when work needs review or must outlive the conversation. Triggers on: create work item, continue work item, close work item, handoff prompt, stress-test plan."
 ---
 
 # Agent Work
 
-Manage durable work under `.agents/work/<category>/<work-slug>/`, from requirements and planning through execution, evidence, handoffs, and completion.
+Follow the contract in [`.agents/work/AGENTS.md`](../../work/AGENTS.md); this skill covers the actions. Run scripts from the repository root.
 
-Create a work item when resumption, coordination, handoff, auditability, durable decisions, or an explicit user request justifies repository context. Keep small, self-contained planning and execution in the current conversation. A work item is a folder; entries inside its plan are the executable tasks.
+## Create
 
-## Workflow
+1. Confirm a work item is warranted and no matching one exists (see the contract's "When To Create One").
+2. Create it:
 
-1. **Choose conversational or durable work**
-   - For a self-contained request, plan, implement, verify, and report in the current conversation without creating repository artifacts.
-   - For durable work, check existing context before creating anything.
-2. **Locate or create the work item**
-   - Run `.agents/skills/agent-work/scripts/list-work.sh --all` or search `.agents/work/` before creating a new work item.
-   - Read a work item's `index.md` first when continuing existing work.
-   - When `research/` or `plans/` contains multiple durable files, read its `index.md` before leaf files.
-   - Run `.agents/skills/agent-work/scripts/new-work.sh --category <category> --slug <work-slug> --title "<Work Item Title>"` from the repo root.
-   - Create only `index.md` at first; do not add empty support folders.
-3. **Build only the context the work needs**
-   - Follow the [work-item contract](../../work/AGENTS.md) for artifact ownership, status, and lifecycle rules.
-   - Use `research` for technical facts. Create a requirements brief only when behavior or alignment is unclear.
-   - Follow [plan refinement and execution](references/plan-execution.md) to create, refine, stress-test, execute, or resume a plan.
-4. **Keep durable state current**
-   - Keep `Why` stable as the original intent. Update `Summary`, `Status:`, `Updated:`, `Artifacts`, `Next Action`, and material `Open Questions` as the work evolves.
-   - When `plans/` exists, point `index.md` and handoff prompts to the active plan file.
-5. **Execute or hand off**
-   - Execute the active plan in the current thread by default and load project-specific implementation or verification skills as needed.
-   - Delegate only when isolation, parallelism, durable follow-up, or a different execution environment genuinely helps. Follow **Coordinating Workers And Reviewers** below.
-   - Follow [handoff context](references/handoff-context.md) when a fresh thread or worker is useful.
-6. **Finish the work**
-   - Reconcile plan checkboxes and observed evidence, promote reusable outcomes, and follow [Closing Completed Work](#closing-completed-work).
+   ```bash
+   .agents/skills/agent-work/scripts/new-work.sh --category <category> --slug <slug> --title "<Title>" [--status <status>]
+   ```
 
-## Coordinating Workers And Reviewers
+3. Fill `Why`, `Summary`, and `Next Action`, then add only the support files the work needs.
 
-- The coordinating thread owns scope, durable work-item state, integration, and final acceptance.
-- Brief every fresh worker as if it has none of the current thread's context.
-- Parallelize only clearly independent work with one writer per worktree and disjoint targets across concurrent environments.
-- Never accept a delegated report alone: inspect the resulting changes and evidence, then run combined verification.
-- Before assigning multiple workers, a resumable worker, or a worker/reviewer loop, read [references/coordinated-execution.md](references/coordinated-execution.md).
+For research, load the `research` skill. For a proposal, follow the contract's `proposal.md` description and lead with the recommendation; list each decision needed on its own line with a recommended default and who decides. Defaults stay proposals until their decider accepts them; never write that work proceeds if nobody objects.
 
-## Work-Item Contract
+## Continue
 
-Follow [`.agents/work/AGENTS.md`](../../work/AGENTS.md) for canonical paths, statuses, artifact ownership, lifecycle invariants, and completion semantics. Keep this skill focused on actions and routing rather than copying that contract.
+1. Read `index.md` first, then the latest entries in `log.md`. Load support files only as the next step needs them.
+2. Check that state against the code and history as the contract's resume rule says, and fix stale state before acting on it.
+3. Do the next action and, unless the request names a single step, the remaining steps in order. Verify each and update the checkpoint; for work that touches unaccepted decisions, follow the contract's "Decisions".
+4. When the scope is done, mark it ready to close as the contract says; close it only when the user asks.
 
-## Closing Completed Work
+## Plan
 
-Close a work item only after implementation and verification are finished. First promote anything worth retaining, discard obsolete handoffs, and make the index final: it must say `Status: completed`, and `## Next Action` must contain only `- None.`. Commit that snapshot with the implementation before removing the folder.
+Write `plan.md` only when order, dependencies, or rollout are not obvious, or someone else must review or execute it. Use [`assets/plan-template.md`](assets/plan-template.md). Prefer a thin end-to-end slice first. Tasks follow project conventions; when the plan conflicts with them, the conventions win and you fix the plan. A plan does not authorize commits, pushes, deploys, migrations, or other shared-state changes.
 
-Use `close-work.sh --check` as the closeout preflight. If it succeeds, rerun the command without `--check`; it stages the folder removal but does not create a commit. Record that staged removal in its own commit so the preceding snapshot remains reachable in history.
+When the user asks to stress-test or grill a plan, read the relevant code and documents first, then ask one high-leverage question at a time with a recommended default. Record answers under `Decisions`. Stop when the remaining questions would not change scope, order, or architecture.
 
-Follow the [completion and removal contract](../../work/AGENTS.md#completion-and-removal) for authority to make both commits and preservation of the snapshot through history rewriting. The command rejects dirty repositories and leaves ignored or untracked material untouched.
+## Hand Off Or Delegate
+
+Implement in the current thread by default. Delegate when parallel work, isolation, another environment, or an independent review helps.
+
+A handoff prompt states:
+
+- what to read first: the work item path and the relevant support files;
+- the base: branch and commit, and how the worker gets the code: the same checkout, a pushed branch, or a transferred patch, since another environment cannot see uncommitted or unpushed work;
+- the slice to do, what is out of scope, which decisions are only proposed, and when to stop and ask;
+- the verification expected and how to report evidence, separating what was run from what was inherited;
+- delivery authority: implement only, commit, push, open a PR, merge, deploy, or other shared-state changes; one does not imply the next;
+- what to return, and whether the worker may edit the work item.
+
+When coordinating several workers:
+
+- the coordinator owns the work item, integration, and final acceptance;
+- start workers from the same base and give them disjoint write targets, including shared config and lock files;
+- choose one result path per worker: either it reports back, or you wait on it;
+- inspect each worker's changes and evidence before integrating, run combined verification, then log the result.
+
+Generate handoff prompts in the conversation. Do not persist them in the work item; writing a prompt does not change the item, and the thread that dispatches the worker records the delegation. When no thread stays to coordinate, the brief hands the item to the worker.
+
+## Close
+
+Close an item only when the user asks to finish or close it; that request authorizes both closeout commits.
+
+1. Move what should outlive the item to its lasting home: code, docs, tests, checks, `AGENTS.md`, a skill, or `.agents/research/`. Accepted decisions that still constrain behavior belong in docs or code. Retained material must stand alone and not link into the item.
+2. Resolve each `Open:` or `Proposed:` decision: record its outcome, such as `Accepted: out of scope` when the decider already said so, citing where, or remove it and name it as a follow-up in your final report. Create a new item for a follow-up only when asked.
+3. Set `Status: completed`, set `Next Action` to exactly `- None.`, and append a final `log.md` entry with the outcome, where it went, and any follow-ups.
+4. Commit that snapshot with the remaining changes.
+5. Run `scripts/close-work.sh --category <category> --slug <slug> --check`, rerun it without `--check` to stage the deletion, and commit the deletion separately, naming the snapshot commit in its message.
+
+`close-work.sh` refuses a dirty repository, an uncommitted or non-`completed` snapshot, leftover `Open:` or `Proposed:` decisions, and ignored files in the item; it never commits.
+
+Git history is the archive only while the snapshot commit stays reachable from the default branch. If commits may be squashed, merge the snapshot first and remove the item in a later change. When you commit directly to the default branch, nothing is squashed; when you don't know the merge strategy, assume squashing. Without a close request, leave the item in place and report what is pending.
+
+When cleaning up items whose work already merged without a completed snapshot, first check that the item's files on the default branch hold everything worth keeping and promote any remaining outcomes; then remove each with `git rm -r` in its own change, naming the merge that finished it. `list-work.sh` flags items with no recent change as candidates.
 
 ## Scripts
 
-Run commands from the repository root.
-
 ```bash
-# Create a work item
-.agents/skills/agent-work/scripts/new-work.sh \
-  --category platform \
-  --slug user-authentication \
-  --title "User authentication"
-
-# Inspect current work
-.agents/skills/agent-work/scripts/list-work.sh
-.agents/skills/agent-work/scripts/list-work.sh --all
-.agents/skills/agent-work/scripts/list-work.sh --status blocked
-
-# Validate a completed item before removal
-.agents/skills/agent-work/scripts/close-work.sh \
-  --category platform \
-  --slug user-authentication \
-  --check
+.agents/skills/agent-work/scripts/new-work.sh --category platform --slug user-auth --title "User authentication"
+.agents/skills/agent-work/scripts/list-work.sh [--status blocked] [--stale-days 30]
+.agents/skills/agent-work/scripts/close-work.sh --category platform --slug user-auth [--check]
 ```
 
-## Legacy Plans
+`list-work.sh` shows each item's status, category, and last commit, and flags `completed` items still present, uncommitted changes, and items with no commit for `--stale-days` days.
 
-Existing legacy `.agents/plans/` and `.agents/prds/` documents are user content. Do not auto-migrate or delete them.
+## Legacy Content
 
-When the user asks to migrate one legacy plan:
-
-1. Create `.agents/work/<category>/<slug>/index.md`.
-2. Copy the old plan to `plan.md`, preserving task checkboxes.
-3. Copy a matching progress file to `progress.md` if it exists.
-4. Copy or summarize a linked PRD into `prd.md` if still relevant.
-5. Update `index.md` with status, artifacts, next action, and open questions.
-6. Leave legacy files in place unless the user explicitly asks to delete them.
-
-Full upstream guide: [migration-v0.3](https://github.com/colmarius/dot-agents/blob/main/docs/migration-v0.3.md).
-
-## Templates
-
-- `assets/work-index-template.md`: starting point for `index.md`
-- `assets/plan-template.md`: implementation-ready `plan.md` contract
-- `assets/prd-template.md`: optional requirements brief (`prd.md`) structure
-- `assets/work-decision-template.md`: optional decision record template
-- `references/plan-execution.md`: requirements, planning, refinement, stress testing, and execution
-- `references/handoff-context.md`: proportional fresh-thread and worker handoffs
-- `references/coordinated-execution.md`: runner-neutral worker and reviewer coordination
-
-## Verification
-
-- Confirm new work items contain `index.md` and no empty support folders.
-- Run `.agents/skills/agent-work/scripts/list-work.sh` and confirm the work item appears with the expected status.
-- Confirm verification records observed results and explicitly identifies anything that remains unverified.
-- For closeout, run `close-work.sh --check` before staging the deletion.
+Older items may contain `Category:` and `Updated:` lines, a `planned` status, `progress.md`, `plan.progress.md`, `prd.md`, `decisions/`, `plans/`, or `handoff-*.md`. They remain valid user content; read them when the index links them, keep using an existing progress file or start `log.md`, and do not migrate them unless asked. Legacy `.agents/plans/` and `.agents/prds/` files are user content too; migrate one only when asked, into `.agents/work/<category>/<slug>/`.

@@ -481,9 +481,12 @@ format_version_string() {
 }
 
 # Core skills that come from upstream
-CORE_SKILLS="adapt agent-browser agent-work research"
-RETIRED_CORE_SKILLS="ralph feature-planning tmux"
-RETIRED_LEGACY_GUIDANCE_FILES=".agents/plans/AGENTS.md .agents/prds/AGENTS.md .agents/plans/TEMPLATE.md .agents/prds/TEMPLATE.md"
+CORE_SKILLS="adapt agent-work research"
+RETIRED_CORE_SKILLS="ralph feature-planning tmux agent-browser"
+RETIRED_LEGACY_GUIDANCE_FILES=".agents/skills/AGENTS.md .agents/plans/AGENTS.md .agents/prds/AGENTS.md .agents/plans/TEMPLATE.md .agents/prds/TEMPLATE.md
+.agents/skills/agent-work/assets/prd-template.md .agents/skills/agent-work/assets/work-decision-template.md
+.agents/skills/agent-work/references/coordinated-execution.md .agents/skills/agent-work/references/handoff-context.md
+.agents/skills/agent-work/references/plan-execution.md"
 
 is_retired_core_skill() {
     local skill_name="$1"
@@ -509,6 +512,10 @@ report_retired_core_skill_migration() {
         tmux)
             log_info "    Use the execution environment's current process-management guidance."
             log_info "    Migration: https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/main/docs/migration-v0.5.md"
+            ;;
+        agent-browser)
+            log_info "    Run 'agent-browser skills list' for version-matched guidance from the installed CLI."
+            log_info "    Migration: https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/main/docs/migration-v0.6.md"
             ;;
     esac
 }

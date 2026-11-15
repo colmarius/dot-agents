@@ -32,6 +32,9 @@ if [[ -d "$REPO_ROOT/.agents" ]]; then
 
     # References are local, gitignored checkouts and are not part of GitHub archives.
     # Keep only the tracked placeholder so the fixture matches a release archive.
+    # Real work items are this repository's own content, not part of the installable payload.
+    find "$ARCHIVE_DIR/.agents/work" -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} +
+
     rm -rf "$ARCHIVE_DIR/.agents/references"
     mkdir -p "$ARCHIVE_DIR/.agents/references"
     if [[ -f "$REPO_ROOT/.agents/references/.gitkeep" ]]; then
