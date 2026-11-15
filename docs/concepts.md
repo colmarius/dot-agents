@@ -1,96 +1,73 @@
 ---
 title: How dot-agents works
-description: When to keep work in the conversation, when a work item earns its place, and how to start, continue, and finish work with an agent.
+description: When a work item helps, the four things you ask your agent, and what a work item holds.
 ---
 
 # How dot-agents works
 
-## Workflow
+## When to use a work item
+
+Most work needs no files. When one conversation can finish it, just ask: the agent does the work, checks it, and reports.
+
+Ask for a work item when:
+
+- people need to review or decide the direction, such as research findings, a proposal, or an API change; or
+- the work continues later, in another session, with another agent, or with another person.
+
+Creating one late is fine. Stopping for the day, handing work to someone else, and waiting on a decision are good moments.
+
+## Start
 
 ```text
-Request
-├─ One thread can finish it ──▶ Work in the conversation ──▶ Verify and report
-└─ People must review it, or ──▶ Work item (index.md) ──▶ Research, propose, plan, or build as needed
-   it must outlive this thread        │                         │
-                                      └── checkpoint: index.md now, log.md history
-                                                                 │
-                                            Promote outcomes → Commit snapshot → Remove
+Create a work item for <goal>.
 ```
 
-1. **Choose the path.** Keep work in the conversation when one thread can finish it. Create a work item when people need a durable record to review or decide direction, when the work must resume in another session, thread, or worker, or when you ask for one. Creating one late is fine: the first delegation, wait on a person, or context compaction is a good moment when the work needs a durable record.
-2. **Start at `index.md`.** It is the shared record of current state: why the work exists, what is done and what remains, what was decided, and the next action. `log.md` beside it holds the dated history; together they are the recovery checkpoint.
-3. **Add files only when someone will read them.** `research.md` for what is true, `proposal.md` for what reviewers must decide (with contracts, data types, and diagrams), and `plan.md` when the order is not obvious or someone else will execute it.
-4. **Work in the current thread by default.** Delegate when parallel work, isolation, another environment, or an independent review helps; the coordinating thread keeps the work item current.
-5. **Checkpoint at milestones.** After a commit, a finished step, a decision, a blocker, a delegation, and before stopping, rewrite the summary and next action in `index.md` and append one entry with evidence to `log.md`.
-6. **Finish when you ask.** Promote what should last to code, docs, guidance, or `.agents/research/`, resolve open decisions, commit the completed snapshot, then remove the item in a separate commit. Git history is the archive; with squash merges, remove it in a later change.
-
-The rules live in the [work-item contract](https://github.com/colmarius/dot-agents/blob/main/.agents/work/AGENTS.md) and the [agent-work skill](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-work/SKILL.md).
-
-## Working With The Agent
-
-### Start
-
-Uncertainty alone does not require research, a proposal, a plan, or a work item. Give the agent the outcome, observable acceptance conditions, what it may change without asking, and who owns product choices:
+The agent creates `.agents/work/<category>/<slug>/` with an `index.md` and a `log.md`. When people must agree on the direction first, ask for a proposal too:
 
 ```text
-Deduplicate the retry logic in the sync workers. Acceptance: one shared
-implementation and the existing tests pass. Do not change public interfaces
-or add dependencies without asking. I own any behavior tradeoffs.
+Create a work item for <goal> and write a proposal for review.
 ```
 
-Let the agent answer what the repository answers, and ask you only when a decision would change the outcome or an action needs approval. Access is not permission: a configured remote does not authorize a push, and production access does not authorize a migration. When people must agree on direction first, ask for a work item with a proposal:
+A proposal leads with a recommendation, then the alternatives, the API and data-type changes, a diagram, and each decision with a suggested default and who decides.
 
-```text
-Create a new work item for <goal> and write a proposal for review.
-```
-
-### Continue
+## Continue
 
 ```text
 Continue the work item at .agents/work/<category>/<slug>.
 ```
 
-The agent reads `index.md`, then the latest `log.md` entries, checks them against `git log` and the code, fixes anything stale, and loads only what the next action needs. Keep connected work in one thread while its context stays useful. Split only for a concrete benefit: an independent review, an isolated experiment, independent slices with disjoint write targets, or access only another environment has. Before splitting, name one integration owner for durable state, combined verification, and final acceptance.
+The agent reads `index.md` and the latest `log.md` entries, checks them against git and the code, fixes anything out of date, then does the next step. At each milestone it rewrites `index.md` and adds a dated entry with evidence to `log.md`, so any later session can pick up from there.
 
-A handoff prompt is generated in the conversation, not stored. It names the work item and files to read, the base revision and how the worker gets unpushed work, the slice and what is out of scope, the verification expected, what to return, and exact delivery authority:
-
-```text
-Write a handoff prompt for <slice> of .agents/work/<category>/<slug>. The
-recipient may commit locally but not push or merge; I integrate the result.
-```
-
-Do not accept "tested" on its own. Each claim names its command or observation and whether it was observed now, inherited without rerunning, or unverified:
+## Hand off
 
 ```text
-npm test — rerun now: passed
-checkout browser flow — inherited from prior handoff: not rerun
-mobile layout — unverified
+Write a handoff prompt for <slice> of .agents/work/<category>/<slug>.
 ```
 
-### Finish
+The agent writes a prompt in the conversation for another agent or person: what to read, which commit to start from, what is in and out of scope, how to verify, and whether the recipient may commit or push. Nothing is saved to the repo.
 
-Accept outcomes on evidence, not because code exists or a worker reported success. You, not the agent, accept residual risk and authorize shared-state actions. Before calling the work done, check that it solved the stated problem, who owns remaining decisions and manual work, and what rollout, cleanup, or follow-up remains.
+## Finish
 
 ```text
-Complete and close the work item at .agents/work/<category>/<slug>.
+Close the work item at .agents/work/<category>/<slug>.
 ```
 
-The agent promotes what future work will reuse (behavior to code, tests, or docs; project rules to `AGENTS.md`; procedures to skills or scripts; sourced findings to `.agents/research/`), resolves open decisions or reports them as follow-ups, commits a `completed` snapshot, and removes the item in a second commit. A close request authorizes both commits. If your merges squash commits, merge the snapshot first and remove the item in a later change.
+The agent moves what should last into code, tests, docs, or `AGENTS.md`, settles or reports open decisions, commits a final snapshot, then removes the item in a second commit. Git history keeps the snapshot; if your merges squash commits, merge the snapshot first and remove the item in a later change.
 
-## Work Item Shape
+Items close only when you ask. A finished item waits as `blocked` on your close request.
+
+## What a work item holds
 
 ```text
 .agents/work/<category>/<slug>/
-├── index.md       # required: current state (why, summary, decisions, next action)
-├── log.md         # required: dated history, newest last
-├── research.md    # optional: what is true
-├── proposal.md    # optional: what reviewers must decide
-└── plan.md        # optional: ordered tasks when the order is not obvious
+├── index.md      # current state
+├── log.md        # dated history
+├── research.md   # optional: findings
+├── proposal.md   # optional: for review
+└── plan.md       # optional: task order
 ```
 
-Name other files by what they hold; one file may hold several roles when that is easier to review.
-
-## Example Work Item
+`index.md` is rewritten at each checkpoint; `log.md` only grows. An example `index.md`:
 
 ```markdown
 # User authentication
@@ -103,65 +80,48 @@ Users need secure access across sessions.
 
 ## Summary
 
-Done: research and a proposal recommending session cookies over JWTs. Remaining: review, plan, implementation. No code is written. Branch `research/auth` at `3f2a9c1`; uncommitted work: none.
+Done: research and a proposal recommending session cookies.
+Remaining: review, then implementation.
+Branch research/auth at 3f2a9c1; uncommitted work: none.
 
 ## Artifacts
 
 - [log.md](log.md) — dated history
-- [research.md](research.md) — current login flow and library options
-- [proposal.md](proposal.md) — recommendation, API changes, session data type
-- Team review page (copy of proposal.md at `3f2a9c1`)
+- [proposal.md](proposal.md) — recommendation, API changes, session type
 
 ## Decisions
 
 - Accepted: email and password only for v1 (Dana, 2026-11-12, kickoff call).
-- Proposed: server-side sessions in Postgres (Dana decides); see proposal.md.
+- Proposed: server-side sessions in Postgres (Dana decides).
 - Open: session lifetime (Dana decides).
 
 ## Next Action
 
-- Dana reviews proposal.md and decides session lifetime; then write plan.md.
+- Dana reviews proposal.md and decides the session lifetime.
 ```
 
-Its `log.md`:
+## Statuses and decisions
 
-```markdown
-# Log
-
-- 2026-11-12 — Recorded the v1 scope decision from the kickoff call.
-- 2026-11-14 — Wrote research.md and proposal.md from the current login code and three library options. Shared the review page with Dana.
-```
-
-`index.md` holds only current state and is rewritten at each checkpoint; `log.md` only grows. The category comes from the folder and the last change from git.
-
-## Statuses And Decisions
-
-- `researching` while research or a proposal is written; `in-progress` once every decision that sets direction is accepted (or for the accepted part of a partly accepted proposal); `blocked` while the next step waits on a person, including review and your close request; `completed` only in the final snapshot.
-- Decisions are `Open:` (no recommendation yet), `Proposed:` (with a recommended default), or `Accepted:` (who, when, where). Only the named decider or their delegate accepts; agents record acceptances and never give them.
-- A `Proposed:` decision is not approval. Agents build on one only when it is easy to reverse and does not change behavior people rely on; otherwise they do the independent part and leave the decision to its owner.
-- Each fact has one home. When a plan exists, its checkboxes are the task state.
-
-Rendered documents, Notion pages, PR descriptions, and slides are views for people. `index.md` stays canonical for status, decisions, and next action; each view is listed with the commit it reflects, and feedback left there is brought back into the authoritative copy before acting.
-
-## Legacy Content
-
-Work items from v0.5 and earlier may contain `Category:` and `Updated:` lines, a `planned` status (read as `in-progress`), `progress.md`, `prd.md`, `decisions/`, `plans/`, or `handoff-*.md`; they remain valid. Older installs used `.agents/plans/` and `.agents/prds/`; those documents are preserved as user content. See the [migration guides](https://github.com/colmarius/dot-agents/blob/main/docs/README.md#upgrading).
-
-## Glossary
-
-| Term | Definition |
+| Status | Meaning |
 | --- | --- |
-| adapt | Skill that fills in `AGENTS.md` from the project |
-| category | Open lowercase kebab-case path segment that groups work items by product, domain, or work type |
-| checkpoint | The current `index.md` plus the latest entries in `log.md`; a new thread resumes from it |
-| closeout | Committing the completed snapshot, then staging and separately committing its removal |
-| delivery authority | Explicit permission for commits and shared-state actions such as pushing, merging, deploying, or migrating; implementing does not imply it |
-| final snapshot | The committed `Status: completed` state kept in git history before removal |
-| handoff prompt | Prompt that briefs another thread or worker on a bounded slice |
-| integration owner | The person or coordinating thread that owns the work item, combined verification, and final acceptance |
-| log | `log.md`: dated entries of what happened and the evidence, newest last; history only, never current state |
-| promotion | Moving a validated outcome out of a work item into its lasting home |
-| proposal | Optional `proposal.md` holding what reviewers must decide: recommendation, alternatives, contracts, diagrams |
-| skills | Specialized agent instructions loaded on demand |
-| sync | Script that updates dot-agents from upstream while preserving user content |
-| work item | Folder under `.agents/work/<category>/<slug>/` holding the shared record for work that needs review or must outlive the conversation |
+| `researching` | Research or a proposal is being written. |
+| `in-progress` | Work on an agreed direction is under way or ready to start. |
+| `blocked` | Waiting on a person: a review, a decision, or your close request. |
+| `completed` | Only in the final snapshot, just before the item is removed. |
+
+| Decision | Meaning |
+| --- | --- |
+| `Open:` | No recommendation yet; names who decides. |
+| `Proposed:` | A recommended default; names who decides. |
+| `Accepted:` | The outcome, who accepted it, when, and where. |
+
+Only the named decider accepts a decision; the agent records it. A `Proposed:` decision is not approval: the agent builds on one only when it is easy to undo and changes nothing people rely on, and otherwise does the parts that do not depend on it.
+
+When people review a proposal elsewhere, such as Notion or a PR, list that copy in `index.md` with the commit it reflects, and bring their feedback back into the repo before acting on it.
+
+## Go deeper
+
+- [Work-item contract](https://github.com/colmarius/dot-agents/blob/main/.agents/work/AGENTS.md): the rules agents follow.
+- [Skills reference](https://github.com/colmarius/dot-agents/blob/main/docs/skills.md): `adapt`, `agent-work`, and `research`.
+- [Migrating to v0.6](https://github.com/colmarius/dot-agents/blob/main/docs/migration-v0.6.md): including older items with `planned`, `Category:`, or `Updated:`.
+- [With Agents](https://with-agents.dev/coding/): a field guide to briefing coding agents, checking their work, and keeping context.
