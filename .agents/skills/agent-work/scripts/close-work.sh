@@ -50,10 +50,12 @@ validate_snapshot() {
   local next_action_count
   local action_line_count
   local none_line_count
+  local pending_decision_count
 
-  read -r status_count completed_count next_action_count action_line_count none_line_count < <(
+  read -r status_count completed_count next_action_count action_line_count none_line_count pending_decision_count < <(
     printf '%s\n' "$content" | awk '
-      /^Status: / {
+      /^## / { in_sections = 1 }
+      !in_sections && /^Status: / {
         status_count += 1
         if ($0 == "Status: completed") completed_count += 1
       }
@@ -63,13 +65,16 @@ validate_snapshot() {
         next
       }
       in_next_action && /^## / { in_next_action = 0 }
+      $0 == "## Decisions" { in_decisions = 1; next }
+      in_decisions && /^## / { in_decisions = 0 }
+      in_decisions && /^- (Open|Proposed):/ { pending_decision_count += 1 }
       in_next_action && /[^[:space:]]/ {
         action_line_count += 1
         if ($0 == "- None.") none_line_count += 1
       }
       END {
         print status_count + 0, completed_count + 0, next_action_count + 0,
-          action_line_count + 0, none_line_count + 0
+          action_line_count + 0, none_line_count + 0, pending_decision_count + 0
       }
     '
   )
@@ -80,6 +85,10 @@ validate_snapshot() {
 
   if [[ "$next_action_count" -ne 1 || "$action_line_count" -ne 1 || "$none_line_count" -ne 1 ]]; then
     fail "$label must contain exactly '- None.' under '## Next Action': $index_file"
+  fi
+
+  if [[ "$pending_decision_count" -ne 0 ]]; then
+    fail "$label still has Open: or Proposed: decisions; record their outcome or report them as follow-ups and remove them: $index_file"
   fi
 }
 

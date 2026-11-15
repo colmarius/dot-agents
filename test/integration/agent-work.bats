@@ -121,6 +121,57 @@ replace_in_file() {
     assert_output --partial "exactly '- None.'"
 }
 
+@test "close-work rejects open or proposed decisions in the snapshot" {
+    cat >> .agents/work/tooling/demo-work/index.md <<'EOF'
+
+## Decisions
+
+- Accepted: ship v1 (Dana, 2026-08-01, review).
+- Open: rename tags (Dana decides).
+EOF
+    git add -A
+    git commit -m "Leave a decision open" --quiet
+
+    run .agents/skills/agent-work/scripts/close-work.sh \
+        --category tooling --slug demo-work --check
+    assert_failure
+    assert_output --partial "Open: or Proposed: decisions"
+
+    replace_in_file 's/^- Open: rename tags (Dana decides)\./- Accepted: rename tags is out of scope (Dana, 2026-08-02, review)./' \
+        .agents/work/tooling/demo-work/index.md
+    git add -A
+    git commit -m "Resolve the decision" --quiet
+
+    run .agents/skills/agent-work/scripts/close-work.sh \
+        --category tooling --slug demo-work --check
+    assert_success
+}
+
+@test "close-work reads status only from the metadata above the first section" {
+    cat >> .agents/work/tooling/demo-work/index.md <<'EOF'
+
+## Notes
+
+Status: in-progress was the state before this note.
+EOF
+    git add -A
+    git commit -m "Add notes" --quiet
+
+    run .agents/skills/agent-work/scripts/close-work.sh \
+        --category tooling --slug demo-work --check
+    assert_success
+
+    replace_in_file 's/^Status: completed$/Status: in-progress/' \
+        .agents/work/tooling/demo-work/index.md
+    git add -A
+    git commit -m "Reopen" --quiet
+
+    run .agents/skills/agent-work/scripts/close-work.sh \
+        --category tooling --slug demo-work --check
+    assert_failure
+    assert_output --partial "exactly one 'Status: completed'"
+}
+
 @test "close-work rejects dirty repository and uncommitted final changes" {
     echo "dirty" > unrelated.txt
 
