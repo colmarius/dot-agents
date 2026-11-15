@@ -2,7 +2,7 @@
 
 Pick up AI coding work where the last agent left off. dot-agents adds an `AGENTS.md` and a small `.agents/` folder to your repository. Most work needs no files: when one conversation can finish it, just ask. When people must review the direction, or the work continues in another session, your agent keeps a work item: one Markdown file with the why, what is done and left, the decisions, and the next step, plus a dated log any session can resume from.
 
-Works with Amp, Claude Code, and any agent that reads `AGENTS.md`. See [dot-agents.dev](https://dot-agents.dev).
+Works with Amp, Codex, Claude Code, and any agent that reads `AGENTS.md`. See [dot-agents.dev](https://dot-agents.dev).
 
 ## Install
 
