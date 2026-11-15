@@ -4,7 +4,7 @@
 
 - [Installation](../README.md#install)
 - [Quickstart Guide](../QUICKSTART.md)
-- [How dot-agents works](./concepts.md): when to use a work item, and how to start, continue, and finish work
+- [How dot-agents works](./concepts.md): when to use a work item, the four asks, and what a work item holds
 
 ## Reference
 
@@ -12,7 +12,6 @@
 - [Claude Code Project Skill Discovery](./skills.md#claude-code-project-skill-discovery)
 - [Work-item contract](../.agents/work/AGENTS.md)
 - [agent-work skill](../.agents/skills/agent-work/SKILL.md): create, hand off, and close work items
-- [Glossary](./concepts.md#glossary)
 - [AGENTS.md Template](../AGENTS.template.md)
 
 ## Upgrading
