@@ -24,13 +24,13 @@ dot-agents/
 ├── install.sh                   # Main installation script
 ├── .agents/
 │   ├── work/                    # Work-item guidance installed into projects
-│   ├── skills/                  # adapt, agent-browser, agent-work, research
+│   ├── skills/                  # adapt, agent-work, research; README.md is the skill-authoring guide
 │   ├── research/                # Reusable research notes
 │   ├── references/              # External reference repos (gitignored)
 │   └── scripts/                 # sync.sh
 ├── docs/                        # Full documentation
 ├── site/                        # Landing page source
-├── scripts/                     # Development scripts
+├── scripts/                     # Development scripts; evals/ holds the guidance regression eval
 └── test/                        # Bats integration tests
 ```
 
@@ -39,7 +39,6 @@ dot-agents/
 | Command | Effect |
 | --- | --- |
 | `Run adapt` | Analyze project and fill in `AGENTS.md` sections |
-| `Use agent-browser to verify ...` | Load current real-browser automation guidance from the installed CLI |
 | `Create a new work item for ...` | Create durable `.agents/work/` context |
 | `Continue the work item at ...` | Resume from `index.md` and implement the next action |
 | `Research ...` | Investigate and save work-local or reusable findings |
@@ -56,7 +55,7 @@ Work items live under:
 .agents/work/<category>/<slug>/
 ```
 
-Every work item has `index.md` with metadata (`Status`, `Category`, `Updated`) and `Why`, `Summary`, optional `Artifacts` and `Decisions`, `Next Action`, and a short `Log`. Support files are named by content, such as `research.md`, `proposal.md`, `plan.md`, and `log.md`. Follow `.agents/work/AGENTS.md` for the rules, including promotion, the committed final snapshot, and removal.
+Every work item has `index.md` with metadata (`Status`, `Category`, `Updated`) and `Why`, `Summary`, optional `Artifacts` and `Decisions`, and `Next Action`, holding current state only, plus `log.md` with dated history. Support files are named by content, such as `research.md`, `proposal.md`, and `plan.md`. Follow `.agents/work/AGENTS.md` for the rules, including promotion, the committed final snapshot, and removal.
 
 Legacy `.agents/plans/` and `.agents/prds/` paths may exist in older installs. Preserve legacy plan and PRD documents as user content, but allow sync to retire stale Ralph guidance/templates. Migrate one plan at a time into `.agents/work/` only when requested.
 
@@ -74,6 +73,9 @@ Legacy `.agents/plans/` and `.agents/prds/` paths may exist in older installs. P
 
 # Rebuild test fixture after changes to .agents/ or AGENTS.template.md
 ./scripts/build-test-fixture.sh
+
+# Bundle the guidance regression eval (see scripts/evals/README.md)
+scripts/evals/build-bundle.sh /tmp/evals-bundle.tar.gz
 
 # Install dependencies and develop the Astro landing page
 npm install
@@ -136,6 +138,7 @@ After making changes:
 2. **Update README.md / QUICKSTART.md / docs** - Reflect user-facing workflow changes.
 3. **Update tests** - Preserve install/sync behavior in Bats.
 4. **Rebuild test fixture** - Run `./scripts/build-test-fixture.sh` if `.agents/` or `AGENTS.template.md` changed.
+5. **Run the guidance eval** - After changing the work-item contract or `agent-work`, run `scripts/evals/` on the models the project uses and grade with its rubric.
 
 ## Conventions
 

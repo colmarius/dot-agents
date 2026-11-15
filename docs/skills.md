@@ -7,8 +7,7 @@ Skills are specialized instructions that agents load for specific workflows. dot
 | Skill | Trigger | Purpose |
 | --- | --- | --- |
 | [adapt](#adapt) | `Run adapt` | Analyze project, fill in `AGENTS.md` |
-| [agent-browser](#agent-browser) | `Use agent-browser to verify...` | Load current real-browser automation guidance |
-| [agent-work](#agent-work) | `Create a new work item for ...`, `Continue the work item at ...`, `Complete and close the work item at ...` | Manage durable requirements, plans, execution, handoffs, and closeout |
+| [agent-work](#agent-work) | `Create a work item for ...`, `Continue the work item at ...`, `Close the work item at ...` | Keep a shared record for review and resumption; hand off and close work |
 | [research](#research) | `Research [topic]` | Investigate and save work-local or reusable findings |
 
 ## adapt
@@ -19,52 +18,35 @@ Analyzes your project and fills in `AGENTS.md` with:
 - Build/test/lint commands
 - Code conventions
 - Project structure
-- dot-agents work-item workflow guidance
+- A short agent-work section that points to `.agents/work/AGENTS.md`
 
 **Invoke:** `Run adapt`
 
 **Details:** [.agents/skills/adapt/SKILL.md](../.agents/skills/adapt/SKILL.md)
 
-## agent-browser
-
-Provides a small discovery workflow for the external `agent-browser` CLI. It asks the installed CLI for version-current instructions rather than copying a command catalog into dot-agents.
-
-Use it for:
-
-- Real-browser navigation and form workflows
-- Browser smoke tests and exploratory QA
-- Screenshots, traces, and other reviewable UI evidence
-- Data extraction or application-specific browser automation
-
-The CLI and browser runtime are optional external prerequisites; dot-agents does not install either automatically.
-
-**Invoke:** `Use agent-browser to verify the checkout flow`
-
-**Details:** [.agents/skills/agent-browser/SKILL.md](../.agents/skills/agent-browser/SKILL.md)
-
 ## agent-work
 
-Creates and curates durable work item folders:
+Creates, continues, hands off, and closes work items:
 
 ```text
 .agents/work/<category>/<slug>/index.md
 ```
 
-Use it to decide when durable context is warranted, create or list work items, manage requirements and plans, refine or stress-test planned work, execute in the current thread, coordinate bounded workers, produce optional handoffs, and safely close completed work.
+A work item is the shared record between people and agents and the recovery checkpoint for work that needs review or must outlive the conversation. `index.md` holds current state: why, what is done and remains, decisions, and the next action. `log.md` keeps the dated history. Support files such as `research.md`, `proposal.md`, and `plan.md` are added only when someone will read them.
 
-Small, self-contained planning remains in the current conversation without a work item. Detailed artifact and lifecycle rules come from `.agents/work/AGENTS.md`; focused references under the skill cover plan execution, handoffs, and coordinated workers. `close-work.sh` verifies a clean repository and committed final snapshot, then stages only the work-item deletion for a separate commit.
+The skill also writes handoff prompts, coordinates workers, and runs an opt-in stress-test of a plan. Self-contained work stays in the conversation without a work item. The rules come from `.agents/work/AGENTS.md`. `list-work.sh` shows each item's status and last change and flags stale or uncommitted items. `close-work.sh` verifies a clean repository, a committed `completed` snapshot, and no open decisions, then stages only the work-item deletion for a separate commit.
 
-**Invoke:** `Create a new work item for user authentication`
+**Invoke:** `Create a work item for user authentication`
 
 **Details:** [.agents/skills/agent-work/SKILL.md](../.agents/skills/agent-work/SKILL.md)
 
 ## research
 
-Investigates technical questions using available local, web, and repository evidence. The answer may remain conversational; save it only when resumption, auditability, durable decisions, or future reuse makes an artifact worthwhile.
+Investigates technical questions using repository, documentation, and web evidence. The answer may stay in the conversation; it is saved only when people must review it, the work continues elsewhere, or the findings will be reused.
 
 Research is saved:
 
-- Work-locally at `.agents/work/<category>/<slug>/research.md` or `.agents/work/<category>/<slug>/research/<topic>.md` when it supports one work item
+- In the work item's `research.md` (or `research/<topic>.md`) when it supports one work item
 - Reusably at `.agents/research/<topic>.md` when it should guide future unrelated work
 
 **Invoke:** `Research authentication patterns for this work item`
@@ -105,7 +87,6 @@ Claude Code discovers project skills in `.claude/skills/<skill>/SKILL.md`. dot-a
 
 ```text
 .claude/skills/adapt -> ../../.agents/skills/adapt
-.claude/skills/agent-browser -> ../../.agents/skills/agent-browser
 .claude/skills/agent-work -> ../../.agents/skills/agent-work
 ```
 

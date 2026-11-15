@@ -39,14 +39,11 @@ your-project/
     │   └── sync.sh
     └── skills/
         ├── adapt/
-        ├── agent-browser/
         ├── agent-work/
         └── research/
 ```
 
 If the project already has a `.claude/` directory, dot-agents also links skills into `.claude/skills/` so Claude Code can discover them as project skills.
-
-`agent-browser` is a discovery skill, not a bundled browser dependency. It uses the external `agent-browser` CLI when available and asks that installed version for current workflow instructions. dot-agents does not install the CLI or Chromium automatically.
 
 ### Verify Installation
 
@@ -79,7 +76,7 @@ For a small, self-contained change, stay in the current conversation:
 Implement this change, planning only as needed, then verify and report the result.
 ```
 
-Create a work item when its status, decisions, or next action must survive this conversation — for later resumption, coordination, handoff, or auditability — or when you explicitly want repository context.
+Create a work item when people need a durable record to review or decide direction, when the work must resume in another session, thread, or worker, or when you want one. Creating it late is fine, for example before handing off or stopping for the day.
 
 Ask your agent:
 
@@ -98,22 +95,17 @@ Or run the helper directly:
   --title "User authentication"
 ```
 
-The work item starts at:
-
-```text
-.agents/work/feature/user-authentication/index.md
-```
-
-A minimal work item looks like:
+A minimal work item is two files:
 
 ```text
 .agents/work/feature/user-authentication/
-└── index.md      # status, summary, next action
+├── index.md      # why, done and remaining, decisions, next action
+└── log.md        # dated history, newest last
 ```
 
-Future threads start by reading `index.md`, then load only the plan, research, or progress they need.
+`index.md` is the shared record of current state; with the latest `log.md` entries it is the recovery checkpoint. Future threads start there, check it against the log and `git log`, then load only the files they need.
 
-## 4. Add Context Or A Plan Only If Needed
+## 4. Research, Propose, Or Plan Only If Needed
 
 If the unknowns are technical, ask for work-local research:
 
@@ -121,44 +113,38 @@ If the unknowns are technical, ask for work-local research:
 Research authentication patterns for this work item.
 ```
 
-If the desired behavior is ambiguous, ask for a short requirements brief:
+If people must agree on the direction first, ask for a proposal they can review:
 
 ```text
-Create a short requirements brief for this work item.
+Write a proposal for this work item: the recommendation, alternatives,
+API and data-type changes, a diagram, and the decisions we need to make.
 ```
 
-If execution needs sequencing, skip extra context and ask for a plan:
+If the order of work is not obvious, or someone else will execute it, ask for a plan:
 
 ```text
-Create an implementation-ready plan in .agents/work/feature/user-authentication/plan.md.
+Write plan.md for this work item.
 ```
 
-Plans use tasks with scope, dependencies, and acceptance criteria. If the next action is already small and clear, skip a saved plan and implement directly from `index.md`.
+When the next action is small and clear, skip all three and work from `index.md`.
 
-## 5. Implement or Hand Off
+## 5. Implement Or Hand Off
 
 When the next action is clear, continue in the same thread by default:
 
 ```text
-Continue .agents/work/feature/user-authentication from index.md. Implement its
-next action and record verification evidence.
-```
-
-For UI work, ask for running-system proof when the external CLI is available:
-
-```text
-Use agent-browser to verify the authentication flow and save reviewable evidence.
+Continue .agents/work/feature/user-authentication from index.md. Do its
+next action and log the verification evidence.
 ```
 
 When another thread, worker, or environment would help, ask instead:
 
 ```text
-Review .agents/work/feature/user-authentication and write a paste-ready handoff prompt for the next implementation thread.
+Write a handoff prompt for the next step of .agents/work/feature/user-authentication.
+The recipient may commit locally but not push; I integrate the result.
 ```
 
-Generate the prompt in conversation by default. When the transition itself must survive or be reused, save a separately named `handoff-*.md` and link it from `index.md`; it is an optional artifact, not a required stage or a second plan.
-
-During current-thread execution, keep plan checkboxes and `index.md` current. For delegated work, the coordinating thread reviews the returned changes and evidence, then updates durable state unless the handoff explicitly assigns those files to the worker. Create or update `progress.md` only when observed evidence helps work resume across sessions or workers.
+The agent writes the prompt in the conversation. The thread that owns the work item reviews what comes back, runs combined verification, and updates `index.md` (summary, next action, decisions) and appends a dated entry with evidence to `log.md`.
 
 ## 6. Continue Later
 
@@ -175,8 +161,9 @@ Then continue from the exact next action, or ask for a handoff prompt if another
 After implementation and final verification:
 
 1. Promote reusable outcomes to canonical code, docs, guidance, checks, skills, or `.agents/research/`.
-2. Finalize `index.md` with `Status: completed` and exactly `- None.` under `## Next Action`, then commit that snapshot.
-3. Validate and stage removal from the repository root:
+2. Resolve open decisions, or report them as follow-ups.
+3. Finalize `index.md` with `Status: completed`, exactly `- None.` under `## Next Action`, and a final entry in `log.md`, then commit that snapshot.
+4. Validate and stage removal from the repository root:
 
 ```bash
 .agents/skills/agent-work/scripts/close-work.sh \
@@ -189,14 +176,14 @@ After implementation and final verification:
   --slug user-authentication
 ```
 
-The helper requires a clean repository and never commits. Review and commit the staged deletion separately. Git history is the archive; if a squash workflow would discard the final snapshot commit, land that snapshot first or keep the work item in the tree.
+The helper requires a clean repository and never commits. Commit the staged deletion separately, naming the snapshot commit. Git history is the archive; if merges squash commits, merge the snapshot first and remove the item in a later change.
 
 ## Outcome
 
-At the end of the quickstart, a self-contained change is implemented and verified in conversation, or durable work has a resumable active work item. Once completed, its reusable outcomes remain canonical and its final snapshot remains in git history rather than the current tree.
+At the end of the quickstart, a self-contained change is implemented and verified in conversation, or longer work has a work item that people can review and any thread can resume. Once completed, its reusable outcomes remain canonical and its final snapshot remains in git history rather than the current tree.
 
 ## Upgrading?
 
-See the [v0.5 migration guide](./docs/migration-v0.5.md) for workflow and core-skill changes. Projects older than v0.4 should also read the [v0.4](./docs/migration-v0.4.md) and [v0.3](./docs/migration-v0.3.md) guides as applicable.
+See the [v0.6 migration guide](./docs/migration-v0.6.md) for the leaner work-item contract. Projects on v0.4 or older should also read the [v0.5 guide](./docs/migration-v0.5.md); earlier guides are in the [v0.4.0](https://github.com/colmarius/dot-agents/tree/v0.4.0/docs) release docs.
 
-**Next:** [Workflow Guides](./docs/README.md#workflow-guides) · [Concepts](./docs/concepts.md) · [Skills Reference](./docs/skills.md) · [dot-agents.dev](https://dot-agents.dev)
+**Next:** [How dot-agents works](./docs/concepts.md) · [Skills Reference](./docs/skills.md) · [dot-agents.dev](https://dot-agents.dev)

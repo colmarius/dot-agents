@@ -8,7 +8,7 @@ const ogImage = new URL("/og-image.png", Astro.site);
 const version = versionText.trim();
 const releaseTag = `v${version}`;
 const description =
-  "A small .agents workspace for durable AI coding work: work items, research notes, execution-ready plans, verification evidence, and optional handoffs across threads.";
+  "A small .agents workspace for AI coding work that needs review or outlives one thread: a shared record of why, decisions, next action, and progress.";
 ---
 
 <!doctype html>
@@ -52,8 +52,9 @@ const description =
           <div class="hero-copy">
             <h1 id="hero-title">Make AI coding work <em>survive the next thread.</em></h1>
             <p class="hero-description">
-              Small changes stay conversational. When continuity matters, dot-agents stores work items, plans, and
-              verification in your repo’s plain <code>.agents/</code> folder so the next thread can continue.
+              Work one thread can finish stays conversational. When people need to review the direction or the work must outlive
+              this thread, dot-agents keeps one shared record in your repo’s plain <code>.agents/</code> folder: why,
+              decisions, next action, and a progress log the next thread can resume from.
             </p>
             <div class="hero-actions">
               <a class="button button-primary" href="#install">Install with one command <span aria-hidden="true">↓</span></a>
@@ -93,10 +94,10 @@ const description =
             <p class="eyebrow">Choose the smallest useful path</p>
             <h2 id="workflow-title">Keep simple work simple. Make durable work resumable.</h2>
             <p>
-              Stay in the conversation when one thread is enough. Open a work item only when its status, decisions,
-              or next action must survive this conversation.
+              Stay in the conversation when one thread can finish the work. Open a work item when people need to
+              review the direction or the work must resume elsewhere.
             </p>
-            <a class="text-link" href="/docs/">Explore workflow guides <span aria-hidden="true">→</span></a>
+            <a class="text-link" href="/docs/">Read how it works <span aria-hidden="true">→</span></a>
           </div>
 
           <div class="workflow-map">
@@ -105,7 +106,7 @@ const description =
             <div class="workflow-paths">
               <article class="workflow-path workflow-path-conversational" aria-labelledby="conversational-path-title">
                 <header class="workflow-path-header">
-                  <p class="path-kicker">Self-contained</p>
+                  <p class="path-kicker">One thread can finish it</p>
                   <h3 id="conversational-path-title">Stay in this conversation</h3>
                   <p>Use no repository workflow artifacts when the scope is clear and one conversation is enough.</p>
                 </header>
@@ -131,43 +132,43 @@ const description =
 
               <article class="workflow-path workflow-path-durable" aria-labelledby="durable-path-title">
                 <header class="workflow-path-header">
-                  <p class="path-kicker">Continuity has value</p>
-                  <h3 id="durable-path-title">Create durable context</h3>
-                  <p>Use a work item when work must resume, coordinate, preserve decisions, or move between threads.</p>
+                  <p class="path-kicker">Needs review or must outlive this thread</p>
+                  <h3 id="durable-path-title">Keep a shared record</h3>
+                  <p>Use a work item to align people on direction and to resume work in another session, thread, or worker.</p>
                 </header>
 
                 <ol class="workflow-steps">
                   <li>
                     <span class="workflow-step-number">01</span>
                     <h4>Work item</h4>
-                    <p><code>index.md</code> owns status and the exact next action.</p>
+                    <p><code>index.md</code> holds why, what is done and remains, decisions, and the next action; <code>log.md</code> keeps the dated history.</p>
                   </li>
                   <li>
                     <span class="workflow-step-number">02 · optional</span>
-                    <h4>Context</h4>
-                    <p>Add research or requirements only when unknowns need them.</p>
+                    <h4>Research and propose</h4>
+                    <p>Add research or a proposal with contracts and diagrams when people must review it.</p>
                   </li>
                   <li>
                     <span class="workflow-step-number">03 · optional</span>
                     <h4>Plan when useful</h4>
-                    <p>Define scoped tasks when execution needs sequencing.</p>
+                    <p>Write ordered tasks only when the order is not obvious or someone else executes.</p>
                   </li>
                   <li>
                     <span class="workflow-step-number">04</span>
-                    <h4>Execute</h4>
-                    <p>Implement in the current thread by default.</p>
+                    <h4>Execute and checkpoint</h4>
+                    <p>Work in the current thread by default; log progress and evidence at each milestone.</p>
                   </li>
                   <li>
                     <span class="workflow-step-number">05</span>
-                    <h4>Evidence and closeout</h4>
-                    <p>Record proof, promote reusable lessons, commit the final snapshot, then remove the work item.</p>
+                    <h4>Closeout</h4>
+                    <p>When you ask, promote what should last, commit the final snapshot, then remove the work item.</p>
                   </li>
                 </ol>
 
                 <aside class="workflow-handoff" aria-label="Optional handoff path">
                   <p class="path-kicker">Optional branch</p>
                   <h4>Hand off when useful</h4>
-                  <p>Prepare bounded context only when another worker, thread, or environment genuinely helps; persist it only when reuse adds value.</p>
+                  <p>Brief another worker, thread, or environment with a bounded slice and exact delivery authority.</p>
                 </aside>
               </article>
             </div>
@@ -181,7 +182,7 @@ const description =
               <h2 id="artifacts-title">Plain files. One place to resume.</h2>
             </div>
             <div class="section-aside">
-              <p>A new thread reads <code>index.md</code>, then loads only the plan, research, or progress it needs.</p>
+              <p>A new thread reads <code>index.md</code>, checks it against the latest <code>log.md</code> entries and git, then loads only the files its next step needs.</p>
               <a class="text-link" href="https://with-agents.dev/coding/posts/durable-context-coding-agents/">
                 Why durable context? <span aria-hidden="true">↗</span>
               </a>
@@ -203,25 +204,27 @@ const description =
     └── <b>scripts/</b>    <span># safe sync updates</span></code></pre>
             </div>
             <div class="example-document">
-              <div class="document-bar"><span>.agents/work/docs/install-pin/index.md</span><span>● saved</span></div>
-              <pre><code><b># Pin the install example</b>
+              <div class="document-bar"><span>.agents/work/sync/retry-policy/index.md</span><span>● saved</span></div>
+              <pre><code><b># Retry policy for sync workers</b>
 
-Status: planned
-Category: docs
-Updated: 2026-06-22
+Status: blocked
 
 <b>## Why</b>
-Resume this docs fix next session.
+Sync jobs fail on transient errors; the team
+must agree on one retry policy.
 
 <b>## Summary</b>
-Pin both installer and payload versions.
+Done: proposal.md with backoff options.
+Remaining: max attempts, then implement.
+Branch retry-policy at 3f2a9c1; uncommitted: none.
 
-<b>## Artifacts</b>
-- None needed.
+<b>## Decisions</b>
+- Accepted: retry only idempotent jobs
+  (Dana, 2026-06-20, review call).
+- Proposed: 5 attempts (Dana decides).
 
 <b>## Next Action</b>
-- Update the README install example.
-- Check URL tag and --ref match VERSION.</code></pre>
+- Dana decides max attempts.</code></pre>
             </div>
           </div>
         </section>
@@ -231,7 +234,7 @@ Pin both installer and payload versions.
             <p class="eyebrow">Start with these prompts</p>
             <h2 id="commands-title">Ask for what you need.</h2>
             <p>Use these prompts as written. Add detail only when it helps.</p>
-            <a class="text-link" href="https://github.com/colmarius/dot-agents/blob/main/docs/skills.md">All four skills <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="https://github.com/colmarius/dot-agents/blob/main/docs/skills.md">All three skills <span aria-hidden="true">↗</span></a>
           </div>
 
           <div class="command-list">
@@ -241,15 +244,15 @@ Pin both installer and payload versions.
             </article>
             <article>
               <code>Create a new work item for ...</code>
-              <p>Start durable context under <code>.agents/work/</code>.</p>
+              <p>Start a shared record under <code>.agents/work/</code> for review or continuation.</p>
             </article>
             <article>
-              <code>Create a plan for ...</code>
-              <p>Plan conversationally, or turn durable context into implementation-ready tasks.</p>
+              <code>Write a handoff prompt for ...</code>
+              <p>Brief another thread or worker on a bounded slice of the work.</p>
             </article>
             <article>
               <code>Continue the work item at ...</code>
-              <p>Read its current state, implement the next action, and verify.</p>
+              <p>Resume from its checkpoint, do the next action, verify, and log it.</p>
             </article>
           </div>
         </section>
@@ -289,7 +292,7 @@ Pin both installer and payload versions.
         <p>Durable context for AI coding agents.</p>
         <nav aria-label="Footer navigation">
           <a href="https://github.com/colmarius/dot-agents/blob/main/QUICKSTART.md">Quickstart</a>
-          <a href="https://github.com/colmarius/dot-agents/blob/main/docs/migration-v0.5.md">v0.5 migration</a>
+          <a href="https://github.com/colmarius/dot-agents/blob/main/docs/migration-v0.6.md">v0.6 migration</a>
           <a href="https://github.com/colmarius/dot-agents/blob/main/CHANGELOG.md">Changelog</a>
           <a href="https://github.com/colmarius/dot-agents">GitHub</a>
           <a href="https://ampcode.com">Made for Amp + AI agents</a>

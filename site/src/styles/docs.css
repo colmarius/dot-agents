@@ -204,7 +204,8 @@
   border: 1px solid #37423b;
   border-radius: var(--radius);
   line-height: 1.6;
-  white-space: normal;
+  overflow-x: auto;
+  white-space: pre;
 }
 
 .docs-prose pre .copy-button {
@@ -225,7 +226,7 @@
   color: inherit;
   background: none;
   font-size: 0.8rem;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   white-space: inherit;
 }
 
@@ -348,4 +349,28 @@
   .docs-guide-nav > div {
     grid-template-columns: 1fr;
   }
+}
+
+.docs-prose > h1:first-child {
+  display: none;
+}
+
+.docs-reference-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.docs-reference-links a {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+  min-height: 44px;
+  color: var(--accent);
+  font-size: 0.84rem;
+  font-weight: 650;
+  text-underline-offset: 0.2rem;
 }

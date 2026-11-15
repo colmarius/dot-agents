@@ -1,58 +1,101 @@
-# Concepts
+---
+title: How dot-agents works
+description: When to keep work in the conversation, when a work item earns its place, and how to start, continue, and finish work with an agent.
+---
+
+# How dot-agents works
 
 ## Workflow
 
 ```text
-Request or change
-├─ Self-contained ───────────▶ Plan as needed and execute here ───────▶ Verify and report
-└─ Continuity has value ─────▶ Work Item → Context and plan as needed → Execute → Verify
-                                                                         ├─ Hand off when useful
-                                                                         └─ Promote → Commit snapshot → Remove
+Request
+├─ One thread can finish it ──▶ Work in the conversation ──▶ Verify and report
+└─ People must review it, or ──▶ Work item (index.md) ──▶ Research, propose, plan, or build as needed
+   it must outlive this thread        │                         │
+                                      └── checkpoint: index.md now, log.md history
+                                                                 │
+                                            Promote outcomes → Commit snapshot → Remove
 ```
 
-1. **Choose the path:** Keep work conversational when one thread is enough. Create a work item when its status, decisions, or next action must survive this conversation — for later resumption, coordination, handoff, or auditability — or when the user explicitly asks.
-2. **Work item:** For durable work, create `.agents/work/<category>/<slug>/index.md` as the entrypoint and canonical current state.
-3. **Add context only when needed:** Use `research.md` for "what is true?", `research/` for multiple focused notes, and `prd.md` for "what should be true?". Skip them when intent and the next action are already clear.
-4. **Plan when useful:** When execution needs sequencing, break work into scoped tasks with dependencies, acceptance criteria, and planned verification. Skip a saved plan when `index.md` already holds a clear, bounded next action.
-5. **Execute:** Implement in the current thread by default. Delegate only when isolation, parallelism, durable follow-up, or another environment helps.
-6. **Record evidence:** Keep task completion in the plan when one exists, lifecycle state and the next action in `index.md`, and observed evidence in `progress.md` only when durability helps.
-7. **Hand off when useful:** Write a prompt containing only the context another thread needs for its bounded slice. Permission to implement does not imply permission to commit, push, merge, deploy, or change shared state.
-8. **Promote and remove:** Move reusable outcomes to their lasting homes, commit the final completed snapshot, then stage and separately commit removal. Git history is the archive.
+1. **Choose the path.** Keep work in the conversation when one thread can finish it. Create a work item when people need a durable record to review or decide direction, when the work must resume in another session, thread, or worker, or when you ask for one. Creating one late is fine: the first delegation, wait on a person, or context compaction is a good moment when the work needs a durable record.
+2. **Start at `index.md`.** It is the shared record of current state: why the work exists, what is done and what remains, what was decided, and the next action. `log.md` beside it holds the dated history; together they are the recovery checkpoint.
+3. **Add files only when someone will read them.** `research.md` for what is true, `proposal.md` for what reviewers must decide (with contracts, data types, and diagrams), and `plan.md` when the order is not obvious or someone else will execute it.
+4. **Work in the current thread by default.** Delegate when parallel work, isolation, another environment, or an independent review helps; the coordinating thread keeps the work item current.
+5. **Checkpoint at milestones.** After a commit, a finished step, a decision, a blocker, a delegation, and before stopping, rewrite the summary and next action in `index.md` and append one entry with evidence to `log.md`.
+6. **Finish when you ask.** Promote what should last to code, docs, guidance, or `.agents/research/`, resolve open decisions, commit the completed snapshot, then remove the item in a separate commit. Git history is the archive; with squash merges, remove it in a later change.
 
-The detailed artifact, status, handoff, and completion contract lives in [`.agents/work/AGENTS.md`](../.agents/work/AGENTS.md).
+The rules live in the [work-item contract](https://github.com/colmarius/dot-agents/blob/main/.agents/work/AGENTS.md) and the [agent-work skill](https://github.com/colmarius/dot-agents/blob/main/.agents/skills/agent-work/SKILL.md).
+
+## Working With The Agent
+
+### Start
+
+Uncertainty alone does not require research, a proposal, a plan, or a work item. Give the agent the outcome, observable acceptance conditions, what it may change without asking, and who owns product choices:
+
+```text
+Deduplicate the retry logic in the sync workers. Acceptance: one shared
+implementation and the existing tests pass. Do not change public interfaces
+or add dependencies without asking. I own any behavior tradeoffs.
+```
+
+Let the agent answer what the repository answers, and ask you only when a decision would change the outcome or an action needs approval. Access is not permission: a configured remote does not authorize a push, and production access does not authorize a migration. When people must agree on direction first, ask for a work item with a proposal:
+
+```text
+Create a new work item for <goal> and write a proposal for review.
+```
+
+### Continue
+
+```text
+Continue the work item at .agents/work/<category>/<slug>.
+```
+
+The agent reads `index.md`, then the latest `log.md` entries, checks them against `git log` and the code, fixes anything stale, and loads only what the next action needs. Keep connected work in one thread while its context stays useful. Split only for a concrete benefit: an independent review, an isolated experiment, independent slices with disjoint write targets, or access only another environment has. Before splitting, name one integration owner for durable state, combined verification, and final acceptance.
+
+A handoff prompt is generated in the conversation, not stored. It names the work item and files to read, the base revision and how the worker gets unpushed work, the slice and what is out of scope, the verification expected, what to return, and exact delivery authority:
+
+```text
+Write a handoff prompt for <slice> of .agents/work/<category>/<slug>. The
+recipient may commit locally but not push or merge; I integrate the result.
+```
+
+Do not accept "tested" on its own. Each claim names its command or observation and whether it was observed now, inherited without rerunning, or unverified:
+
+```text
+npm test — rerun now: passed
+checkout browser flow — inherited from prior handoff: not rerun
+mobile layout — unverified
+```
+
+### Finish
+
+Accept outcomes on evidence, not because code exists or a worker reported success. You, not the agent, accept residual risk and authorize shared-state actions. Before calling the work done, check that it solved the stated problem, who owns remaining decisions and manual work, and what rollout, cleanup, or follow-up remains.
+
+```text
+Complete and close the work item at .agents/work/<category>/<slug>.
+```
+
+The agent promotes what future work will reuse (behavior to code, tests, or docs; project rules to `AGENTS.md`; procedures to skills or scripts; sourced findings to `.agents/research/`), resolves open decisions or reports them as follow-ups, commits a `completed` snapshot, and removes the item in a second commit. A close request authorizes both commits. If your merges squash commits, merge the snapshot first and remove the item in a later change.
 
 ## Work Item Shape
 
 ```text
 .agents/work/<category>/<slug>/
-├── index.md       # required landing page
-├── research.md    # optional, work-specific findings
-├── research/      # optional focused notes with research/index.md
-├── prd.md         # optional requirements brief
-├── plan.md        # optional primary implementation-ready tasks
-├── plans/         # optional focused plans with plans/index.md
-├── progress.md    # optional living execution summary
-├── decisions/     # optional durable decisions
-└── handoff-*.md   # optional reusable transition prompts
+├── index.md       # required: current state (why, summary, decisions, next action)
+├── log.md         # required: dated history, newest last
+├── research.md    # optional: what is true
+├── proposal.md    # optional: what reviewers must decide
+└── plan.md        # optional: ordered tasks when the order is not obvious
 ```
 
-Create optional files only when they hold useful context. The required `index.md` should stay short and point to the current next action. A persisted `handoff-*.md` is a first-class optional artifact: link it in the artifact map, but do not create one by default or use it as a second plan.
-Create optional folders like `research/`, `plans/`, and `decisions/` only when they contain useful files.
+Name other files by what they hold; one file may hold several roles when that is easier to review.
 
 ## Example Work Item
-
-```text
-.agents/work/feature/user-authentication/
-├── index.md      # status, summary, next action
-└── plan.md       # implementation tasks, when useful
-```
 
 ```markdown
 # User authentication
 
-Status: planned
-Category: feature
-Updated: 2026-06-22
+Status: blocked
 
 ## Why
 
@@ -60,69 +103,65 @@ Users need secure access across sessions.
 
 ## Summary
 
-Add auth flows and session persistence.
+Done: research and a proposal recommending session cookies over JWTs. Remaining: review, plan, implementation. No code is written. Branch `research/auth` at `3f2a9c1`; uncommitted work: none.
 
 ## Artifacts
 
-- Plan: [plan.md](./plan.md)
+- [log.md](log.md) — dated history
+- [research.md](research.md) — current login flow and library options
+- [proposal.md](proposal.md) — recommendation, API changes, session data type
+- Team review page (copy of proposal.md at `3f2a9c1`)
+
+## Decisions
+
+- Accepted: email and password only for v1 (Dana, 2026-11-12, kickoff call).
+- Proposed: server-side sessions in Postgres (Dana decides); see proposal.md.
+- Open: session lifetime (Dana decides).
 
 ## Next Action
 
-- Implement Task 1 from plan.md.
+- Dana reviews proposal.md and decides session lifetime; then write plan.md.
 ```
 
-Current and future threads start by reading `index.md`, then load only the plan, research, or progress they need.
+Its `log.md`:
 
-`Why` preserves original intent while `Summary` changes with scope and status. Categories are open lowercase kebab-case values, so projects can use stable owners such as `platform`, `security`, or an application name instead of forcing work into `other`.
+```markdown
+# Log
 
-## Handoff Prompts
+- 2026-11-12 — Recorded the v1 scope decision from the kickoff call.
+- 2026-11-14 — Wrote research.md and proposal.md from the current login code and three library options. Shared the review page with Dana.
+```
 
-A handoff prompt is an optional paste-ready prompt for a new agent thread. Generate it in conversation by default and persist a separate, clearly named `handoff-*.md` only when reuse or durable transition context justifies it. Persisted handoffs are first-class in the artifact map, but are not a required lifecycle stage. Never embed a large execution prompt in the plan.
+`index.md` holds only current state and is rewritten at each checkpoint; `log.md` only grows. The category comes from the folder and the last change from git.
 
-It should name:
+## Statuses And Decisions
 
-- Canonical authority and current state.
-- Goal, smallest implementation slice, scope limits, and non-goals.
-- Expected outputs and newly observed versus inherited evidence.
-- Verification, stop conditions, and escalation path.
-- Exact delivery authority: implement, commit, push, open a pull request, merge, deploy, or other shared-state actions.
+- `researching` while research or a proposal is written; `in-progress` once every decision that sets direction is accepted (or for the accepted part of a partly accepted proposal); `blocked` while the next step waits on a person, including review and your close request; `completed` only in the final snapshot.
+- Decisions are `Open:` (no recommendation yet), `Proposed:` (with a recommended default), or `Accepted:` (who, when, where). Only the named decider or their delegate accepts; agents record acceptances and never give them.
+- A `Proposed:` decision is not approval. Agents build on one only when it is easy to reverse and does not change behavior people rely on; otherwise they do the independent part and leave the decision to its owner.
+- Each fact has one home. When a plan exists, its checkboxes are the task state.
 
-dot-agents does not assume a specific execution runtime. The work item is the continuity layer, and the coordinating thread remains responsible for integration and combined verification.
-
-## Completion And Removal
-
-Completed work items do not remain in the current tree by default:
-
-1. Finish implementation and final verification.
-2. Promote reusable outcomes to canonical code, docs, guidance, checks, skills, or `.agents/research/`.
-3. Remove stale handoffs, set `Status: completed`, and set `## Next Action` to exactly `- None.`.
-4. Commit the final snapshot.
-5. Run `close-work.sh --check`, stage removal with `close-work.sh`, then commit that deletion separately.
-
-The helper refuses dirty repositories and ignored or untracked work-item content; it never commits. Sync also never removes work items automatically. If a squash workflow would discard the final snapshot commit, land the snapshot before a follow-up deletion or keep the work item in the tree.
+Rendered documents, Notion pages, PR descriptions, and slides are views for people. `index.md` stays canonical for status, decisions, and next action; each view is listed with the commit it reflects, and feedback left there is brought back into the authoritative copy before acting.
 
 ## Legacy Content
 
-Older dot-agents installs used `.agents/plans/` and `.agents/prds/`. v0.3.0 preserves legacy plan and PRD documents as user content but no longer creates those paths on fresh install. See [migration guide](./migration-v0.3.md) for how to move active work into `.agents/work/`.
+Work items from v0.5 and earlier may contain `Category:` and `Updated:` lines, a `planned` status (read as `in-progress`), `progress.md`, `prd.md`, `decisions/`, `plans/`, or `handoff-*.md`; they remain valid. Older installs used `.agents/plans/` and `.agents/prds/`; those documents are preserved as user content. See the [migration guides](https://github.com/colmarius/dot-agents/blob/main/docs/README.md#upgrading).
 
 ## Glossary
 
 | Term | Definition |
 | --- | --- |
-| adapt | Skill that analyzes your project and fills in `AGENTS.md` |
-| canonical state | The authoritative record of a work item: `index.md` owns status, summary, and next action; each linked artifact owns its own detail |
-| category | Open lowercase kebab-case path segment that groups work items by project, domain, or work type |
-| closeout | Committing the completed work-item snapshot, then staging and separately committing its removal |
-| delivery authority | Explicit permission for delivery actions, including local commits and shared-state changes such as pushing, merging, deploying, migrating, or changing shared data; implementing does not imply it |
-| durable context | Repository-backed information meant to outlive the current conversation or worker |
-| final snapshot | Committed `Status: completed` work-item state retained in git history immediately before removal |
-| handoff prompt | Paste-ready prompt for a fresh implementation thread |
-| integration owner | The person or coordinating thread responsible for scope, durable state, combined verification, and final acceptance when work is split |
-| plan | Implementation-ready task list with scope, dependencies, and acceptance criteria |
-| PRD | Optional short requirements brief defining what should be true |
-| progress summary | Optional living `progress.md` for the current slice, observed verification evidence, blockers, and concise resumption detail |
-| promotion | Moving a validated reusable outcome out of a work item into its lasting home: code, tests, product docs, `AGENTS.md`, a skill, a script or check, or `.agents/research/` |
-| skills | Specialized agent instructions loaded via natural language |
-| sync | Script that updates dot-agents from upstream while preserving user work |
-| task | Checkbox entry inside `plan.md` or a focused plan under `plans/` |
-| work item | Durable folder under `.agents/work/<category>/<slug>/` for work whose state must survive the current conversation |
+| adapt | Skill that fills in `AGENTS.md` from the project |
+| category | Open lowercase kebab-case path segment that groups work items by product, domain, or work type |
+| checkpoint | The current `index.md` plus the latest entries in `log.md`; a new thread resumes from it |
+| closeout | Committing the completed snapshot, then staging and separately committing its removal |
+| delivery authority | Explicit permission for commits and shared-state actions such as pushing, merging, deploying, or migrating; implementing does not imply it |
+| final snapshot | The committed `Status: completed` state kept in git history before removal |
+| handoff prompt | Prompt that briefs another thread or worker on a bounded slice |
+| integration owner | The person or coordinating thread that owns the work item, combined verification, and final acceptance |
+| log | `log.md`: dated entries of what happened and the evidence, newest last; history only, never current state |
+| promotion | Moving a validated outcome out of a work item into its lasting home |
+| proposal | Optional `proposal.md` holding what reviewers must decide: recommendation, alternatives, contracts, diagrams |
+| skills | Specialized agent instructions loaded on demand |
+| sync | Script that updates dot-agents from upstream while preserving user content |
+| work item | Folder under `.agents/work/<category>/<slug>/` holding the shared record for work that needs review or must outlive the conversation |

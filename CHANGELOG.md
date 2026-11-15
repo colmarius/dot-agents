@@ -10,25 +10,33 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
-- **Work items are a lean shared record.** `.agents/work/AGENTS.md` now defines a work item as the record people and agents share for work that needs review or must outlive the conversation, and as its recovery checkpoint. `index.md` gains `## Decisions` (`Open:`, `Proposed:`, `Accepted:`; only a person accepts) and a short dated `## Log`, replacing `Open Questions`, `progress.md`, and `decisions/` for new work.
+- **Work items are a lean shared record.** `.agents/work/AGENTS.md` now defines a work item as the record people and agents share for work that needs review or must outlive the conversation, and as its recovery checkpoint. `index.md` holds current state only, with `Status:` as its only metadata (category from the path, last change from git): its `Summary` says what is done and what remains, and it gains `## Decisions` (`Open:`, `Proposed:`, `Accepted:`; only the named decider accepts). A `log.md` beside it, created by `new-work.sh`, keeps dated history. Together they replace `Open Questions`, `progress.md`, and `decisions/` for new work.
 - Creation triggers are observable: review or alignment, resumption in another session, thread, or worker, or an explicit request; creating an item late is fine.
-- Checkpoints are written at milestones (commit, finished step, decision, blocker, delegation, before stopping), in the same commit as the change; resuming threads check the index against the log and `git log`.
-- Support files are named by content: `research.md`, `proposal.md` for what reviewers must decide (contracts, data types, diagrams), `plan.md` only when order is not obvious, and `log.md` for older log entries. External views such as Notion pages and rendered documents are listed with the commit they reflect, and feedback there is brought back before acting.
-- Statuses keep their values with broader meanings: `in-progress` covers research and proposals, `blocked` includes waiting on review, and `completed` includes rejected or cancelled outcomes.
+- Checkpoints are written at milestones (commit, finished step, decision, blocker, delegation, before stopping), in the same commit as the change; resuming threads check the index against the latest `log.md` entries and `git log`.
+- Support files are named by content: `research.md`, `proposal.md` for what reviewers must decide (contracts, data types, diagrams), and `plan.md` only when order is not obvious; one file may hold several when that is easier to review. External views such as Notion pages and rendered documents are listed with the commit they reflect, and feedback there is brought back before acting.
+- Four statuses: `researching` (including proposals), `in-progress` (an accepted direction), `blocked` (waiting on a person, including review and the close request), and `completed`. `planned` is dropped; older items that use it are read as `in-progress`.
+- The contract holds only what every reader needs; closing, squash handling, and merged-item cleanup move into the `agent-work` skill.
+- `list-work.sh` shows each item's last commit and flags stale, uncommitted, and completed-but-present items.
+- The skill-authoring guide moves to `.agents/skills/README.md` so harnesses no longer load it as instructions.
+- The three workflow guides are folded into `docs/concepts.md`, which the website renders as its docs page; old guide URLs redirect there.
 - `agent-work` inlines its handoff, coordination, and stress-test essentials; `research`, `adapt`, the plan and index templates, the root `AGENTS.md` template, and skill-authoring guidance are shorter and drop procedures current models follow on their own.
-- Closeout names the snapshot commit in the removal commit and, with squash merges, removes the item in a later change.
+- Closeout names the snapshot commit in the removal commit and, with squash merges, removes the item in a later change. Items whose work already merged without a completed snapshot can be removed in a cleanup change that names the merge.
 
 ### Removed
 
 - `agent-work` references (`coordinated-execution.md`, `handoff-context.md`, `plan-execution.md`) and the PRD and decision templates. Sync backs them up and removes them; existing work-item files are untouched.
+- The `agent-browser` core skill; the installed CLI's `agent-browser skills list` provides version-matched guidance. Sync backs it up and removes it.
+- `Category:` and `Updated:` metadata from new work items, and the "Created." entry `new-work.sh` wrote to `log.md`.
+- The v0.3 and v0.4 migration guides; they remain in the v0.4.0 release docs.
 
 ### Fixed
 
-- `close-work.sh` reads `Status:` only from the metadata above the first section, so a log line starting with `Status:` no longer blocks closeout.
+- `close-work.sh` reads `Status:` only from the metadata above the first section, so a line starting with `Status:` elsewhere no longer blocks closeout.
 
 ### Added
 
 - [v0.6 migration guide](docs/migration-v0.6.md).
+- `close-work.sh` refuses a final snapshot that still lists `Open:` or `Proposed:` decisions under `## Decisions`.
 
 ## [0.5.1] - 2026-09-12
 
