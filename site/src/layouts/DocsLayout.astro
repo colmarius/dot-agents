@@ -1,4 +1,5 @@
 ---
+import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import "../styles/global.css";
 import "../styles/docs.css";
@@ -45,16 +46,7 @@ const ogImage = new URL("/og-image.png", Astro.site);
         <slot />
       </main>
 
-      <footer class="site-footer">
-        <a class="wordmark footer-wordmark" href="/" aria-label="dot-agents home"><span><b>.</b>agents</span></a>
-        <p>Durable context for AI coding agents.</p>
-        <nav aria-label="Footer navigation">
-          <a href="https://github.com/colmarius/dot-agents/blob/main/QUICKSTART.md">Quickstart</a>
-          <a href="https://github.com/colmarius/dot-agents/blob/main/docs/concepts.md">Concepts</a>
-          <a href="https://github.com/colmarius/dot-agents">GitHub</a>
-          <span>MIT License</span>
-        </nav>
-      </footer>
+      <SiteFooter />
     </div>
 
     <script>

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
-  <title id="title">dot-agents — Make AI coding work survive the next thread</title>
+  <title id="title">dot-agents — Pick up AI coding work where the last agent left off</title>
   <desc id="description">A social preview card for dot-agents on a warm background with forest green accents.</desc>
 
   <rect width="1200" height="630" fill="#f7f6f2" />
@@ -8,13 +8,16 @@
     <tspan fill="#2d6049">.</tspan><tspan>agents</tspan>
   </text>
 
-  <text x="72" y="238" fill="#202622" font-family="Helvetica, Arial, sans-serif" font-size="62" font-weight="700">
-    Make AI coding work
+  <text x="72" y="206" fill="#202622" font-family="Helvetica, Arial, sans-serif" font-size="58" font-weight="700">
+    Pick up AI coding work
   </text>
-  <text x="72" y="316" fill="#2d6049" font-family="Helvetica, Arial, sans-serif" font-size="62" font-weight="700">
-    survive the next thread.
+  <text x="72" y="278" fill="#2d6049" font-family="Helvetica, Arial, sans-serif" font-size="58" font-weight="700">
+    where the last agent
   </text>
-  <text x="72" y="394" fill="#606b64" font-family="Helvetica, Arial, sans-serif" font-size="27">
+  <text x="72" y="350" fill="#2d6049" font-family="Helvetica, Arial, sans-serif" font-size="58" font-weight="700">
+    left off.
+  </text>
+  <text x="72" y="424" fill="#606b64" font-family="Helvetica, Arial, sans-serif" font-size="27">
     Plain files for durable AI coding work.
   </text>
 
