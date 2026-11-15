@@ -213,10 +213,12 @@ button:focus-visible {
 }
 
 .hero-description code,
-.install-intro code,
-.workflow-map code,
+.hero-note code,
 .section-heading code,
-.command-list p code {
+.section-aside code,
+.start-steps > li > h3 code,
+.start-steps > li > p code,
+.when-rows code {
   padding: 0.08rem 0.28rem;
   border: 1px solid var(--line);
   border-radius: 4px;
@@ -227,8 +229,16 @@ button:focus-visible {
 
 .hero-actions {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   justify-content: center;
   margin-top: 2rem;
+}
+
+.hero-note {
+  margin-top: 1.25rem;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
 }
 
 .button {
@@ -267,41 +277,18 @@ button:focus-visible {
   text-underline-offset: 0.25rem;
 }
 
-.install-section {
-  max-width: 940px;
-  margin: 0 auto;
-  padding: 0 0 clamp(5.5rem, 9vw, 7.5rem);
-}
-
+#example,
 #install,
-#workflow {
+#when {
   scroll-margin-top: clamp(1.5rem, 4vw, 2.5rem);
 }
 
-.install-intro {
-  max-width: 640px;
-  margin: 0 auto 1.75rem;
-  text-align: center;
-}
-
-.install-intro h2,
-.section-heading h2,
-.commands-intro h2 {
+.section-heading h2 {
   font-size: clamp(2rem, 3.6vw, 3rem);
   font-weight: 700;
   letter-spacing: -0.035em;
   line-height: 1.14;
   text-wrap: balance;
-}
-
-.install-intro > p:last-child {
-  margin-top: 0.85rem;
-  color: var(--ink-soft);
-  font-size: 0.96rem;
-}
-
-.install-panel {
-  min-width: 0;
 }
 
 .terminal {
@@ -405,7 +392,7 @@ button:focus-visible {
 
 .terminal-hints p {
   display: grid;
-  grid-template-columns: 78px minmax(0, 1fr);
+  grid-template-columns: 7.5rem minmax(0, 1fr);
   gap: 0.65rem;
   padding: 0.68rem 0.9rem;
   color: var(--terminal-soft);
@@ -425,29 +412,117 @@ button:focus-visible {
 .terminal-hints code {
   display: block;
   min-width: 0;
-  overflow-x: auto;
-  overflow-wrap: normal;
-  scrollbar-width: none;
+  color: var(--terminal-soft);
+  overflow-wrap: anywhere;
+}
+
+.button-secondary {
+  color: var(--accent-dark);
+  background: transparent;
+}
+
+.start-steps {
+  display: grid;
+  gap: 2rem;
+  max-width: 880px;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.start-steps li {
+  position: relative;
+  min-width: 0;
+  padding-left: 3.25rem;
+  counter-increment: step;
+}
+
+.start-steps li::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  width: 2.1rem;
+  height: 2.1rem;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  font-size: 0.9rem;
+  font-weight: 700;
+  content: counter(step);
+}
+
+.start-steps h3 {
+  padding-top: 0.2rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+}
+
+.start-steps h3 code {
+  color: var(--accent-dark);
+}
+
+.start-steps > li > p code {
   white-space: nowrap;
 }
 
-.terminal-hints code::-webkit-scrollbar {
-  display: none;
+.start-steps p {
+  margin-top: 0.4rem;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
 }
 
-.install-next {
-  margin-top: 0.9rem;
+.start-steps .terminal {
+  margin-top: 1rem;
+}
+
+.when-rows {
+  display: grid;
+  gap: 1rem;
+  max-width: 880px;
+  margin-bottom: 1.5rem;
+}
+
+.when-rows > div {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) 2fr;
+  gap: 1.5rem;
+  padding: 1.35rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.when-rows > div:last-child {
+  border-left: 3px solid var(--accent);
+}
+
+.when-rows dt {
+  color: var(--ink);
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.when-rows dd {
   color: var(--ink-soft);
-  font-size: 0.86rem;
+  font-size: 0.95rem;
+}
+
+.companion-line {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.9rem;
   text-align: center;
 }
 
-.install-next code {
-  padding: 0.12rem 0.3rem;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  color: var(--accent-dark);
-  background: var(--surface);
+.companion-line a {
+  color: var(--accent);
+  font-weight: 650;
+  text-underline-offset: 0.2rem;
 }
 
 .section-block {
@@ -467,8 +542,7 @@ button:focus-visible {
   margin-bottom: 2.5rem;
 }
 
-.section-heading > p:not(.eyebrow),
-.commands-intro > p:last-child {
+.section-heading > p:not(.eyebrow) {
   max-width: 600px;
   margin-top: 0.9rem;
   color: var(--ink-soft);
@@ -477,195 +551,6 @@ button:focus-visible {
 
 .section-heading > .text-link {
   margin-top: 0.9rem;
-}
-
-.workflow-map {
-  padding-top: 0.25rem;
-}
-
-.workflow-choice {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  padding-bottom: 2.2rem;
-}
-
-.workflow-choice::after {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-  height: 1.45rem;
-  background: var(--line);
-  content: "";
-}
-
-.workflow-choice span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 38px;
-  padding: 0.42rem 0.75rem;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
-  color: var(--accent-dark);
-  background: var(--accent-soft);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.workflow-paths {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(250px, 0.68fr) minmax(0, 1.6fr);
-  gap: 1rem;
-  padding-top: 1.45rem;
-}
-
-.workflow-paths::before {
-  position: absolute;
-  top: 0;
-  right: 24%;
-  left: 15.5%;
-  height: 1px;
-  background: var(--line);
-  content: "";
-}
-
-.workflow-path {
-  position: relative;
-  min-width: 0;
-  padding: 1.35rem;
-  border: 1px solid var(--line);
-  border-top: 3px solid var(--accent);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
-.workflow-path::before {
-  position: absolute;
-  top: -1.55rem;
-  left: 50%;
-  width: 1px;
-  height: 1.45rem;
-  background: var(--line);
-  content: "";
-}
-
-.workflow-path-conversational {
-  border-top-color: #7d9385;
-}
-
-.workflow-path-header {
-  max-width: 680px;
-  margin-bottom: 1.25rem;
-}
-
-.path-kicker {
-  color: var(--accent);
-  font-size: 0.74rem;
-  font-weight: 750;
-  letter-spacing: 0.015em;
-  text-transform: uppercase;
-}
-
-.workflow-path-header h3 {
-  margin-top: 0.3rem;
-  font-size: 1.35rem;
-  letter-spacing: -0.025em;
-  line-height: 1.25;
-}
-
-.workflow-path-header > p:last-child,
-.workflow-handoff > p:last-child {
-  margin-top: 0.55rem;
-  color: var(--ink-soft);
-  font-size: 0.86rem;
-  line-height: 1.55;
-}
-
-.workflow-steps {
-  display: grid;
-  gap: 0.65rem;
-  padding: 0;
-  list-style: none;
-}
-
-.workflow-path-durable .workflow-steps {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-}
-
-.workflow-steps li {
-  position: relative;
-  min-width: 0;
-  padding: 0.9rem;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--surface-muted);
-}
-
-.workflow-path-durable .workflow-steps li:not(:last-child)::after {
-  position: absolute;
-  top: 50%;
-  right: -0.58rem;
-  z-index: 1;
-  color: var(--ink-soft);
-  background: var(--surface);
-  content: "→";
-  font-size: 0.72rem;
-  line-height: 1;
-  transform: translateY(-50%);
-}
-
-.workflow-step-number {
-  display: block;
-  min-height: 1.3rem;
-  margin-bottom: 1.2rem;
-  color: var(--ink-soft);
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  font-weight: 700;
-  line-height: 1.3;
-}
-
-.workflow-steps h4,
-.workflow-handoff h4 {
-  font-size: 0.94rem;
-  letter-spacing: -0.015em;
-  line-height: 1.28;
-}
-
-.workflow-steps li > p:last-child {
-  margin-top: 0.55rem;
-  color: var(--ink-soft);
-  font-size: 0.75rem;
-  line-height: 1.5;
-}
-
-.workflow-handoff {
-  position: relative;
-  width: 40%;
-  margin-top: 1.55rem;
-  margin-left: auto;
-  padding: 1rem;
-  border: 1px dashed #aeb9b1;
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--accent-soft), var(--surface) 50%);
-}
-
-.workflow-handoff::before {
-  position: absolute;
-  top: -1.6rem;
-  left: 50%;
-  width: 1px;
-  height: 1.55rem;
-  border-left: 1px dashed #aeb9b1;
-  content: "";
-}
-
-.workflow-handoff .path-kicker {
-  margin-bottom: 0.35rem;
-  font-size: 0.65rem;
 }
 
 .section-heading-split {
@@ -755,161 +640,6 @@ button:focus-visible {
   line-height: 1.7;
 }
 
-.commands-intro {
-  max-width: 660px;
-  margin-bottom: 2.5rem;
-}
-
-.command-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.command-list article {
-  min-width: 0;
-  padding: 1.3rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
-.command-list article > code {
-  display: inline-block;
-  color: var(--accent-dark);
-  font-size: 0.77rem;
-  font-weight: 700;
-  overflow-wrap: anywhere;
-}
-
-.command-list p {
-  margin-top: 0.65rem;
-  color: var(--ink-soft);
-  font-size: 0.88rem;
-}
-
-.companion-card {
-  --companion-accent: #4f46e5;
-  --companion-accent-soft: #eef2ff;
-  --companion-ink: #242536;
-  --companion-ink-soft: #626477;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.52fr);
-  gap: clamp(2rem, 6vw, 4.5rem);
-  align-items: stretch;
-  padding: clamp(1.5rem, 4vw, 2.5rem);
-  border: 1px solid #cdd3ec;
-  border-radius: 12px;
-  color: var(--companion-ink);
-  background: #fbfbfe;
-  text-decoration: none;
-  transition: border-color 180ms var(--ease-out), background 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
-}
-
-.companion-card:focus-visible {
-  outline-color: var(--companion-accent);
-}
-
-.companion-brand {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.companion-wordmark {
-  font-size: 1.3rem;
-  font-weight: 520;
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-
-.companion-badge {
-  padding: 0.28rem 0.55rem;
-  border: 1px solid #c7d2fe;
-  border-radius: 999px;
-  color: var(--companion-accent);
-  font-size: 0.62rem;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.companion-copy h2 {
-  max-width: 690px;
-  margin-top: clamp(1.75rem, 4vw, 3rem);
-  font-size: clamp(2rem, 3.8vw, 3.15rem);
-  font-weight: 620;
-  letter-spacing: -0.04em;
-  line-height: 1.08;
-  text-wrap: balance;
-}
-
-.companion-copy > p {
-  max-width: 670px;
-  margin-top: 1rem;
-  color: var(--companion-ink-soft);
-  font-size: 0.98rem;
-  line-height: 1.65;
-}
-
-.companion-cta {
-  display: inline-flex;
-  gap: 0.4rem;
-  align-items: center;
-  margin-top: 1.5rem;
-  color: var(--companion-accent);
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
-.companion-index {
-  display: flex;
-  flex-direction: column;
-  padding: 1.25rem;
-  border: 1px solid #d9def3;
-  border-radius: 8px;
-  background: var(--companion-accent-soft);
-}
-
-.companion-index > p {
-  color: var(--companion-accent);
-  font-size: 0.7rem;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.companion-index ul {
-  display: grid;
-  flex: 1;
-  grid-template-rows: repeat(3, 1fr);
-  padding: 0;
-  margin-top: 1.5rem;
-  list-style: none;
-}
-
-.companion-index li {
-  display: grid;
-  grid-template-columns: 2rem 1fr;
-  gap: 0.55rem;
-  align-items: center;
-  padding: 0.75rem 0;
-  border-top: 1px solid #d3d8f0;
-  font-size: 0.82rem;
-  font-weight: 620;
-  line-height: 1.4;
-}
-
-.companion-index li span {
-  color: var(--companion-accent);
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-}
-
 .site-footer {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -953,37 +683,23 @@ button:focus-visible {
     background: var(--accent-dark);
   }
 
-  .copy-button:hover {
-    border-color: #7f9587;
+  .button-secondary:hover {
+    background: var(--accent-soft);
   }
 
-  .companion-card:hover {
-    border-color: #9aa5dd;
-    background: var(--surface);
-    box-shadow: 0 12px 30px rgb(55 48 163 / 8%);
+  .companion-line a:hover {
+    color: var(--accent-dark);
+  }
+
+  .copy-button:hover {
+    border-color: #7f9587;
   }
 }
 
 @media (max-width: 900px) {
-  .workflow-choice {
-    justify-content: flex-start;
-    padding-bottom: 1rem;
-  }
-
-  .workflow-choice::after,
-  .workflow-paths::before,
-  .workflow-path::before {
-    display: none;
-  }
-
-  .workflow-paths {
-    grid-template-columns: 1fr;
-    padding-top: 0;
-  }
 
   .artifact-grid,
-  .section-heading-split,
-  .companion-card {
+  .section-heading-split {
     grid-template-columns: 1fr;
   }
 
@@ -993,18 +709,6 @@ button:focus-visible {
 
   .section-aside {
     max-width: 620px;
-  }
-
-  .companion-card {
-    gap: 1.5rem;
-  }
-
-  .companion-index ul {
-    margin-top: 1.5rem;
-  }
-
-  .companion-index li:last-child {
-    padding-bottom: 0;
   }
 
   .site-footer {
@@ -1063,10 +767,6 @@ button:focus-visible {
     font-size: 1rem;
   }
 
-  .install-intro {
-    margin-bottom: 1.35rem;
-  }
-
   .terminal-command pre {
     padding: 1.25rem 4.5rem 1.25rem 1rem;
     font-size: 0.72rem;
@@ -1077,50 +777,42 @@ button:focus-visible {
     gap: 0.25rem;
   }
 
-  .terminal-hints code {
-    overflow-x: visible;
-    overflow-wrap: anywhere;
-    white-space: normal;
-  }
-
   .section-block {
     padding: 4.75rem 0;
   }
 
-  .section-heading,
-  .commands-intro {
+  .start-steps li {
+    padding-left: 2.75rem;
+  }
+
+  .start-steps li::before {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .start-steps .terminal {
+    margin-left: -2.75rem;
+  }
+
+  .when-rows > div {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    padding: 1.1rem 1.15rem;
+  }
+
+  .section-heading {
     margin-bottom: 2rem;
-  }
-
-  .command-list {
-    grid-template-columns: 1fr;
-  }
-
-  .workflow-path {
-    padding: 1.15rem;
-  }
-
-  .workflow-path-durable .workflow-steps {
-    grid-template-columns: 1fr;
-  }
-
-  .workflow-path-durable .workflow-steps li:not(:last-child)::after {
-    display: none;
-  }
-
-  .workflow-step-number {
-    min-height: 0;
-    margin-bottom: 0.75rem;
-  }
-
-  .workflow-handoff {
-    width: 100%;
-    margin-top: 1rem;
   }
 
   .file-tree pre,
   .example-document pre {
-    font-size: 0.66rem;
+    padding: 1rem;
+    font-size: 0.7rem;
+  }
+
+  .example-document pre {
+    font-size: 0.72rem;
+    white-space: pre-wrap;
   }
 
   .site-footer {
@@ -1146,11 +838,6 @@ button:focus-visible {
 @media (max-width: 420px) {
   .wordmark img {
     display: none;
-  }
-
-  .file-tree pre {
-    padding: 1rem;
-    font-size: 0.62rem;
   }
 
   .button {
