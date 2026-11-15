@@ -205,7 +205,8 @@
   border-radius: var(--radius);
   line-height: 1.6;
   overflow-x: auto;
-  white-space: pre;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .docs-prose pre .copy-button {
@@ -226,7 +227,7 @@
   color: inherit;
   background: none;
   font-size: 0.8rem;
-  overflow-wrap: normal;
+  overflow-wrap: inherit;
   white-space: inherit;
 }
 
