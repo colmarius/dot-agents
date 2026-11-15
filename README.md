@@ -1,6 +1,8 @@
 # dot-agents
 
-dot-agents adds plain-Markdown agent instructions and a `.agents/` workspace to any repository. Work one thread can finish stays in the current AI conversation. Work that people need to review, or that must outlive the conversation, gets a work item: one shared record of why, what is done and what remains, decisions, and the next action, plus a dated progress log any thread can resume from.
+Pick up AI coding work where the last agent left off. dot-agents adds an `AGENTS.md` and a small `.agents/` folder to your repository. Most work needs no files: when one conversation can finish it, just ask. When people must review the direction, or the work continues in another session, your agent keeps a work item: one Markdown file with the why, what is done and left, the decisions, and the next step, plus a dated log any session can resume from.
+
+Works with Amp, Claude Code, and any agent that reads `AGENTS.md`. See [dot-agents.dev](https://dot-agents.dev).
 
 ## Install
 
@@ -16,40 +18,24 @@ Pin a version:
 curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/v0.6.0/install.sh | bash -s -- --ref v0.6.0
 ```
 
+## Get Started
+
+1. Install from your repository root (above).
+2. Tell your agent `Run adapt` to fill `AGENTS.md` with your project's commands and conventions.
+3. When work needs a durable record, ask: `Create a work item for ...`. In a later session: `Continue the work item at ...`. When it is done: `Close the work item at ...`.
+
 ## Documentation
 
-- **[Quickstart](./QUICKSTART.md)** — Install, choose conversational or durable work, and take the next action
-- **[How dot-agents works](./docs/concepts.md)** — When to use a work item, and how to start, continue, and finish work
-- **[Documentation Index](./docs/README.md)** — Skills, contract, and migration notes
-- **[Website](https://dot-agents.dev)** — Overview, installation, and the rendered docs (source: [site/](./site/))
+- **[How dot-agents works](./docs/concepts.md)**: when to use a work item, the four asks, and what a work item holds
+- **[Quickstart](./QUICKSTART.md)**: install, adapt, and your first work item
+- **[Skills reference](./docs/skills.md)** and the **[work-item contract](./.agents/work/AGENTS.md)**
+- **[Documentation index](./docs/README.md)**, including migration guides
 
 ## Agent Support
 
-dot-agents works with any AI coding agent that reads Markdown instructions. When a project already has a `.claude/` directory, install/sync also links dot-agents skills into `.claude/skills/` so Claude Code can discover them as project skills.
+dot-agents works with any AI coding agent that reads Markdown instructions. When a project already has a `.claude/` directory, install and sync also link dot-agents skills into `.claude/skills/` so Claude Code discovers them as project skills.
 
-If an agent does not auto-discover skills, ask it to read the relevant `.agents/skills/<skill>/SKILL.md` file before starting that workflow.
-
-## Workflow
-
-```text
-Request
-├─ One thread can finish it ──▶ Work in the conversation ──▶ Verify and report
-└─ People must review it, or ──▶ Work item (index.md) ──▶ Research, propose, plan, or build as needed
-   it must outlive this thread        │                         │
-                                      └── checkpoint: index.md now, log.md history
-                                                                 │
-                                            Promote outcomes → Commit snapshot → Remove
-```
-
-Keep work in the conversation when one thread can finish it: plan as needed, implement, verify, and report without repository artifacts.
-
-Create a work item when people need a durable record to review or decide direction, when the work must resume in another session, thread, or worker, or when you ask for one. `index.md` is the shared record of current state and `log.md` its dated history; together they are the recovery checkpoint. Add `research.md`, a `proposal.md` with contracts and diagrams, or a `plan.md` only when someone will read it. When you ask to close it, the agent promotes what should last, commits the final snapshot, and removes the item in a separate commit (a later change with squash merges); git history is the archive.
-
-The contract lives in [`.agents/work/AGENTS.md`](./.agents/work/AGENTS.md). [How dot-agents works](./docs/concepts.md) covers starting, continuing, and finishing work.
-
-## Next Steps
-
-After installing, ask the agent to `Run adapt` so `AGENTS.md` reflects your project. For self-contained work, ask it to implement and verify directly. For durable work, ask it to `Create a new work item for ...`. The [Quickstart](./QUICKSTART.md) covers optional research, proposals, plans, handoffs, and closeout. Sync updates later with `.agents/scripts/sync.sh`.
+If an agent does not discover skills on its own, ask it to read the relevant `.agents/skills/<skill>/SKILL.md` before starting.
 
 ## Sync Behavior
 

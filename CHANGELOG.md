@@ -8,6 +8,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed
+
+- The website leads with what dot-agents is and an example work item, gives install three steps, and replaces the workflow diagram with a two-row rule for when to use a work item.
+- `docs/concepts.md` is a short user guide: when to use a work item, the four asks (start, continue, hand off, finish), what a work item holds, and statuses and decisions. Rules stay in the work-item contract. README and QUICKSTART no longer repeat it.
+
+### Fixed
+
+- Long lines in docs code blocks wrap instead of running past the column.
+
 ## [0.6.0] - 2026-11-15
 
 ### Changed
