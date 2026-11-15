@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-15
+
 ### Changed
 
 - **Work items are a lean shared record.** `.agents/work/AGENTS.md` now defines a work item as the record people and agents share for work that needs review or must outlive the conversation, and as its recovery checkpoint. `index.md` holds current state only, with `Status:` as its only metadata (category from the path, last change from git): its `Summary` says what is done and what remains, and it gains `## Decisions` (`Open:`, `Proposed:`, `Accepted:`; only the named decider accepts). A `log.md` beside it, created by `new-work.sh`, keeps dated history. Together they replace `Open Questions`, `progress.md`, and `decisions/` for new work.
@@ -37,6 +39,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - [v0.6 migration guide](docs/migration-v0.6.md).
 - `close-work.sh` refuses a final snapshot that still lists `Open:` or `Proposed:` decisions under `## Decisions`.
+- `scripts/evals/`: a sample project, seeded work items, nine scenarios, and a rubric for comparing guidance versions across models.
 
 ## [0.5.1] - 2026-09-12
 
@@ -208,7 +211,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Installer skip logic now correctly includes plans/TEMPLATE.md
 - Postfix increment operators causing script exit on bash 5.3+ with `set -e` ([#1](https://github.com/colmarius/dot-agents/issues/1))
 
-[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/colmarius/dot-agents/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/colmarius/dot-agents/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/colmarius/dot-agents/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/colmarius/dot-agents/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/colmarius/dot-agents/compare/v0.3.0...v0.4.0
