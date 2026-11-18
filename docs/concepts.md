@@ -119,6 +119,24 @@ Only the named decider accepts a decision; the agent records it. A `Proposed:` d
 
 When people review a proposal elsewhere, such as Notion or a PR, list that copy in `index.md` with the commit it reflects, and bring their feedback back into the repo before acting on it.
 
+## Work across repositories
+
+One coordinator work item can link an API change and its consumer without creating a work item per worker. Give each writer disjoint targets, name each repository's base revision, and say how unpushed code and evidence reach the recipient. A hash or local path alone does not transfer them.
+
+When rollout is in scope, use `Summary` to distinguish implementation, verification, merge, and deployment, with the environment and revision tested. For example (fictional):
+
+> API and consumer implementations and targeted tests are complete; the API is merged and development deployment `4444444` is verified. The consumer PR at `5555555` remains open. Its live integration check returned HTTP 503, so end-to-end behavior is unverified. Consumer and production deployment remain unauthorized.
+
+Keep dated evidence in `log.md`, optional rollout order in `plan.md`, and durable behavior in the owning repository's code and docs. A merged API and passing fixture tests do not prove the consumer works against the deployed API. Implementation-only and documentation-only requests acquire no deployment checklist.
+
+The [cross-repository delivery example](https://github.com/totherush/dot-agents/blob/main/docs/examples/cross-repository-delivery.md) follows fictional `service-api` and `booking-app` changes through ownership, patch transfer, context storage, and an incomplete rollout.
+
+## Update without losing customizations
+
+The unreleased safe-sync default installs missing files but preserves differing managed files and retired content for review. Conflicts use `file.dot-agents.md` or `file.ext.dot-agents.new`; existing review copies are kept. Unresolved updates exit 1 even though non-conflicting additions may already be installed, and do not advance installation metadata.
+
+Preview with `--diff` or `--dry-run`; neither writes project files. Use explicit `--force` for backed-up replacement/removal, or `--interactive` for separate decisions. `--yes` is not overwrite authority. Older pinned installers retain their old behavior; read the [safe-sync migration notes](https://github.com/totherush/dot-agents/blob/main/docs/migration-safe-sync.md) before adopting the new default.
+
 ## Go deeper
 
 - [Work-item contract](https://github.com/colmarius/dot-agents/blob/main/.agents/work/AGENTS.md): the rules agents follow.
