@@ -43,14 +43,17 @@ Re-running `install.sh` updates dot-agents from upstream while preserving your w
 
 | What | Behavior |
 | --- | --- |
-| Skills, scripts, `.agents/work/AGENTS.md` | Updated from upstream |
-| Retired upstream skills, templates, and references | Backed up and removed on sync |
+| Skills, scripts, `.agents/work/AGENTS.md` | Install missing files; skip identical files; preserve differing files and write conflict copies |
+| Retired upstream skills, templates, references, and managed Claude links | Preserve and report pending removal; explicit `--force` backs up and removes them |
 | `AGENTS.md` | Created if missing; existing root guidance is preserved |
 | Work items | Preserved by sync under `.agents/work/<category>/<slug>/`; explicit closeout removes completed items |
 | Reusable research | Preserved under `.agents/research/` |
 | Legacy plan/PRD documents | Preserved if present |
+| Non-colliding custom skills | Preserved |
 
 The installer copies `AGENTS.template.md` → `AGENTS.md` whenever the root file is missing, including during sync.
+
+**Changed default (unreleased): ordinary sync no longer forces replacement.** Without a stored baseline, an untouched older upstream file and a project customization both require review when they differ. See the [safe-sync migration notes](./docs/migration-safe-sync.md) before updating automation. Older tagged installers retain their old behavior; `sync.sh` downloads the installer from the ref recorded in metadata.
 
 Sync never closes work items automatically. The guarded `agent-work` helper validates a committed completed snapshot and stages only that work item's removal for a separate commit.
 
@@ -60,10 +63,14 @@ Uninstall is different: `install.sh --uninstall` deletes root `AGENTS.md` and al
 
 | Flag | Behavior |
 | --- | --- |
-| default | Overwrite upstream-owned conflicts with backup during sync |
+| default / `--write-conflicts` | Preserve local conflicts; write `file.dot-agents.md` for Markdown or `file.ext.dot-agents.new` for other files; never overwrite an existing conflict copy |
+| `--force` | Back up and replace conflicting managed files, and remove retired managed content |
+| `--interactive` | Ask about each conflict and separately about each removal; keep/skip leaves unresolved status |
+| `--yes` | Skip general confirmations; does not authorize replacement or retired-content removal |
 | `--diff` | Preview pending installs, updates, removals, and conflicts without modifying files; exits 1 if any change is pending |
-| `--write-conflicts` | Create conflict files for manual review: Markdown writes `file.dot-agents.md`; other files write `file.ext.dot-agents.new` |
-| `--dry-run` | Show what would happen without changes |
+| `--dry-run` | Show what would happen without changes; exits 1 if conflicts or removals would remain unresolved |
+
+An unresolved update exits 1 and reports installed files, preserved conflicts, and pending removals separately. Non-conflicting additions may already be installed; this is not a rollback. Installation metadata stays unchanged until a run completes without unresolved items. Review conflict copies before removing or regenerating them; a later run keeps reporting differences. `--force --write-conflicts` is rejected. Preview flags never write project files, metadata, or backups, even with `--force` or `--interactive`.
 
 ## Versioning
 

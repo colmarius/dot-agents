@@ -5,6 +5,7 @@
 - [Installation](../README.md#install)
 - [Quickstart Guide](../QUICKSTART.md)
 - [How dot-agents works](./concepts.md): when to use a work item, the four asks, and what a work item holds
+- [Cross-repository delivery example](./examples/cross-repository-delivery.md): fictional API and consumer changes, code transfer, and rollout evidence
 
 ## Reference
 
@@ -16,6 +17,7 @@
 
 ## Upgrading
 
+- [Safe-sync migration (unreleased)](./migration-safe-sync.md)
 - [Migrating to v0.6](./migration-v0.6.md)
 - [Migrating to v0.5](./migration-v0.5.md)
 - Earlier guides (v0.3, v0.4): see the [v0.4.0 release docs](https://github.com/colmarius/dot-agents/tree/v0.4.0/docs)

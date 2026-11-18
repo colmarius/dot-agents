@@ -18,7 +18,13 @@ Use for `.agents/work/<category>/<slug>/plan.md` when order, dependencies, or ro
 
 ## Rollout
 
-[Only when release needs ordering, migration, configuration, approval, or rollback. Name the exact steps and who approves them; writing them down does not authorize running them.]
+[Only when rollout is in scope; omit for documentation-only or implementation-only work. Writing a procedure does not authorize running it.]
+
+- Deployable applications/services, including consumers that must rebuild after shared-library changes.
+- Order per environment; migrations, configuration, and generated artifacts. Name unresolved commands rather than inventing them.
+- Automatic versus manual deployment, and who authorizes each shared-state action.
+- Post-deployment behavior check, expected result, and the deployed revision it covers.
+- Rollback or recovery; flag irreversible data steps that prevent a simple rollback.
 ```
 
 Tasks follow project conventions, such as shipping docs and tests with each change. Mark a task `(blocked)` with what it waits on; when only part of it depends on a proposed decision, do the independent part (see the contract's "Decisions"). Split a task that cannot be reviewed on its own. Keep checkboxes in step with `log.md`.

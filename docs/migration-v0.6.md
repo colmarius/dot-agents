@@ -23,7 +23,7 @@ v0.6 makes the work item a lean shared record between people and agents, and a r
 
 ## What Sync Removes And Preserves
 
-Sync backs up and removes these upstream files:
+The v0.6.0 installer backs up and removes these upstream files. The newer, unreleased [safe-sync default](./migration-safe-sync.md) preserves them as pending removals unless explicitly authorized with `--force` or an interactive removal decision:
 
 - `.agents/skills/agent-browser/` (retired core skill)
 - `.agents/skills/AGENTS.md` (replaced by `.agents/skills/README.md`)

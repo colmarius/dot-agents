@@ -375,7 +375,7 @@ teardown() {
     assert_output "# Legacy PRD"
 }
 
-@test "sync removes retired legacy guidance and templates with backup" {
+@test "forced sync removes retired legacy guidance and templates with backup" {
     bash "$INSTALL_SCRIPT" --yes
 
     mkdir -p .agents/plans .agents/prds
@@ -385,7 +385,7 @@ teardown() {
     echo "# Old PRD template" > .agents/prds/TEMPLATE.md
     echo "# Real PRD" > .agents/prds/demo.md
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
 
     assert_output --partial "retired legacy guidance"
@@ -404,7 +404,7 @@ teardown() {
     assert_output --partial ".agents/plans/TEMPLATE.md"
 }
 
-@test "sync removes retired agent-work references and templates but keeps work items" {
+@test "forced sync removes retired agent-work references and templates but keeps work items" {
     bash "$INSTALL_SCRIPT" --yes
 
     mkdir -p .agents/skills/agent-work/references .agents/work/feature/demo-work
@@ -413,7 +413,7 @@ teardown() {
     echo "# Old skills guide" > .agents/skills/AGENTS.md
     echo "# Demo PRD" > .agents/work/feature/demo-work/prd.md
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
     assert_output --partial "retired legacy guidance"
 
@@ -437,7 +437,7 @@ teardown() {
 
     # Re-install with --write-conflicts should create conflict files
     run bash "$INSTALL_SCRIPT" --write-conflicts --yes
-    assert_success
+    assert_failure 1
     assert_output --partial "CONFLICT"
 
     # Should create conflict file for the skill
@@ -450,7 +450,7 @@ teardown() {
     printf '# Custom ignore\n.dot-agents-backup/\n' > .agents/.gitignore
 
     run bash "$INSTALL_SCRIPT" --write-conflicts --yes
-    assert_success
+    assert_failure 1
     assert_output --partial "CONFLICT"
 
     [ -f ".agents/.gitignore.dot-agents.new" ]
@@ -464,7 +464,7 @@ teardown() {
     original_gitignore=$(cat .agents/.gitignore)
 
     run bash "$INSTALL_SCRIPT" --write-conflicts --yes
-    assert_success
+    assert_failure 1
     assert_output --partial "CONFLICT"
 
     [ -f ".agents/.gitignore.dot-agents.new" ]
@@ -479,7 +479,7 @@ teardown() {
     echo "review notes stay" > .agents/skills/research/SKILL.dot-agents.md
 
     run bash "$INSTALL_SCRIPT" --write-conflicts --yes
-    assert_success
+    assert_failure 1
     assert_output --partial "Kept existing ./.agents/skills/research/SKILL.dot-agents.md"
 
     run cat .agents/skills/research/SKILL.dot-agents.md
@@ -507,7 +507,7 @@ teardown() {
     echo "# Modified skill" > .agents/skills/research/SKILL.md
 
     run env DOT_AGENTS_INTERACTIVE_RESPONSE=k bash "$INSTALL_SCRIPT" --interactive --yes
-    assert_success
+    assert_failure 1
     assert_output --partial "kept yours"
 
     run cat .agents/skills/research/SKILL.md
@@ -515,22 +515,146 @@ teardown() {
     [ ! -f ".agents/skills/research/SKILL.dot-agents.md" ]
 }
 
-@test "sync defaults to force mode (overwrites with backup)" {
-    # First install
+@test "safe sync preserves customizations and reports a partial update on repeated runs" {
+    mkdir -p .claude
     bash "$INSTALL_SCRIPT" --yes
 
-    # Modify a skill file to create conflict
-    echo "# Modified skill" > .agents/skills/research/SKILL.md
+    mkdir -p .agents/skills/agent-work/references
+    echo "# Customized agent-work" > .agents/skills/agent-work/SKILL.md
+    echo "# Customized retired reference" > .agents/skills/agent-work/references/handoff-context.md
+    mkdir -p .agents/skills/ralph .agents/skills/local-only .agents/research .agents/work/feature/local
+    echo "retired customization" > .agents/skills/ralph/SKILL.md
+    ln -s ../../.agents/skills/ralph .claude/skills/ralph
+    echo "custom skill" > .agents/skills/local-only/SKILL.md
+    echo "research" > .agents/research/local.md
+    echo "work item" > .agents/work/feature/local/index.md
+    echo "project guidance" > AGENTS.md
+    rm .agents/skills/agent-work/assets/plan-template.md
+    cp .agents/.dot-agents.json metadata-before
+    cp .agents/skills/adapt/SKILL.md identical-before
 
-    # Re-install (sync) should default to force mode
-    run bash "$INSTALL_SCRIPT"
+    local mode
+    for mode in default yes write-conflicts; do
+        local args=()
+        [[ "$mode" == default ]] || args+=("--$mode")
+        run bash "$INSTALL_SCRIPT" "${args[@]}"
+        assert_failure 1
+        assert_output --partial "Partial update: non-conflicting additions may already have been installed."
+        assert_output --partial "Preserved conflicts: 1"
+        assert_output --partial "Pending removals: 3"
+        [ -f .agents/skills/agent-work/assets/plan-template.md ]
+        [ -L .claude/skills/ralph ]
+        assert_equal "$(cat .agents/skills/agent-work/SKILL.md)" "# Customized agent-work"
+        assert_equal "$(cat .agents/skills/agent-work/references/handoff-context.md)" "# Customized retired reference"
+        assert_equal "$(cat .agents/skills/ralph/SKILL.md)" "retired customization"
+        assert_equal "$(cat .agents/skills/local-only/SKILL.md)" "custom skill"
+        assert_equal "$(cat .agents/research/local.md)" "research"
+        assert_equal "$(cat .agents/work/feature/local/index.md)" "work item"
+        assert_equal "$(cat AGENTS.md)" "project guidance"
+        cmp metadata-before .agents/.dot-agents.json
+        cmp identical-before .agents/skills/adapt/SKILL.md
+        [ ! -d .agents/.dot-agents-backup ]
+        if [[ "$mode" == default ]]; then
+            cmp .agents/skills/agent-work/SKILL.dot-agents.md "$BATS_TEST_DIRNAME/../../.agents/skills/agent-work/SKILL.md"
+            echo "review in progress" > .agents/skills/agent-work/SKILL.dot-agents.md
+        else
+            assert_equal "$(cat .agents/skills/agent-work/SKILL.dot-agents.md)" "review in progress"
+        fi
+    done
+
+    run bash "$INSTALL_SCRIPT" --force
     assert_success
-    assert_output --partial "force overwrite"
-    assert_output --partial "BACKUP"
+    cmp .agents/skills/agent-work/SKILL.md "$BATS_TEST_DIRNAME/../../.agents/skills/agent-work/SKILL.md"
+    [ ! -e .agents/skills/agent-work/references/handoff-context.md ]
+    [ ! -e .agents/skills/ralph ]
+    [ ! -L .claude/skills/ralph ]
+    assert_equal "$(cat .agents/skills/agent-work/SKILL.dot-agents.md)" "review in progress"
+    assert_equal "$(cat .agents/skills/local-only/SKILL.md)" "custom skill"
+    assert_equal "$(cat .agents/research/local.md)" "research"
+    assert_equal "$(cat .agents/work/feature/local/index.md)" "work item"
+    assert_equal "$(cat AGENTS.md)" "project guidance"
+    local backup
+    backup=$(find .agents/.dot-agents-backup -path '*/.agents/skills/agent-work/SKILL.md')
+    assert_equal "$(cat "$backup")" "# Customized agent-work"
+    backup=$(find .agents/.dot-agents-backup -path '*/.agents/skills/agent-work/references/handoff-context.md')
+    assert_equal "$(cat "$backup")" "# Customized retired reference"
+}
 
-    # Should create backup directory
-    run find . -type d -name ".dot-agents-backup*"
-    assert_output --partial ".dot-agents-backup"
+@test "safe sync previews never write even with force or interactive flags" {
+    mkdir -p .claude
+    bash "$INSTALL_SCRIPT" --yes
+    echo "custom skill" > .agents/skills/agent-work/SKILL.md
+    echo "custom ignores" > .agents/.gitignore
+    echo "review notes" > .agents/skills/agent-work/SKILL.dot-agents.md
+    mkdir -p .agents/skills/ralph
+    echo "retired custom skill" > .agents/skills/ralph/SKILL.md
+    ln -s ../../.agents/skills/ralph .claude/skills/ralph
+    rm .agents/skills/agent-work/assets/plan-template.md
+    tar -cf before.tar AGENTS.md .agents .claude
+
+    local preview mode
+    for preview in --diff --dry-run; do
+        for mode in --force --yes --interactive --write-conflicts; do
+            run env DOT_AGENTS_INTERACTIVE_RESPONSE=O DOT_AGENTS_REMOVAL_RESPONSE=y \
+                bash "$INSTALL_SCRIPT" "$preview" "$mode"
+            tar -cf after.tar AGENTS.md .agents .claude
+            cmp before.tar after.tar
+            if [[ "$preview" == --dry-run && "$mode" == --force ]]; then
+                assert_success
+            else
+                assert_failure 1
+            fi
+            assert_output --partial "Preview summary (no project changes made)"
+            refute_output --partial "Partial update:"
+        done
+    done
+}
+
+@test "safe sync rejects contradictory replacement policies before writing" {
+    run bash "$INSTALL_SCRIPT" --force --write-conflicts
+    assert_failure 2
+    assert_output --partial "incompatible"
+    [ ! -e .agents ]
+    [ ! -s "$MOCK_LOG" ]
+}
+
+@test "interactive overwrite-all does not authorize retired removal even with yes" {
+    bash "$INSTALL_SCRIPT" --yes
+    echo "custom skill" > .agents/skills/agent-work/SKILL.md
+    echo "custom ignore" > .agents/.gitignore
+    mkdir -p .agents/skills/agent-work/references
+    echo "custom retired guide" > .agents/skills/agent-work/references/handoff-context.md
+
+    run env DOT_AGENTS_INTERACTIVE_RESPONSE=O DOT_AGENTS_REMOVAL_RESPONSE=n \
+        bash "$INSTALL_SCRIPT" --interactive --yes
+    assert_failure 1
+    assert_output --partial "Preserved conflicts: 0"
+    assert_output --partial "Pending removals: 1"
+    cmp .agents/skills/agent-work/SKILL.md "$BATS_TEST_DIRNAME/../../.agents/skills/agent-work/SKILL.md"
+    assert_equal "$(cat .agents/skills/agent-work/references/handoff-context.md)" "custom retired guide"
+
+    run env DOT_AGENTS_REMOVAL_RESPONSE=y bash "$INSTALL_SCRIPT" --interactive
+    assert_success
+    [ ! -e .agents/skills/agent-work/references/handoff-context.md ]
+    local backup
+    backup=$(find .agents/.dot-agents-backup -path '*/references/handoff-context.md')
+    assert_equal "$(cat "$backup")" "custom retired guide"
+}
+
+@test "interactive skip-all keeps gitignore intact and reports every unresolved conflict" {
+    bash "$INSTALL_SCRIPT" --yes
+    echo "custom skill" > .agents/skills/agent-work/SKILL.md
+    echo "custom ignore" > .agents/.gitignore
+    cp .agents/.dot-agents.json metadata-before
+
+    run env DOT_AGENTS_INTERACTIVE_RESPONSE=s bash "$INSTALL_SCRIPT" --interactive --yes
+    assert_failure 1
+    assert_output --partial "Preserved conflicts: 2"
+    assert_equal "$(cat .agents/.gitignore)" "custom ignore"
+    assert_equal "$(cat .agents/skills/agent-work/SKILL.md)" "custom skill"
+    cmp metadata-before .agents/.dot-agents.json
+    [ ! -e .agents/.gitignore.dot-agents.new ]
+    [ ! -e .agents/.dot-agents-backup ]
 }
 
 @test "sync backs up symlinked managed files without following them" {
@@ -541,7 +665,7 @@ teardown() {
     rm .agents/skills/research/SKILL.md
     ln -s ../../../external/research-skill.md .agents/skills/research/SKILL.md
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
     assert_output --partial "force overwrite"
     assert_output --partial "BACKUP"
@@ -562,7 +686,7 @@ teardown() {
     rm .agents/skills/research/SKILL.md
     ln -s ../../../missing-research-skill.md .agents/skills/research/SKILL.md
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
     assert_output --partial "force overwrite"
     assert_output --partial "BACKUP"
@@ -671,7 +795,7 @@ teardown() {
     run bash "$INSTALL_SCRIPT" --diff
     assert_failure
     assert_output --partial ".agents/skills/feature-planning (retired core skill, preview only)"
-    assert_output --partial ".claude/skills/feature-planning (stale)"
+    assert_output --partial ".claude/skills/feature-planning (stale, preview only)"
     assert_output --partial "Use agent-work for durable requirements, planning, refinement, execution, and handoffs."
     assert_output --partial "docs/migration-v0.5.md"
     assert_output --partial "Pending changes:"
@@ -692,7 +816,7 @@ teardown() {
     run bash "$INSTALL_SCRIPT" --diff
     assert_failure
     assert_output --partial ".agents/skills/tmux (retired core skill, preview only)"
-    assert_output --partial ".claude/skills/tmux (stale)"
+    assert_output --partial ".claude/skills/tmux (stale, preview only)"
     assert_output --partial "Use the execution environment's current process-management guidance."
     assert_output --partial "docs/migration-v0.5.md"
 
@@ -774,7 +898,7 @@ teardown() {
 
     run bash "$INSTALL_SCRIPT" --diff
     assert_failure
-    assert_output --partial ".claude/skills/ralph (stale)"
+    assert_output --partial ".claude/skills/ralph (stale, preview only)"
     assert_output --partial "Pending changes:"
 
     [ -L ".claude/skills/ralph" ]
@@ -819,7 +943,7 @@ teardown() {
     assert_output --partial ".dot-agents-backup/"
 }
 
-@test "sync overwrites .agents/.gitignore and adds backup entry" {
+@test "forced sync overwrites .agents/.gitignore and adds backup entry" {
     # First install
     bash "$INSTALL_SCRIPT" --yes
 
@@ -827,7 +951,7 @@ teardown() {
     echo "# Custom entry only" > .agents/.gitignore
 
     # Re-install (force mode) should overwrite then add backup entry
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
     assert_output --partial "BACKUP"
     assert_output --partial ".agents/.gitignore"
@@ -967,13 +1091,13 @@ teardown() {
     refute_output --partial "Custom skills preserved:"
 }
 
-@test "sync backs up and removes the retired agent-browser skill" {
+@test "forced sync backs up and removes the retired agent-browser skill" {
     bash "$INSTALL_SCRIPT" --yes
 
     mkdir -p .agents/skills/agent-browser
     echo "# Custom agent-browser skill" > .agents/skills/agent-browser/SKILL.md
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
     assert_output --partial ".agents/skills/agent-browser (retired core skill)"
     assert_output --partial "agent-browser skills list"
@@ -1098,16 +1222,39 @@ teardown() {
     [ "$target" = "../../elsewhere/tmux" ]
 }
 
-@test "sync removes stale dot-agents Claude Code skill symlinks" {
+@test "forced sync removes stale dot-agents Claude Code skill symlinks" {
     mkdir -p .claude
 
     bash "$INSTALL_SCRIPT" --yes
     ln -s ../../.agents/skills/old-skill .claude/skills/old-skill
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
 
     [ ! -L ".claude/skills/old-skill" ]
+}
+
+@test "safe sync preserves redirected managed Claude links until explicitly forced" {
+    mkdir -p .claude
+    bash "$INSTALL_SCRIPT" --yes
+    rm .claude/skills/agent-work
+    ln -s ../../.agents/skills/research .claude/skills/agent-work
+
+    run bash "$INSTALL_SCRIPT" --yes
+    assert_failure 1
+    assert_equal "$(readlink .claude/skills/agent-work)" "../../.agents/skills/research"
+    [ ! -e .agents/.dot-agents-backup ]
+
+    run bash "$INSTALL_SCRIPT" --dry-run
+    assert_failure 1
+    assert_equal "$(readlink .claude/skills/agent-work)" "../../.agents/skills/research"
+
+    run bash "$INSTALL_SCRIPT" --force
+    assert_success
+    assert_equal "$(readlink .claude/skills/agent-work)" "../../.agents/skills/agent-work"
+    local backup
+    backup=$(find .agents/.dot-agents-backup -path '*/.claude/skills/agent-work' -type l)
+    assert_equal "$(readlink "$backup")" "../../.agents/skills/research"
 }
 
 @test "sync preserves symlinked Claude Code skills directory" {
@@ -1125,7 +1272,7 @@ teardown() {
     [ -L "external-skills/old-skill" ]
 }
 
-@test "sync removes retired Ralph Claude Code skill symlink" {
+@test "forced sync removes retired Ralph Claude Code skill symlink" {
     mkdir -p .claude
 
     bash "$INSTALL_SCRIPT" --yes
@@ -1133,18 +1280,18 @@ teardown() {
     echo "# Legacy Ralph" > .agents/skills/ralph/SKILL.md
     ln -s ../../.agents/skills/ralph .claude/skills/ralph
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
 
     [ ! -L ".claude/skills/ralph" ]
 }
 
-@test "sync removes retired ralph core skill with backup" {
+@test "forced sync removes retired ralph core skill with backup" {
     bash "$INSTALL_SCRIPT" --yes
     mkdir -p .agents/skills/ralph
     echo "# Legacy Ralph" > .agents/skills/ralph/SKILL.md
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
 
     assert_output --partial "retired core skill"
@@ -1160,7 +1307,7 @@ teardown() {
     assert_output "# Legacy Ralph"
 }
 
-@test "sync backs up and removes customized retired feature-planning and its managed Claude link" {
+@test "forced sync backs up and removes customized retired feature-planning and its managed Claude link" {
     mkdir -p .claude
     bash "$INSTALL_SCRIPT" --yes
 
@@ -1169,7 +1316,7 @@ teardown() {
     echo "custom asset" > .agents/skills/feature-planning/assets/custom.txt
     ln -s ../../.agents/skills/feature-planning .claude/skills/feature-planning
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
     assert_output --partial "retired core skill"
     assert_output --partial "BACKUP"
@@ -1190,7 +1337,7 @@ teardown() {
     assert_output "custom asset"
 }
 
-@test "sync backs up and removes customized retired tmux and its managed Claude link" {
+@test "forced sync backs up and removes customized retired tmux and its managed Claude link" {
     mkdir -p .claude
     bash "$INSTALL_SCRIPT" --yes
 
@@ -1199,7 +1346,7 @@ teardown() {
     echo "custom process notes" > .agents/skills/tmux/references/custom.md
     ln -s ../../.agents/skills/tmux .claude/skills/tmux
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
     assert_output --partial "retired core skill"
     assert_output --partial "BACKUP"
@@ -1220,11 +1367,11 @@ teardown() {
     assert_output "custom process notes"
 }
 
-@test "sync backs up symlinked retired ralph core skill without following it" {
+@test "forced sync backs up symlinked retired ralph core skill without following it" {
     bash "$INSTALL_SCRIPT" --yes
     ln -s ../missing-ralph .agents/skills/ralph
 
-    run bash "$INSTALL_SCRIPT" --yes
+    run bash "$INSTALL_SCRIPT" --force --yes
     assert_success
 
     assert_output --partial "retired core skill"

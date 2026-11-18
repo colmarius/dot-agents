@@ -144,6 +144,11 @@ Branch retry-policy at 3f2a9c1; uncommitted: none.
                   <p><span>Pin {releaseTag}</span><code>curl -fsSL https://raw.githubusercontent.com/colmarius/dot-agents/{releaseTag}/install.sh | bash -s -- --ref {releaseTag}</code></p>
                 </div>
               </div>
+              <p>
+                Updating an existing install? The unreleased safe-sync default preserves conflicts and retired files
+                for review; <code>--yes</code> does not authorize replacement. Older pinned installers keep their old
+                behavior. <a href="/docs/#update-without-losing-customizations">Read the update guidance</a> first.
+              </p>
             </li>
             <li>
               <h3>Tell your agent <code>Run adapt</code></h3>
@@ -177,6 +182,10 @@ Branch retry-policy at 3f2a9c1; uncommitted: none.
             </div>
           </dl>
           <a class="text-link" href="/docs/">Read how it works <span aria-hidden="true">→</span></a>
+          <p>
+            Coordinating an API and its consumer?{" "}
+            <a class="text-link" href="/docs/#work-across-repositories">Work across repositories <span aria-hidden="true">→</span></a>
+          </p>
         </section>
 
         <p class="companion-line">

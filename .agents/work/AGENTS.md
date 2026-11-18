@@ -61,6 +61,8 @@ Update them when you commit, finish or abandon a step, get a decision or verific
 - tick plan tasks when their verification passes; when a pending decision blocks part of a task, split it into done and open sub-tasks instead of editing its acceptance;
 - update `Decisions` as described below.
 
+When work includes publication or rollout, distinguish implementation, verification, merge, and deployment in `Summary`. Name the environment and revision covered by deployment evidence, and what remains unverified or unauthorized; link detailed evidence in `log.md` or the release plan. A merge does not complete a required rollout, and an implementation-only request does not acquire a deployment requirement.
+
 Recovery reaches only the last checkpoint. When resuming, compare `Summary` and `Next Action` with the latest entries in `log.md`, `git log`, the code, and any external copies the item names: check whether listed work already landed and whether people left feedback elsewhere, and fix whatever is stale before acting.
 
 ## Decisions
@@ -84,6 +86,8 @@ One file may hold several of these when that is easier to review. Use a folder o
 ## Sharing And Closing
 
 People often review a proposal or summary elsewhere: a rendered document, a Notion page, a PR description, slides. `index.md` stays canonical for status, decisions, and next action. List each view under `Artifacts` with the commit or date it reflects, name each document's one authoritative copy, and bring feedback and edits made elsewhere into it before acting. Prefer links to copies; every copy must be kept in sync.
+
+Keep worker-specific instructions in the conversation's handoff, and raw logs, screenshots, temporary patches, and local resource identifiers in ignored local storage or an access-controlled evidence store. Across environments, state how the recipient obtains patches and evidence: a local path is not shared access. Durable docs describe how to recover required inputs rather than depend on an expiring URL.
 
 Do not commit secrets, personal data, or temporary URLs.
 

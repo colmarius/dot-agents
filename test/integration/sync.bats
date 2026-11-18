@@ -80,6 +80,36 @@ EOF
     assert_output --partial "ref: v1.0.0"
 }
 
+@test "sync preserves unresolved files by default and forwards explicit force" {
+    bash "$BATS_TEST_DIRNAME/../../install.sh" --yes
+    echo "custom agent-work" > .agents/skills/agent-work/SKILL.md
+    mkdir -p .agents/skills/agent-work/references
+    echo "custom retired reference" > .agents/skills/agent-work/references/handoff-context.md
+    cp .agents/.dot-agents.json metadata-before
+
+    run bash "$SYNC_SCRIPT" --yes
+    assert_failure 1
+    assert_output --partial "Partial update:"
+    assert_equal "$(cat .agents/skills/agent-work/SKILL.md)" "custom agent-work"
+    assert_equal "$(cat .agents/skills/agent-work/references/handoff-context.md)" "custom retired reference"
+    [ -f .agents/skills/agent-work/SKILL.dot-agents.md ]
+    cmp metadata-before .agents/.dot-agents.json
+
+    tar -cf before.tar .agents
+    run bash "$SYNC_SCRIPT" --diff --force
+    assert_failure 1
+    tar -cf after.tar .agents
+    cmp before.tar after.tar
+
+    run bash "$SYNC_SCRIPT" --force
+    assert_success
+    cmp .agents/skills/agent-work/SKILL.md "$BATS_TEST_DIRNAME/../../.agents/skills/agent-work/SKILL.md"
+    [ ! -e .agents/skills/agent-work/references/handoff-context.md ]
+    local backup
+    backup=$(find .agents/.dot-agents-backup -path '*/.agents/skills/agent-work/SKILL.md')
+    assert_equal "$(cat "$backup")" "custom agent-work"
+}
+
 @test "failed installer downloads never execute empty or partial content" {
     mkdir -p .agents
     printf '{"upstream":"https://github.com/colmarius/dot-agents","ref":"main"}\n' > .agents/.dot-agents.json
