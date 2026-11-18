@@ -129,13 +129,13 @@ When rollout is in scope, use `Summary` to distinguish implementation, verificat
 
 Keep dated evidence in `log.md`, optional rollout order in `plan.md`, and durable behavior in the owning repository's code and docs. A merged API and passing fixture tests do not prove the consumer works against the deployed API. Implementation-only and documentation-only requests acquire no deployment checklist.
 
-The [cross-repository delivery example](https://github.com/totherush/dot-agents/blob/main/docs/examples/cross-repository-delivery.md) follows fictional `service-api` and `booking-app` changes through ownership, patch transfer, context storage, and an incomplete rollout.
+The [cross-repository delivery example](https://github.com/colmarius/dot-agents/blob/main/docs/examples/cross-repository-delivery.md) follows fictional `service-api` and `booking-app` changes through ownership, patch transfer, context storage, and an incomplete rollout.
 
 ## Update without losing customizations
 
 The unreleased safe-sync default installs missing files but preserves differing managed files and retired content for review. Conflicts use `file.dot-agents.md` or `file.ext.dot-agents.new`; existing review copies are kept. Unresolved updates exit 1 even though non-conflicting additions may already be installed, and do not advance installation metadata.
 
-Preview with `--diff` or `--dry-run`; neither writes project files. Use explicit `--force` for backed-up replacement/removal, or `--interactive` for separate decisions. `--yes` is not overwrite authority. Older pinned installers retain their old behavior; read the [safe-sync migration notes](https://github.com/totherush/dot-agents/blob/main/docs/migration-safe-sync.md) before adopting the new default.
+Preview with `--diff` or `--dry-run`; neither writes project files. Use explicit `--force` for backed-up replacement/removal, or `--interactive` for separate decisions. `--yes` is not overwrite authority. Older pinned installers retain their old behavior; read the [safe-sync migration notes](https://github.com/colmarius/dot-agents/blob/main/docs/migration-safe-sync.md) before adopting the new default.
 
 ## Go deeper
 

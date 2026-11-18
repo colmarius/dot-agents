@@ -15,7 +15,7 @@ Acceptance distinguishes the cases that can be confused:
 - Without the field, the old availability text remains, and older API clients still work.
 - After the API development deployment, the booking app reads those responses from the live development API. Fixture and unit tests do not satisfy this check.
 
-The product owner accepts this contract and authorizes feature branches, commits, fork PRs, and the API's development rollout after review. Merging the API PR triggers that development deployment automatically, so its merge is also inside that authorization. The consumer PR may be opened but not merged yet. Production merges, tags, deployments, migrations, and publishing a shared package remain unauthorized.
+The product owner accepts this contract and authorizes feature branches, commits, PRs, and the API's development rollout after review. Merging the API PR triggers that development deployment automatically, so its merge is also inside that authorization. The consumer PR may be opened but not merged yet. Production merges, tags, deployments, migrations, and publishing a shared package remain unauthorized.
 
 ## Give each writer a boundary
 
