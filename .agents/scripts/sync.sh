@@ -51,16 +51,19 @@ Usage: sync.sh [OPTIONS]
 Sync dot-agents from upstream repository.
 
 All options are passed through to the upstream install.sh script.
+The selected ref supplies the installer policy; older refs may still auto-force.
 
 Options:
   --dry-run         Show what would happen without making changes
   --diff            Preview pending changes without writing; exit 1 if pending
-  --force           Overwrite conflicts (creates backup first)
-  --write-conflicts Create file.dot-agents.md/file.ext.dot-agents.new conflicts
-  --interactive     Prompt for each conflict
-  --yes             Skip confirmation prompts
+  --force           Replace managed conflicts and remove retired content, with backups
+  --write-conflicts Preserve conflicts in file.dot-agents.md/file.ext.dot-agents.new (default)
+  --interactive     Prompt separately for replacements and retired removals
+  --yes             Skip general confirmations, not overwrite/removal decisions
   --version         Show version and installation info
   --help            Show this help message
+
+Unresolved conflicts/removals exit 1; non-conflicting additions may be installed.
 
 Examples:
   # Preview changes

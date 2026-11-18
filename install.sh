@@ -37,12 +37,12 @@ Install dot-agents into the current project.
 Options:
   --dry-run         Show what would happen without making changes
   --diff            Preview pending changes without writing; exit 1 if pending
-  --force           Overwrite conflicts (creates backup first, default on sync)
-  --write-conflicts Create file.dot-agents.md/file.ext.dot-agents.new conflicts
+  --force           Replace managed conflicts and remove retired content, with backups
+  --write-conflicts Preserve conflicts in file.dot-agents.md/file.ext.dot-agents.new (default)
   --ref <ref>       Git ref to install (branch, tag, commit). Default: main
-  --yes             Skip confirmation prompts
+  --yes             Skip general confirmations, not overwrite/removal decisions
   --uninstall       Remove dot-agents
-  --interactive     Prompt for each conflict
+  --interactive     Prompt separately for replacements and retired removals
   --version         Show version and installation info
   --help            Show this help message
 
@@ -190,6 +190,8 @@ do_uninstall() {
 installed_count=0
 skipped_count=0
 conflict_count=0
+pending_removal_count=0
+removed_count=0
 pending_change_count=0
 backup_count=0
 BACKUP_DIR=""
@@ -565,6 +567,45 @@ report_custom_skills() {
     fi
 }
 
+remove_managed_item() {
+    local path="$1"
+    local reason="$2"
+    local remove="$FORCE"
+    local response=""
+
+    if [[ "$DIFF_ONLY" == "true" ]]; then
+        log_info "  ${RED}[REMOVE]${NC} $path ($reason, preview only)"
+        pending_change_count=$((pending_change_count + 1))
+        pending_removal_count=$((pending_removal_count + 1))
+        return 0
+    fi
+
+    # Overwrite-all applies to replacements, never to removal decisions.
+    if [[ "$remove" != "true" && "$INTERACTIVE" == "true" && "$DRY_RUN" != "true" ]]; then
+        echo -n "Remove $path ($reason), with backup? [y/N] " >&2
+        if [[ -n "${DOT_AGENTS_REMOVAL_RESPONSE:-}" ]]; then
+            response="$DOT_AGENTS_REMOVAL_RESPONSE"
+            DOT_AGENTS_REMOVAL_RESPONSE=""
+        elif [[ -r /dev/tty ]]; then
+            read -r response < /dev/tty || response=""
+        fi
+        [[ "$response" =~ ^[Yy]$ ]] && remove=true
+    fi
+
+    if [[ "$remove" != "true" ]]; then
+        log_info "  ${YELLOW}[PENDING REMOVAL]${NC} $path ($reason; preserved)"
+        pending_removal_count=$((pending_removal_count + 1))
+        return 0
+    fi
+
+    backup_item "$path"
+    if [[ "$DRY_RUN" != "true" ]]; then
+        rm -rf "$path"
+    fi
+    log_info "  ${RED}[REMOVE]${NC} $path ($reason)"
+    removed_count=$((removed_count + 1))
+}
+
 cleanup_retired_core_skills() {
     local retired skill_dir
 
@@ -574,20 +615,7 @@ cleanup_retired_core_skills() {
         skill_dir=".agents/skills/$retired"
         [[ -e "$skill_dir" || -L "$skill_dir" ]] || continue
 
-        if [[ "$DIFF_ONLY" == "true" ]]; then
-            log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill, preview only)"
-            report_retired_core_skill_migration "$retired"
-            pending_change_count=$((pending_change_count + 1))
-            continue
-        fi
-
-        backup_item "$skill_dir"
-        if [[ "$DRY_RUN" == "true" ]]; then
-            log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill)"
-        else
-            rm -rf "$skill_dir"
-            log_info "  ${RED}[REMOVE]${NC} $skill_dir (retired core skill)"
-        fi
+        remove_managed_item "$skill_dir" "retired core skill"
         report_retired_core_skill_migration "$retired"
     done
 }
@@ -598,19 +626,7 @@ cleanup_retired_legacy_guidance() {
     for path in $RETIRED_LEGACY_GUIDANCE_FILES; do
         [[ -e "$path" || -L "$path" ]] || continue
 
-        if [[ "$DIFF_ONLY" == "true" ]]; then
-            log_info "  ${RED}[REMOVE]${NC} $path (retired legacy guidance, preview only)"
-            pending_change_count=$((pending_change_count + 1))
-            continue
-        fi
-
-        backup_item "$path"
-        if [[ "$DRY_RUN" == "true" ]]; then
-            log_info "  ${RED}[REMOVE]${NC} $path (retired legacy guidance)"
-        else
-            rm -rf "$path"
-            log_info "  ${RED}[REMOVE]${NC} $path (retired legacy guidance)"
-        fi
+        remove_managed_item "$path" "retired legacy guidance"
     done
 }
 
@@ -631,15 +647,7 @@ cleanup_stale_claude_code_skill_symlinks() {
             continue
         fi
 
-        if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
-            log_info "  ${RED}[REMOVE]${NC} $skill_link (stale)"
-            if [[ "$DIFF_ONLY" == "true" ]]; then
-                pending_change_count=$((pending_change_count + 1))
-            fi
-        else
-            rm -f "$skill_link"
-            log_info "  ${RED}[REMOVE]${NC} $skill_link (stale)"
-        fi
+        remove_managed_item "$skill_link" "stale"
     done
 }
 
@@ -710,8 +718,17 @@ setup_claude_code_integration() {
                     if [[ "$DIFF_ONLY" == "true" ]]; then
                         pending_change_count=$((pending_change_count + 1))
                     fi
+                    if [[ "$FORCE" != "true" ]]; then
+                        conflict_count=$((conflict_count + 1))
+                    fi
                     continue
                 fi
+                if [[ "$FORCE" != "true" ]]; then
+                    log_conflict "$dest → $existing_target (preserved; use --force to relink to $link_target)"
+                    conflict_count=$((conflict_count + 1))
+                    continue
+                fi
+                backup_file "$dest"
                 rm -f "$dest"
             else
                 log_info "  ${YELLOW}[SKIP]${NC} $dest (user-owned symlink)"
@@ -815,6 +832,17 @@ install_file() {
         return 0
     fi
 
+    # Preview takes precedence over force and interactive decisions.
+    if [[ "$DIFF_ONLY" == "true" ]]; then
+        log_conflict "$dest"
+        diff -u "$dest" "$src" 2>/dev/null || true
+        echo ""
+        conflict_count=$((conflict_count + 1))
+        pending_change_count=$((pending_change_count + 1))
+        mark_agents_gitignore_pending "$dest"
+        return 0
+    fi
+
     if [[ "$FORCE" == "true" ]]; then
         backup_file "$dest"
         if [[ "$DRY_RUN" == "true" ]]; then
@@ -835,7 +863,8 @@ install_file() {
         case "$action" in
             keep|skip)
                 log_skip "$dest (kept yours)"
-                skipped_count=$((skipped_count + 1))
+                conflict_count=$((conflict_count + 1))
+                mark_agents_gitignore_pending "$dest"
                 return 0
                 ;;
             overwrite)
@@ -846,17 +875,6 @@ install_file() {
                 return 0
                 ;;
         esac
-    fi
-
-    # Diff-only mode: show unified diff, no file creation
-    if [[ "$DIFF_ONLY" == "true" ]]; then
-        log_conflict "$dest"
-        diff -u "$dest" "$src" 2>/dev/null || true
-        echo ""
-        conflict_count=$((conflict_count + 1))
-        pending_change_count=$((pending_change_count + 1))
-        mark_agents_gitignore_pending "$dest"
-        return 0
     fi
 
     local conflict_file
@@ -922,10 +940,6 @@ main() {
     # Detect fresh install vs sync
     if [[ -d ".agents" ]]; then
         IS_FRESH_INSTALL=false
-        # Auto-enable force mode on sync unless diff or write-conflicts is set
-        if [[ "$DIFF_ONLY" != "true" ]] && [[ "$WRITE_CONFLICTS" != "true" ]] && [[ "$INTERACTIVE" != "true" ]]; then
-            FORCE=true
-        fi
     fi
 
     if [[ "$DRY_RUN" == "true" ]]; then
@@ -961,7 +975,7 @@ main() {
     fi
 
     if [[ -n "$template_src" ]]; then
-        if [[ -e "./AGENTS.md" ]]; then
+        if [[ -e "./AGENTS.md" || -L "./AGENTS.md" ]]; then
             log_skip "AGENTS.md (user content, skipped on sync)"
             skipped_count=$((skipped_count + 1))
         else
@@ -984,16 +998,22 @@ main() {
     # Link dot-agents skills into Claude Code's project skill directory when present.
     setup_claude_code_integration "${extracted_dir}/.agents/skills"
 
-    # Skip metadata write in diff-only mode
-    if [[ "$DIFF_ONLY" != "true" ]]; then
+    # A partial update must not claim that the requested ref is synchronized.
+    if [[ "$DIFF_ONLY" != "true" && $conflict_count -eq 0 && $pending_removal_count -eq 0 ]]; then
         write_metadata
     fi
 
     log_info ""
-    log_info "Summary:"
+    if [[ "$DRY_RUN" == "true" || "$DIFF_ONLY" == "true" ]]; then
+        log_info "Preview summary (no project changes made):"
+    else
+        log_info "Summary:"
+    fi
     log_info "  Installed: ${installed_count}"
     log_info "  Skipped:   ${skipped_count}"
-    log_info "  Conflicts: ${conflict_count}"
+    log_info "  Preserved conflicts: ${conflict_count}"
+    log_info "  Pending removals: ${pending_removal_count}"
+    log_info "  Removed: ${removed_count}"
     if [[ "$DIFF_ONLY" == "true" ]]; then
         log_info "  Pending changes: ${pending_change_count}"
     fi
@@ -1023,8 +1043,18 @@ main() {
         return 1
     fi
 
+    if [[ $conflict_count -gt 0 || $pending_removal_count -gt 0 ]]; then
+        log_info ""
+        if [[ "$DRY_RUN" != "true" ]]; then
+            log_info "Partial update: non-conflicting additions may already have been installed."
+            log_info "Metadata unchanged; this installation is not fully synchronized."
+        fi
+        log_info "Resolve preserved conflicts and pending removals manually, or explicitly use --force (with backups)."
+        return 1
+    fi
+
     # Show post-install guidance for fresh installs
-    if [[ "$IS_FRESH_INSTALL" == "true" ]] && [[ "$DRY_RUN" != "true" ]]; then
+    if [[ "$IS_FRESH_INSTALL" == "true" && "$DRY_RUN" != "true" && "$DIFF_ONLY" != "true" ]]; then
         log_info ""
         log_info "${GREEN}Next steps:${NC}"
         log_info "  1. Run 'adapt' to customize AGENTS.md for your project"
@@ -1032,7 +1062,7 @@ main() {
     fi
 
     # Show sync update hint on sync (not fresh install)
-    if [[ "$IS_FRESH_INSTALL" != "true" ]] && [[ "$DRY_RUN" != "true" ]]; then
+    if [[ "$IS_FRESH_INSTALL" != "true" && "$DRY_RUN" != "true" && "$DIFF_ONLY" != "true" ]]; then
         log_info ""
         log_info "To update again: curl -fsSL https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/install.sh | bash"
     fi
@@ -1049,6 +1079,11 @@ _main() {
     if [[ "$SHOW_VERSION" == "true" ]]; then
         do_version
         exit 0
+    fi
+
+    if [[ "$FORCE" == "true" && "$WRITE_CONFLICTS" == "true" ]]; then
+        log_error "--force and --write-conflicts are incompatible"
+        exit 2
     fi
 
     if [[ "$UNINSTALL" == "true" ]]; then

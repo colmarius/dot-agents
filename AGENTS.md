@@ -153,6 +153,6 @@ The installer (`install.sh`) downloads a tarball from GitHub, extracts it to a t
 - `AGENTS.template.md` → `./AGENTS.md` when missing; existing root guidance is preserved.
 - Upstream-owned `.agents/` files such as skills, `.agents/work/AGENTS.md`, and `sync.sh`.
 
-User content under `.agents/work/<category>/<slug>/`, `.agents/research/`, and legacy plan/PRD documents is preserved during sync. Retired upstream skills and stale legacy guidance/templates may be backed up and removed during sync.
+User content under `.agents/work/<category>/<slug>/`, `.agents/research/`, and legacy plan/PRD documents is preserved during sync. Ordinary sync preserves managed conflicts and retired content, reports unresolved items, and exits 1. Explicit force or interactive approval permits backed-up replacement/removal; preview modes never write.
 
 Orb lifecycle hooks install and validate the pinned development environment. `.amp/services.yaml` declares the supervised Astro service; it listens on `$PORT`, and Vite accepts only Amp's `.e2b.app` and `.onamp.dev` portal host suffixes.
